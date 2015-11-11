@@ -1,7 +1,7 @@
 #define _SCL_SECURE_NO_WARNINGS // disable warning about std::transform call
 
 #include <QCoreApplication>
-#include "filterchain.h"
+#include "FilterChain.h"
 #if 0
 FilterChain::FilterChain(QObject *parent) :
     QObject(parent),

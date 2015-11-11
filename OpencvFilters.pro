@@ -3,5 +3,7 @@ TEMPLATE = subdirs
 
 SUBDIRS += \
     FilterChainGui \
-    FilterChain
+    FilterChain \
+    #Filters
+
 

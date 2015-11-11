@@ -37,4 +37,11 @@ protected:
 
 };
 
+
+// Decalare interface for all plugins
+#define AbstractFilter_iid "org.OpencvFilters.AbstractFilter"
+Q_DECLARE_INTERFACE(AbstractFilter, AbstractFilter_iid)
+
+
+
 #endif // ABSTRACTFILTER_H

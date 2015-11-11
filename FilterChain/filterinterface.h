@@ -111,4 +111,7 @@ private:
     quint64 timeElapsed_;
 };
 
+
+
+
 #endif // FILTERINTERFACE_H

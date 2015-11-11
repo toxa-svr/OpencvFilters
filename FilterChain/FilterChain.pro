@@ -13,13 +13,13 @@ TARGET = FilterChain
 TEMPLATE = lib
 CONFIG += staticlib
 
-SOURCES += filterchain.cpp \
+SOURCES += FilterChain.cpp \
     AbstractFilter.cpp \
     FilterFactory.cpp \
     FilterPort.cpp
 
-HEADERS += filterchain.h \
-            filterinterface.h \
+HEADERS += FilterChain.h \
+    FilterInterface.h \
     AbstractFilter.h \
     FilterSettings.h \
     FilterFactory.h \
