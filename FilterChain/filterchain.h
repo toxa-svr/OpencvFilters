@@ -1,62 +1,33 @@
 #ifndef FILTERCHAIN_H
 #define FILTERCHAIN_H
 
+//#include <QTimer>
+#include "AbstractFilter.h"
+//#include "digraph.hpp"
 
-#include <QVector>
-#include <QTimer>
-#include "filterinterface.h"
+class DataToShow {};
 
-
-class FilterChain : public QObject
-{
+class FilterChain : public QObject {
     Q_OBJECT
-
-private:
-
-    // Chain of filters
-    QVector<FilterInterface*> chain;
-    unsigned int filterCounter;
-
-    // Timer starts next frame processing
-    QTimer timer;
-
-    // Screenshot settings
-    QString screenShotFilename;
-    int screenShotCnt;
-    bool isTakeScreenshot;
-    int screenshotFilterIndex;
 
 public:
     explicit FilterChain(QObject* parent = nullptr);
+    FilterChain(const FilterChain&) = delete;
+    FilterChain& operator=(const FilterChain&) = delete;
     ~FilterChain();
 
-    // Filter chain editing
-    void addFilter(FilterInterface* filter);
-    void removeFilter(int index);
-    void swapFilters(int i, int j);
-    FilterInterface* getFilter(int i) {return chain[i];}
-    void setInterval(int msec) {timer.start(msec);}
-    unsigned int getCounter() {return filterCounter;}
+    // Функции изменения графа фильтров
+    void addFilter   (AbstractFilter* filter);
+    void removeFilter(FilterObjectName objectName);
+    void addLink     (FilterObjectName filterFrom, PortIndex portFrom, FilterObjectName filterTo, PortIndex portTo);
+    void removeLink  (FilterObjectName filterFrom, PortIndex portFrom, FilterObjectName filterTo, PortIndex portTo);
 
+    // Функции для получения данных для отображения
+    void addDataToShow   (FilterObjectName filterFrom, PortIndex portFrom);
+    void removeDataToShow(FilterObjectName filterFrom, PortIndex portFrom);
+    DataToShow dataToShow(FilterObjectName filterFrom, PortIndex portFrom) const;
 
-    // Ask screenshot filename and set flag
-//    void needScreenshot(int filterIndex);
-
-    // Take screenshot from filter's output window
-    // and save CV_8U single-channel JPG image
-    // with default quality = 95
-//    void takeScreenshot(const Mat & frame);
-
-
-signals:
-    // Measured times for each filter
-    void elapsedTimesObtained(QVector<qint64> elapsedTimes);
-
-
-private slots:
-    // Current frame processing - Called by timer
-    void processFrames();
-
+    void processFilters();
 };
 
 #endif // FILTERCHAIN_H

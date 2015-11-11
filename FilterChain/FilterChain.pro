@@ -9,20 +9,26 @@
 # Path to Boost  must be added to the BOOST_DIR variable.
 
 
-QT       -= gui
-
-
 TARGET = FilterChain
 TEMPLATE = lib
 CONFIG += staticlib
 
-SOURCES += filterchain.cpp
+SOURCES += filterchain.cpp \
+    AbstractFilter.cpp \
+    FilterFactory.cpp \
+    FilterPort.cpp
 
 HEADERS += filterchain.h \
-            filterinterface.h
+            filterinterface.h \
+    AbstractFilter.h \
+    FilterSettings.h \
+    FilterFactory.h \
+    FilterPort.h \
+    FilterData.h
 
 INCLUDEPATH += $$(OPENCV_DIR)/build/include \
-               $$(BOOST_DIR)
+               $$(BOOST_DIR) \
+               ../stlplus3-03-12/containers
 
 LIBS += -L$$(OPENCV_DIR)/build/x64/vc12/lib
 

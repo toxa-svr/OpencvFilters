@@ -2,7 +2,7 @@
 
 #include <QCoreApplication>
 #include "filterchain.h"
-
+#if 0
 FilterChain::FilterChain(QObject *parent) :
     QObject(parent),
     filterCounter(0)
@@ -21,7 +21,8 @@ FilterChain::~FilterChain(){
 //------------------------------------------------------------------------
 //
 //------------------------------------------------------------------------
-void FilterChain::addFilter(FilterInterface* filter)
+void FilterChain::addFilter(FilterInterface* filter, const std::vector<FilterInterface*>& parents,
+                            const std::vector<FilterInterface>& children)
 {
     filterCounter++;
     chain.append((FilterInterface*const)filter);
@@ -65,7 +66,7 @@ void FilterChain::processFrames()
 
         try {
             // process data and get visualization frame (not stored in container)
-            Mat frameToShow = filter->run(container);
+            cv::Mat frameToShow = filter->run(container);
 
             // show or save output visualization frame
             if (frameToShow.data) {
@@ -169,3 +170,4 @@ void FilterChain::needScreenshot(int filterIndex)
     isTakeScreenshot = true;
 }
 */
+#endif

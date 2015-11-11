@@ -11,8 +11,6 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
-
-using namespace cv;
 class FilterChain;
 
 typedef std::vector<boost::any> ProcessDataContainer;
@@ -32,7 +30,7 @@ class FilterInterface : public QObject
     Q_OBJECT
 
 public:
-    FilterInterface(FilterChain *chain) :
+    FilterInterface(FilterChain* chain) :
         filterChain(chain),
         isEnabled(true),
         showResult(true),
@@ -42,10 +40,10 @@ public:
 
     // run filter
     // (processe data stored in container, measure time, return visualization frame)
-    Mat run(ProcessDataContainer& container) {
+    cv::Mat run(ProcessDataContainer& container) {
         if (!isEnabled) {
             setTimeElapsed(0);
-            return Mat();
+            return cv::Mat();
         }
         QElapsedTimer timer;
         timer.start();
@@ -53,7 +51,7 @@ public:
         // processing can modify data, stored in container
         //     this data will be processed by next filters
         // processing output is frame for visualization only (not stored in container)
-        Mat frameToShow = processFrame(container);
+        cv::Mat frameToShow = processFrame(container);
 
         setTimeElapsed(timer.elapsed());
 
@@ -64,7 +62,7 @@ public:
     // process data stored in container by filter
     // filter can add/modify elements of container
     // filter output frame is a frame for visualization only (frameToShow)
-    virtual Mat processFrame(ProcessDataContainer& input) = 0;
+    virtual cv::Mat processFrame(ProcessDataContainer& input) = 0;
 
 
     void setName(const QString &name) {filterName = name;}
@@ -107,7 +105,7 @@ protected:
 private:
     void checkWindowsToClose() { // Close visualization frame windows if filter is disabled
         if (!isEnabled || !showResult)
-            destroyWindow(filterName.toStdString());
+            cv::destroyWindow(filterName.toStdString());
     }
 
     quint64 timeElapsed_;
