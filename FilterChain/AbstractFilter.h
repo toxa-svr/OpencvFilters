@@ -27,17 +27,17 @@ public:
 
     FilterSettings settings() const {return settings_;}
 
-    virtual void processData() = 0;
+    virtual void processData();
+    virtual QString className() const;
+    virtual FilterObjectName objectName();
 
-    virtual FilterPortDescriptionVector inputs()  const;
-    virtual FilterPortDescriptionVector outputs() const;
-
-    virtual QString className() const = 0;
-    virtual FilterObjectName objectName() const = 0;
+    FilterPortDescriptionVector inputs()  const;
+    FilterPortDescriptionVector outputs() const;
 
     // Функции, представляющие интерфейс для FilterChain
     FilterPort* inPort (PortIndex i) {return &inPorts_ [i];}
     FilterPort* outPort(PortIndex i) {return &outPorts_[i];}
+    void clear();
     bool canProcessData() const;
 
 signals:
@@ -57,6 +57,10 @@ protected:
 #define AbstractFilter_iid "org.OpencvFilters.AbstractFilter"
 Q_DECLARE_INTERFACE(AbstractFilter, AbstractFilter_iid)
 
-
+class MyTestFilter : public AbstractFilter {
+    Q_OBJECT
+public:
+    MyTestFilter(QObject* parent) : AbstractFilter(parent) {}
+};
 
 #endif // ABSTRACTFILTER_H

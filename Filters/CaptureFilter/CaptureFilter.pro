@@ -74,8 +74,10 @@ LIBS += -L$$(OPENCV_DIR)/build/x64/vc12/lib
 
 CONFIG(debug, debug|release) {
     LIBS += opencv_ts300d.lib \
-        opencv_world300d.lib
+        opencv_world300d.lib \
+        ../../bin_debug/FilterChaind.lib
 } else {
     LIBS += opencv_ts300.lib \
-        opencv_world300.lib
+        opencv_world300.lib \
+        ../../bin_release/FilterChain.lib
 }

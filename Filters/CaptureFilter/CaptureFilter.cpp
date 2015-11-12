@@ -1,19 +1,23 @@
 #include "capturefilter.h"
-#include "capturewidget.h"
-#include "filter.h"
-#include "filterchain.h"
+//#include "capturewidget.h"
+//#include "filter.h"
+//#include "filterchain.h"
 
-#include <QElapsedTimer>
+#include "opencv2/core/mat.hpp"
+//#include <opencv2/opencv.hpp>
+//#include <opencv2/core/core.hpp>
+//#include <opencv2/imgproc/imgproc.hpp>
+//#include <opencv2/highgui/highgui.hpp>
 
-#include <opencv2/opencv.hpp>
-#include <opencv2/core/core.hpp>
-#include <opencv2/imgproc/imgproc.hpp>
-#include <opencv2/highgui/highgui.hpp>
+// Делаем тип cv::Mat известным для QMetaType, чтобы его можно было поместить в QVariant
+Q_DECLARE_METATYPE(cv::Mat)
 
-using namespace cv;
+size_t CaptureFilter::objectCounter = 0;
 
+CaptureFilter::CaptureFilter(QObject* parent) :
+    AbstractFilter(parent)
 
-CaptureFilter::CaptureFilter(QObject *parent)/*:
+  /*:
     FilterInterface(chain),
     sourceType(0),
     cameraNumber(0),
@@ -21,8 +25,17 @@ CaptureFilter::CaptureFilter(QObject *parent)/*:
     emptyFrameW(640),
     emptyFrameH(480)*/
 {
+    objectName_ = className() + " " + QString::number(objectCounter);
+
+    ++objectCounter;
+    if (objectCounter == 0)
+        throw std::runtime_error("Превышено максимальное количество объектов CaptureFilter");
+
+    // TODO порты вывода
+    FilterPortDescription description = {"Изображение", "cv::Mat"};
+    this->outPorts_.push_back(FilterPort(description));
+
     /*
-    filterName = "Capture_" + QString::number(chain->getCounter());
     auto captureWidget = new CaptureWidget;
     widget = captureWidget;
     FilterInterface::setEnabled(false);
@@ -90,10 +103,9 @@ CaptureFilter::~CaptureFilter()
 */
 //}
 
-void CaptureFilter::processData()
-{
-/*
-    Mat frame;
+void CaptureFilter::processData() {
+    cv::Mat frame;
+#if 0
     switch (sourceType) {
 
         case 0: // camera
@@ -142,14 +154,15 @@ void CaptureFilter::processData()
         isEnabled = false;
         emit updateWidgetEnabled(false);
     }
-
-
-    // insert new frame into container
-    input.push_back(frame);
-    return frame;
-*/
+#endif
+    FilterData filterData;
+    filterData.setValue(frame);
+    outPorts_[0].setFilterData(filterData);
 }
 
+FilterObjectName CaptureFilter::objectName() const {
+    return objectName_;
+}
 
 
 

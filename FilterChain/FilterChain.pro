@@ -8,8 +8,16 @@
 # Path to OpenCV must be added to the OPENCV_DIR variable.
 # Path to Boost  must be added to the BOOST_DIR variable.
 
+# For windows
+# Set library name using "d" for debug configuration.
+CONFIG (debug, debug|release) {
+    TARGET = $${FILTERNAME}FilterChaind
+} else {
+    TARGET = $${FILTERNAME}Filter
+}
+# And specify where to put the target dll file
+DESTDIR = ../bin_debug
 
-TARGET = FilterChain
 TEMPLATE = lib
 CONFIG += staticlib
 

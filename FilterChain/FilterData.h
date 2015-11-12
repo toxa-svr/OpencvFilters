@@ -1,7 +1,9 @@
 #ifndef FILTERDATA
 #define FILTERDATA
 
-class FilterData{};
+#include <QVariant>
+
+typedef QVariant FilterData;
 
 #endif // FILTERDATA
 

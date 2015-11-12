@@ -31,7 +31,14 @@ class FilterFactory {
 public:
     FilterFactory();
     FilterAndWidget createFilter(FilterId id);
-    static FilterDescription enumerateFilters();
+    static QVector<FilterDescription> enumerateFilters();
+};
+
+// TODO пока не знаю, куда положить. Интерфейс плагина фильтра
+class FilterPluginInterface {
+public:
+    FilterAndWidget createFilter() const = 0;
+    FilterDescription description() const = 0;
 };
 
 #endif // FILTERFACTORY_H

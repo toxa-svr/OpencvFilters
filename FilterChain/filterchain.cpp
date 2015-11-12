@@ -65,6 +65,10 @@ FilterData FilterChain::dataToShow(const FullPortAddress& from) const {
 }
 
 void FilterChain::processFilters() { // TODO говнокод
+    std::for_each(filters.begin(), filters.end(), [](AbstractFilter* filter) {
+        filter->clear();
+    });
+
     while(true) {
         auto filter = std::find_if(filters.begin(), filters.end(), [&](const AbstractFilter* filter) {
             return filter->canProcessData();

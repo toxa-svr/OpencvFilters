@@ -3,17 +3,22 @@
 
 #include "FilterData.h"
 
-class FilterPortDescription {};
+struct FilterPortDescription {
+    QString name;
+    QString type;
+};
 
 class FilterPort {
 public:
-    FilterPort();
+    FilterPort() {}
+    FilterPort(const FilterPortDescription& description);
     void setFilterData(const FilterData& filterData) {filterData_ = filterData;}
     FilterData filterData() const {return filterData_;}
-    FilterPortDescription description() const;
-    //bool hasData() const;
+    FilterPortDescription description() const {return description_;}
+
 private:
     FilterData filterData_;
+    FilterPortDescription description_;
 };
 
 #endif // FILTERPORT_H
