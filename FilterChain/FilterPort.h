@@ -11,7 +11,7 @@ public:
     void setFilterData(const FilterData& filterData) {filterData_ = filterData;}
     FilterData filterData() const {return filterData_;}
     FilterPortDescription description() const;
-
+    //bool hasData() const;
 private:
     FilterData filterData_;
 };

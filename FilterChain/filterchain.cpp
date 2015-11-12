@@ -1,7 +1,126 @@
-#define _SCL_SECURE_NO_WARNINGS // disable warning about std::transform call
+#include <cassert>
 
-#include <QCoreApplication>
+//#define _SCL_SECURE_NO_WARNINGS // disable warning about std::transform call
+
+//#include <QCoreApplication>
 #include "FilterChain.h"
+
+bool operator==(const FilterLink& lhs, const FilterLink& rhs) {
+    return lhs.from == rhs.from && lhs.to == rhs.to;
+}
+bool operator!=(const FilterLink& lhs, const FilterLink& rhs) {
+    return !(lhs == rhs);
+}
+
+bool operator==(const FullPortAddress& lhs, const FullPortAddress& rhs) {
+    return lhs.filter == rhs.filter && lhs.port == rhs.port;
+}
+
+bool operator!=(const FullPortAddress& lhs, const FullPortAddress& rhs) {
+    return !(lhs == rhs);
+}
+
+bool operator< (const FullPortAddress& lhs, const FullPortAddress& rhs) {
+    return lhs.filter < rhs.filter || lhs.port < rhs.port;
+}
+
+bool operator> (const FullPortAddress& lhs, const FullPortAddress& rhs) {
+    return rhs < lhs;
+}
+
+
+FilterChain::FilterChain(QObject* parent) : QObject(parent) {}
+
+FilterChain::~FilterChain() {}
+
+void FilterChain::addFilter(AbstractFilter* filter) {
+    assert(filter);
+    filters.push_back(filter);
+}
+
+void FilterChain::removeFilter(FilterObjectName objectName) {
+    filters.remove(findFilterIndex(objectName));
+}
+
+void FilterChain::addLink(const FilterLink& filterLink) {
+    links.push_back(filterLink);
+}
+
+void FilterChain::removeLink(const FilterLink& filterLink) {
+    links.erase(std::find_if(links.begin(), links.end(), [&](const FilterLink& link) {
+        return filterLink == link;
+    }));
+}
+
+void FilterChain::addDataToShow(const FullPortAddress& from) {
+    dataToShowAddressVector.push_back(from);
+}
+
+void FilterChain::removeDataToShow(const FullPortAddress& from) {
+    dataToShowAddressVector.erase(std::find(dataToShowAddressVector.begin(), dataToShowAddressVector.end(), from));
+}
+
+FilterData FilterChain::dataToShow(const FullPortAddress& from) const {
+    return dataToShowMap[from];
+}
+
+void FilterChain::processFilters() { // TODO говнокод
+    while(true) {
+        auto filter = std::find_if(filters.begin(), filters.end(), [&](const AbstractFilter* filter) {
+            return filter->canProcessData();
+        });
+        if (filter == filters.end())
+            break;
+        (*filter)->processData();
+
+        std::for_each(dataToShowAddressVector.cbegin(), dataToShowAddressVector.cend(), [&] (const FullPortAddress& address) {
+           if (address.filter == (*filter)->objectName())
+               dataToShowMap[address] = (*filter)->outPort(address.port)->filterData();
+        });
+
+        std::for_each(links.cbegin(), links.cend(), [&](const FilterLink& link) {
+            if (link.from.filter == (*filter)->objectName()) {
+                auto data = (*filter)->outPort(link.from.port)->filterData();
+                filters[findFilterIndex(link.to.filter)]->inPort(link.to.port)->setFilterData(data);
+            }
+        });
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #if 0
 FilterChain::FilterChain(QObject *parent) :
     QObject(parent),
