@@ -11,7 +11,7 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
-class FilterChain;
+class FilterGraph;
 
 typedef std::vector<boost::any> ProcessDataContainer;
 
@@ -30,7 +30,7 @@ class FilterInterface : public QObject
     Q_OBJECT
 
 public:
-    FilterInterface(FilterChain* chain) :
+    FilterInterface(FilterGraph* chain) :
         filterChain(chain),
         isEnabled(true),
         showResult(true),
@@ -94,7 +94,7 @@ public slots:
 protected:
     void setTimeElapsed(qint64 time) {timeElapsed_ = time;}
 
-    FilterChain* filterChain;
+    FilterGraph* filterChain;
     unsigned int myindex;
     QString filterName;
     QWidget* widget;

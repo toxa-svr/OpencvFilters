@@ -3,7 +3,7 @@
 //#define _SCL_SECURE_NO_WARNINGS // disable warning about std::transform call
 
 //#include <QCoreApplication>
-#include "FilterChain.h"
+#include "FilterGraph.h"
 
 bool operator==(const FilterLink& lhs, const FilterLink& rhs) {
     return lhs.from == rhs.from && lhs.to == rhs.to;
@@ -29,48 +29,48 @@ bool operator> (const FullPortAddress& lhs, const FullPortAddress& rhs) {
 }
 
 
-FilterChain::FilterChain(QObject* parent) : QObject(parent) {}
+FilterGraph::FilterGraph(QObject* parent) : QObject(parent) {}
 
-FilterChain::~FilterChain() {}
+FilterGraph::~FilterGraph() {}
 
-void FilterChain::addFilter(AbstractFilter* filter) {
+void FilterGraph::addFilter(BaseFilter* filter) {
     assert(filter);
     filters.push_back(filter);
 }
 
-void FilterChain::removeFilter(FilterObjectName objectName) {
-    filters.remove(findFilterIndex(objectName));
+void FilterGraph::removeFilter(FilterInstanceName objectInstance) {
+    filters.remove(findFilterIndex(objectInstance));
 }
 
-void FilterChain::addLink(const FilterLink& filterLink) {
+void FilterGraph::addLink(const FilterLink& filterLink) {
     links.push_back(filterLink);
 }
 
-void FilterChain::removeLink(const FilterLink& filterLink) {
+void FilterGraph::removeLink(const FilterLink& filterLink) {
     links.erase(std::find_if(links.begin(), links.end(), [&](const FilterLink& link) {
         return filterLink == link;
     }));
 }
 
-void FilterChain::addDataToShow(const FullPortAddress& from) {
+void FilterGraph::addDataToShow(const FullPortAddress& from) {
     dataToShowAddressVector.push_back(from);
 }
 
-void FilterChain::removeDataToShow(const FullPortAddress& from) {
+void FilterGraph::removeDataToShow(const FullPortAddress& from) {
     dataToShowAddressVector.erase(std::find(dataToShowAddressVector.begin(), dataToShowAddressVector.end(), from));
 }
 
-FilterData FilterChain::dataToShow(const FullPortAddress& from) const {
+FilterData FilterGraph::dataToShow(const FullPortAddress& from) const {
     return dataToShowMap[from];
 }
 
-void FilterChain::processFilters() { // TODO говнокод
-    std::for_each(filters.begin(), filters.end(), [](AbstractFilter* filter) {
+void FilterGraph::processFilters() { // TODO говнокод
+    std::for_each(filters.begin(), filters.end(), [](BaseFilter* filter) {
         filter->clear();
     });
 
     while(true) {
-        auto filter = std::find_if(filters.begin(), filters.end(), [&](const AbstractFilter* filter) {
+        auto filter = std::find_if(filters.begin(), filters.end(), [&](const BaseFilter* filter) {
             return filter->canProcessData();
         });
         if (filter == filters.end())
@@ -78,12 +78,12 @@ void FilterChain::processFilters() { // TODO говнокод
         (*filter)->processData();
 
         std::for_each(dataToShowAddressVector.cbegin(), dataToShowAddressVector.cend(), [&] (const FullPortAddress& address) {
-           if (address.filter == (*filter)->objectName())
+           if (address.filter == (*filter)->instanceName())
                dataToShowMap[address] = (*filter)->outPort(address.port)->filterData();
         });
 
         std::for_each(links.cbegin(), links.cend(), [&](const FilterLink& link) {
-            if (link.from.filter == (*filter)->objectName()) {
+            if (link.from.filter == (*filter)->instanceName()) {
                 auto data = (*filter)->outPort(link.from.port)->filterData();
                 filters[findFilterIndex(link.to.filter)]->inPort(link.to.port)->setFilterData(data);
             }

@@ -1,39 +1,38 @@
-#ifndef ABSTRACTFILTER_H
-#define ABSTRACTFILTER_H
+#pragma once
 
 #include <QVector>
 #include "FilterSettings.h"
 #include "FilterPort.h"
 
-// Идентификатор объекта фильтра
-typedef QString FilterObjectName;
+// Unique identifier for filter instances
+typedef QString FilterInstanceName;
 
-// Вектор описания портов фильтра
+// Vector of filter port descriptions
 typedef QVector<FilterPortDescription> FilterPortDescriptionVector;
 
-// Вектор портов фильтра
+// Vector of filter ports
 typedef QVector<FilterPort> FilterPortVector;
 
-// Индекс порта внутри фильтра
+// Port index in a filter
 typedef int PortIndex;
 
-// Абстрактный класс фильтра
-class AbstractFilter : public QObject {
+// Base class for filters
+class BaseFilter : public QObject {
     Q_OBJECT
 
 public:
-    explicit AbstractFilter(QObject* parent = nullptr);
+    explicit BaseFilter(QObject* parent = nullptr);
 
     FilterSettings settings() const {return settings_;}
 
     virtual void processData();
     virtual QString className() const;
-    virtual FilterObjectName objectName();
+    virtual FilterInstanceName instanceName();
 
     FilterPortDescriptionVector inputs()  const;
     FilterPortDescriptionVector outputs() const;
 
-    // Функции, представляющие интерфейс для FilterChain
+    // Interface functions for FilterChain
     FilterPort* inPort (PortIndex i) {return &inPorts_ [i];}
     FilterPort* outPort(PortIndex i) {return &outPorts_[i];}
     void clear();
@@ -55,15 +54,3 @@ private:
     FilterPortVector outPorts_;
 };
 
-
-// Declare interface for all plugins
-#define AbstractFilter_iid "org.OpencvFilters.AbstractFilter"
-Q_DECLARE_INTERFACE(AbstractFilter, AbstractFilter_iid)
-
-class MyTestFilter : public AbstractFilter {
-    Q_OBJECT
-public:
-    MyTestFilter(QObject* parent) : AbstractFilter(parent) {}
-};
-
-#endif // ABSTRACTFILTER_H

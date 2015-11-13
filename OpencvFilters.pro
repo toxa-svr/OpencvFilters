@@ -2,8 +2,6 @@ TEMPLATE = subdirs
 
 
 SUBDIRS += \
+    FilterGraph \
     FilterChainGui \
-    FilterChain \
     Filters
-
-

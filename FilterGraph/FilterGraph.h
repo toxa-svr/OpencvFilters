@@ -1,16 +1,16 @@
-#ifndef FILTERCHAIN_H
-#define FILTERCHAIN_H
+#pragma once
 
 #include <QVector>
 #include <QMap>
-#include "AbstractFilter.h"
+#include "BaseFilter.h"
 
+// Full qualified filter port address
 struct FullPortAddress {
-    FilterObjectName filter;
+    FilterInstanceName filter;
     PortIndex port;
 };
 
-// Структура описывает связь между фильтрами
+// Structure describes a link between filters
 struct FilterLink {
     FullPortAddress from;
     FullPortAddress to;
@@ -25,23 +25,23 @@ bool operator< (const FullPortAddress& lhs, const FullPortAddress& rhs);
 bool operator> (const FullPortAddress& lhs, const FullPortAddress& rhs);
 
 
-// Цепочка (граф) фильтров.
-class FilterChain : public QObject {
+// Graph of connected filters
+class FilterGraph : public QObject {
     Q_OBJECT
 
 public:
-    explicit FilterChain(QObject* parent = nullptr);
-    FilterChain(const FilterChain&) = delete;
-    FilterChain& operator=(const FilterChain&) = delete;
-    ~FilterChain();
+    explicit FilterGraph(QObject* parent = nullptr);
+    FilterGraph(const FilterGraph&) = delete;
+    FilterGraph& operator=(const FilterGraph&) = delete;
+    ~FilterGraph();
 
-    // Функции изменения графа фильтров
-    void addFilter   (AbstractFilter* filter);
-    void removeFilter(FilterObjectName objectName);
+    // Functions for the filter graph modification
+    void addFilter   (BaseFilter* filter);
+    void removeFilter(FilterInstanceName objectInstance);
     void addLink     (const FilterLink& filterLink);
     void removeLink  (const FilterLink& filterLink);
 
-    // Функции для получения данных для отображения
+    // Functions to get image data
     void addDataToShow   (const FullPortAddress& from);
     void removeDataToShow(const FullPortAddress& from);
     FilterData dataToShow(const FullPortAddress& from) const;
@@ -49,12 +49,10 @@ public:
     void processFilters();
 
 private:
-    int findFilterIndex(FilterObjectName objectName);
+    int findFilterIndex(FilterInstanceName objectInstance);
 
-    QVector<AbstractFilter*> filters;
+    QVector<BaseFilter*> filters;
     QVector<FilterLink> links;
     QVector<FullPortAddress> dataToShowAddressVector;
     QMap<FullPortAddress, FilterData> dataToShowMap;
 };
-
-#endif // FILTERCHAIN_H

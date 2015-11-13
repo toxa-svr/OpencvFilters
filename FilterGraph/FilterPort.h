@@ -3,11 +3,13 @@
 
 #include "FilterData.h"
 
+// Description of a filter port
 struct FilterPortDescription {
     QString name;
     QString type;
 };
 
+// Filter port class
 class FilterPort {
 public:
     FilterPort() {}

@@ -11,9 +11,9 @@
 # For windows
 # Set library name using "d" for debug configuration.
 CONFIG (debug, debug|release) {
-    TARGET = $${FILTERNAME}FilterChaind
+    TARGET = $${FILTERNAME}FilterGraphd
 } else {
-    TARGET = $${FILTERNAME}Filter
+    TARGET = $${FILTERNAME}FilterGraph
 }
 # And specify where to put the target dll file
 DESTDIR = ../bin_debug
@@ -21,22 +21,24 @@ DESTDIR = ../bin_debug
 TEMPLATE = lib
 CONFIG += staticlib
 
-SOURCES += FilterChain.cpp \
-    AbstractFilter.cpp \
+SOURCES += \
     FilterFactory.cpp \
-    FilterPort.cpp
+    FilterPort.cpp \
+    BaseFilter.cpp \
+    FilterGraph.cpp
 
-HEADERS += FilterChain.h \
+HEADERS += \
     FilterInterface.h \
-    AbstractFilter.h \
     FilterSettings.h \
     FilterFactory.h \
     FilterPort.h \
-    FilterData.h
+    FilterData.h \
+    FilterPluginInterface.h \
+    BaseFilter.h \
+    FilterGraph.h
 
 INCLUDEPATH += $$(OPENCV_DIR)/build/include \
-               $$(BOOST_DIR) \
-               ../stlplus3-03-12/containers
+               $$(BOOST_DIR)
 
 LIBS += -L$$(OPENCV_DIR)/build/x64/vc12/lib
 
