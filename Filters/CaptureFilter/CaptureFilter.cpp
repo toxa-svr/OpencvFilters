@@ -33,7 +33,9 @@ CaptureFilter::CaptureFilter(QObject* parent) :
 
     // TODO порты вывода
     FilterPortDescription description = {"Изображение", "cv::Mat"};
-    this->outPorts_.push_back(FilterPort(description));
+    FilterPortVector outPorts;
+    outPorts.push_back(FilterPort(description));
+    setOutPorts(outPorts);
 
     /*
     auto captureWidget = new CaptureWidget;
@@ -157,7 +159,7 @@ void CaptureFilter::processData() {
 #endif
     FilterData filterData;
     filterData.setValue(frame);
-    outPorts_[0].setFilterData(filterData);
+    outPort(0)->setFilterData(filterData);
 }
 
 FilterObjectName CaptureFilter::objectName() const {

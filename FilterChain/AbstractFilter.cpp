@@ -45,5 +45,3 @@ FilterObjectName AbstractFilter::objectName() {
     assert(false);
     return QString("Error: AbstractFilter_") + QUuid::createUuid().toString();
 }
-
-

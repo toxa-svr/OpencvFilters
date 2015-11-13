@@ -1,7 +1,6 @@
 #ifndef ABSTRACTFILTER_H
 #define ABSTRACTFILTER_H
 
-#include <QObject>
 #include <QVector>
 #include "FilterSettings.h"
 #include "FilterPort.h"
@@ -47,6 +46,10 @@ public slots:
     void setSettings(FilterSettings settings) {settings_ = settings;}
 
 protected:
+    void setInPorts(const FilterPortVector& ports) {inPorts_ = ports;}
+    void setOutPorts(const FilterPortVector& ports) {outPorts_ = ports;}
+
+private:
     FilterSettings settings_;
     FilterPortVector inPorts_;
     FilterPortVector outPorts_;
