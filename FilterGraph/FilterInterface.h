@@ -1,9 +1,9 @@
 #ifndef FILTERINTERFACE_H
 #define FILTERINTERFACE_H
-
-#ifndef Q_MOC_RUN
-#include <boost/any.hpp>
-#endif
+#if 0
+//#ifndef Q_MOC_RUN
+//#include <boost/any.hpp>
+//#endif
 
 #include <QtCore>
 #include <QElapsedTimer>
@@ -111,7 +111,7 @@ private:
     quint64 timeElapsed_;
 };
 
-
+#endif
 
 
 #endif // FILTERINTERFACE_H

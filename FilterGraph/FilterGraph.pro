@@ -37,8 +37,8 @@ HEADERS += \
     BaseFilter.h \
     FilterGraph.h
 
-INCLUDEPATH += $$(OPENCV_DIR)/build/include \
-               $$(BOOST_DIR)
+INCLUDEPATH += $$(OPENCV_DIR)/build/include
+               #$$(BOOST_DIR)
 
 LIBS += -L$$(OPENCV_DIR)/build/x64/vc12/lib
 
