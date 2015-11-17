@@ -10,7 +10,7 @@ class CaptureImageFilterPlugin : public QObject,  public FilterPluginInterface {
     Q_INTERFACES(FilterPluginInterface)
 
 public:
-    CaptureImageFilterPlugin(QObject* parent = nullptr);
+    explicit CaptureImageFilterPlugin(QObject* parent = nullptr);
     FilterAndWidget createFilter() const;
     FilterDescription description() const;
 };

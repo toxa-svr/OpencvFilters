@@ -6,7 +6,7 @@ class CaptureImageFilter : public BaseFilter {
     Q_OBJECT
 
 public:
-    CaptureImageFilter(QObject* parent = nullptr);
+    explicit CaptureImageFilter(QObject* parent = nullptr);
     ~CaptureImageFilter();
 
     void processData();

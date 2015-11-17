@@ -13,7 +13,7 @@ struct FilterPortDescription {
 class FilterPort {
 public:
     FilterPort() {}
-    FilterPort(const FilterPortDescription& description);
+    explicit FilterPort(const FilterPortDescription& description);
     void setFilterData(const FilterData& filterData) {filterData_ = filterData;}
     FilterData filterData() const {return filterData_;}
     FilterPortDescription description() const {return description_;}

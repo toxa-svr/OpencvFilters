@@ -37,7 +37,7 @@ public:
 
     // Functions for the filter graph modification
     void addFilter   (BaseFilter* filter);
-    void removeFilter(FilterInstanceName objectInstance);
+    void removeFilter(FilterInstanceName instanceName);
     void addLink     (const FilterLink& filterLink);
     void removeLink  (const FilterLink& filterLink);
 
@@ -49,7 +49,7 @@ public:
     void processFilters();
 
 private:
-    int findFilterIndex(FilterInstanceName objectInstance);
+    int findFilterIndex(FilterInstanceName instanceName);
 
     QVector<BaseFilter*> filters;
     QVector<FilterLink> links;

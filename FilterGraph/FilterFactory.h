@@ -44,7 +44,7 @@ public:
     FilterFactory(const FilterFactory&) = delete;
     FilterFactory& operator=(FilterFactory&) = delete;
 
-    FilterAndWidget createFilter(FilterId id);
+    static FilterAndWidget createFilter(FilterId id);
 
     static QVector<FilterDescription> enumerateFilters();
 

@@ -38,8 +38,8 @@ void FilterGraph::addFilter(BaseFilter* filter) {
     filters.push_back(filter);
 }
 
-void FilterGraph::removeFilter(FilterInstanceName objectInstance) {
-    filters.remove(findFilterIndex(objectInstance));
+void FilterGraph::removeFilter(FilterInstanceName instanceName) {
+    filters.remove(findFilterIndex(instanceName));
 }
 
 void FilterGraph::addLink(const FilterLink& filterLink) {
@@ -69,13 +69,23 @@ void FilterGraph::processFilters() { // TODO говнокод
         filter->clear();
     });
 
+    QVector<BaseFilter*> processedFilters;
+
     while(true) {
-        auto filter = std::find_if(filters.begin(), filters.end(), [&](const BaseFilter* filter) {
+        auto filter = std::find_if(filters.begin(), filters.end(), [&](BaseFilter* filter) {
             return filter->canProcessData();
         });
+
         if (filter == filters.end())
             break;
+        if (std::find(processedFilters.cbegin(), processedFilters.cend(), *filter) != processedFilters.cend()) {
+            assert(false);
+            throw std::runtime_error("cycle in the filter graph is found");
+        } else
+            processedFilters.push_back(*filter);
+
         (*filter)->processData();
+
 
         std::for_each(dataToShowAddressVector.cbegin(), dataToShowAddressVector.cend(), [&] (const FullPortAddress& address) {
            if (address.filter == (*filter)->instanceName())
@@ -89,6 +99,15 @@ void FilterGraph::processFilters() { // TODO говнокод
             }
         });
     }
+}
+
+int FilterGraph::findFilterIndex(FilterInstanceName instanceName) {
+    for (int i = 0; i < filters.size(); ++i)
+        if (filters[i]->instanceName() == instanceName)
+            return i;
+
+    assert(false);
+    return -1;
 }
 
 

@@ -36,7 +36,7 @@ public:
     FilterPort* inPort (PortIndex i) {return &inPorts_ [i];}
     FilterPort* outPort(PortIndex i) {return &outPorts_[i];}
     void clear();
-    bool canProcessData() const;
+    bool canProcessData();
 
 signals:
     void infoToWidget(); // TODO
@@ -47,10 +47,12 @@ public slots:
 protected:
     void setInPorts(const FilterPortVector& ports) {inPorts_ = ports;}
     void setOutPorts(const FilterPortVector& ports) {outPorts_ = ports;}
+    void setAlreadyProcessed() {alreadyProcessed = true;}
 
 private:
     FilterSettings settings_;
     FilterPortVector inPorts_;
     FilterPortVector outPorts_;
+    bool alreadyProcessed;
 };
 

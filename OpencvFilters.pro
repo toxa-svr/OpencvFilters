@@ -4,4 +4,5 @@ TEMPLATE = subdirs
 SUBDIRS += \
     FilterGraph \
     FilterChainGui \
-    Filters
+    Filters \
+    Tests

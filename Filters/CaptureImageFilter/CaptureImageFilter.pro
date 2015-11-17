@@ -66,11 +66,11 @@ FORMS          += $${FILTERNAME}Widget.ui
 # Path to OpenCV must be added to the OPENCV_DIR variable.
 # Path to Boost  must be added to the BOOST_DIR variable.
 INCLUDEPATH += $$(OPENCV_DIR)/build/include
-               //$$(BOOST_DIR)
+               #$$(BOOST_DIR)
 
 #TODO allow building for 32 bit executables
-#LIBS += -L$$(OPENCV_DIR)/build/x64/vc12/lib
-LIBS += -L$$(OPENCV_DIR)/build/x86/vc12/lib
+LIBS += -L$$(OPENCV_DIR)/build/x64/vc12/lib
+#LIBS += -L$$(OPENCV_DIR)/build/x86/vc12/lib
 
 CONFIG(debug, debug|release) {
     LIBS += opencv_ts300d.lib \

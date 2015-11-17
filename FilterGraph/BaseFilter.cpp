@@ -3,18 +3,21 @@
 #include <QUuid>
 #include "BaseFilter.h"
 
-BaseFilter::BaseFilter(QObject* parent) : QObject(parent) {}
+BaseFilter::BaseFilter(QObject* parent) : QObject(parent), alreadyProcessed(false) {}
 
-bool BaseFilter::canProcessData() const {
-    return std::all_of(inPorts_.cbegin(), inPorts_.cend(), [](const FilterPort& port) {
+bool BaseFilter::canProcessData() {
+    bool dataIsAvailableInAllPorts = std::all_of(inPorts_.cbegin(), inPorts_.cend(), [](const FilterPort& port) {
        return !port.filterData().isNull();
     });
+
+    return dataIsAvailableInAllPorts && !alreadyProcessed;
 }
 
 void BaseFilter::clear() {
     std::for_each(inPorts_.begin(), inPorts_.end(), [](FilterPort& port) {
         port.setFilterData(FilterData());
     });
+    alreadyProcessed = false;
 }
 
 FilterPortDescriptionVector BaseFilter::inputs()  const {
