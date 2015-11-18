@@ -5,7 +5,7 @@
 
 BaseFilter::BaseFilter(QObject* parent) : QObject(parent), alreadyProcessed(false) {}
 
-bool BaseFilter::canProcessData() {
+bool BaseFilter::canProcessData() const {
     bool dataIsAvailableInAllPorts = std::all_of(inPorts_.cbegin(), inPorts_.cend(), [](const FilterPort& port) {
        return !port.filterData().isNull();
     });

@@ -1,8 +1,12 @@
 #ifndef FILTERSETTINGS
 #define FILTERSETTINGS
 
+#include <QString>
+#include <QVariant>
+#include <QMap>
+
 // Type for filter settings
-struct FilterSettings {}; // TODO
+typedef QMap<QString, QVariant> FilterSettings;
 
 #endif // FILTERSETTINGS
 
