@@ -6,3 +6,7 @@ SUBDIRS += \
     FilterChainGui \
     Filters \
     Tests
+
+FilterChainGui.depends = FilterGraph
+Filters.depends = FilterGraph
+Tests.depends = FilterGraph FilterChainGui Filters
