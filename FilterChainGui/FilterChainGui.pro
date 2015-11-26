@@ -4,18 +4,29 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
 
+TEMPLATE    = app
+
+QT          += core gui
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
+
+# -----------------------------------
+# Output directories and names
+# -----------------------------------
 TARGET = FilterChainGui
-TEMPLATE = app
 
 
-SOURCES += main.cpp\
-        mainwindow.cpp
+# -----------------------------------
+# Headers and sources
+# -----------------------------------
+SOURCES += \
+    main.cpp\
+    mainwindow.cpp
 
-HEADERS  += mainwindow.h
+HEADERS += \
+    mainwindow.h
 
-FORMS    += mainwindow.ui
+FORMS += \
+    mainwindow.ui
 

@@ -3,7 +3,6 @@
 
 #include "AbstractFilter.h"
 
-
 class CaptureFilter : public AbstractFilter
 {
     Q_OBJECT
@@ -16,7 +15,11 @@ public:
 
     void processData();
     QString className() const {return "CaptureFilter";}
-    FilterObjectName objectName() const {return FilterObjectName();}
+    FilterObjectName objectName() const;
+
+private:
+    FilterObjectName objectName_;
+    static size_t objectCounter;
 };
 
 #endif // CAPTUREFILTER_H

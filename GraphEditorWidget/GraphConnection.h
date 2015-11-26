@@ -4,6 +4,14 @@
 #include <QGraphicsPathItem>
 
 class GraphPort;
+class GraphNode;
+
+
+class GraphConnectionSettings {
+
+};
+
+
 
 class GraphConnection : public QGraphicsPathItem
 {

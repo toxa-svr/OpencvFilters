@@ -1,21 +1,22 @@
-#include "capturefilter.h"
+#include "CaptureImageFilter.h"
+#include "FilterFactory.h"
 //#include "capturewidget.h"
 //#include "filter.h"
 //#include "filterchain.h"
 
-#include "opencv2/core/mat.hpp"
+//#include "opencv2/core/mat.hpp"
 //#include <opencv2/opencv.hpp>
-//#include <opencv2/core/core.hpp>
+#include <opencv2/core/core.hpp>
 //#include <opencv2/imgproc/imgproc.hpp>
 //#include <opencv2/highgui/highgui.hpp>
 
 // Делаем тип cv::Mat известным для QMetaType, чтобы его можно было поместить в QVariant
 Q_DECLARE_METATYPE(cv::Mat)
 
-size_t CaptureFilter::objectCounter = 0;
+size_t CaptureImageFilter::objectCounter = 0;
 
-CaptureFilter::CaptureFilter(QObject* parent) :
-    AbstractFilter(parent)
+CaptureImageFilter::CaptureImageFilter(QObject* parent) :
+    BaseFilter(parent)
 
   /*:
     FilterInterface(chain),
@@ -29,7 +30,7 @@ CaptureFilter::CaptureFilter(QObject* parent) :
 
     ++objectCounter;
     if (objectCounter == 0)
-        throw std::runtime_error("Превышено максимальное количество объектов CaptureFilter");
+        throw std::runtime_error("Превышено максимальное количество объектов CaptureImageFilter");
 
     // TODO порты вывода
     FilterPortDescription description = {"Изображение", "cv::Mat"};
@@ -41,23 +42,23 @@ CaptureFilter::CaptureFilter(QObject* parent) :
     auto captureWidget = new CaptureWidget;
     widget = captureWidget;
     FilterInterface::setEnabled(false);
-    connect(captureWidget, &CaptureWidget::sigEnabled, this, &CaptureFilter::setEnabled);
-    connect(captureWidget, &CaptureWidget::sigRefreshPeriodMsChanged, this, &CaptureFilter::setRefreshPeriodMs);
-    connect(captureWidget, &CaptureWidget::sigSourceTypeChanged, this, &CaptureFilter::setSourceType);
-    connect(captureWidget, &CaptureWidget::sigCameraNumberChanged, this, &CaptureFilter::setCameraNumber);
-    connect(captureWidget, &CaptureWidget::sigFile1NameChanged, this, &CaptureFilter::setFile1Name);
-    connect(captureWidget, &CaptureWidget::sigFile2NameChanged, this, &CaptureFilter::setFile2Name);
-    connect(captureWidget, &CaptureWidget::sigVideoFileNameChanged, this, &CaptureFilter::setVideoFileName);
-    connect(captureWidget, &CaptureWidget::sigEmptyFrameWidthChanged, this, &CaptureFilter::setEmptyFrameWidth);
-    connect(captureWidget, &CaptureWidget::sigEmptyFrameHeightChanged, this, &CaptureFilter::setEmptyFrameHeight);
+    connect(captureWidget, &CaptureWidget::sigEnabled, this, &CaptureImageFilter::setEnabled);
+    connect(captureWidget, &CaptureWidget::sigRefreshPeriodMsChanged, this, &CaptureImageFilter::setRefreshPeriodMs);
+    connect(captureWidget, &CaptureWidget::sigSourceTypeChanged, this, &CaptureImageFilter::setSourceType);
+    connect(captureWidget, &CaptureWidget::sigCameraNumberChanged, this, &CaptureImageFilter::setCameraNumber);
+    connect(captureWidget, &CaptureWidget::sigFile1NameChanged, this, &CaptureImageFilter::setFile1Name);
+    connect(captureWidget, &CaptureWidget::sigFile2NameChanged, this, &CaptureImageFilter::setFile2Name);
+    connect(captureWidget, &CaptureWidget::sigVideoFileNameChanged, this, &CaptureImageFilter::setVideoFileName);
+    connect(captureWidget, &CaptureWidget::sigEmptyFrameWidthChanged, this, &CaptureImageFilter::setEmptyFrameWidth);
+    connect(captureWidget, &CaptureWidget::sigEmptyFrameHeightChanged, this, &CaptureImageFilter::setEmptyFrameHeight);
 
     //signals from filter for widget
-    connect(this, &CaptureFilter::updateWidgetEnabled, captureWidget, &CaptureWidget::updateWidget);
-    connect(this, &CaptureFilter::updateWidgetVideoBar, captureWidget, &CaptureWidget::updateWidgetVideoBar);
+    connect(this, &CaptureImageFilter::updateWidgetEnabled, captureWidget, &CaptureWidget::updateWidget);
+    connect(this, &CaptureImageFilter::updateWidgetVideoBar, captureWidget, &CaptureWidget::updateWidgetVideoBar);
     */
 }
 
-CaptureFilter::~CaptureFilter()
+CaptureImageFilter::~CaptureImageFilter()
 {
 /*
     videoCapture.release();
@@ -66,7 +67,7 @@ CaptureFilter::~CaptureFilter()
 */
 }
 
-//void CaptureFilter::setEnabled(bool enabled)
+//void CaptureImageFilter::setEnabled(bool enabled)
 //{
 /*
     switch (sourceType) {
@@ -105,7 +106,7 @@ CaptureFilter::~CaptureFilter()
 */
 //}
 
-void CaptureFilter::processData() {
+void CaptureImageFilter::processData() {
     cv::Mat frame;
 #if 0
     switch (sourceType) {
@@ -162,7 +163,7 @@ void CaptureFilter::processData() {
     outPort(0)->setFilterData(filterData);
 }
 
-FilterObjectName CaptureFilter::objectName() const {
+FilterInstanceName CaptureImageFilter::objectInstance() const {
     return objectName_;
 }
 

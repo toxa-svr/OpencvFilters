@@ -7,9 +7,7 @@
 TEMPLATE = subdirs
 
 SUBDIRS += \
-    CaptureFilter
-
-
+    CaptureImageFilter
 
 # install
 #target.path = $$[QT_INSTALL_EXAMPLES]/widgets/tools/echoplugin

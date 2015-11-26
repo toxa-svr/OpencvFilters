@@ -3,8 +3,16 @@
 # Project created by QtCreator 2015-11-10T13:00:52
 #
 #-------------------------------------------------
+# ATTENTION: Path to OpenCV must be added to the OPENCV_DIR variable.
 
 
+TEMPLATE        = lib
+
+CONFIG         += plugin
+QT             += widgets
+
+
+# -----------------------------------
 # This macro will br used to generate .cpp and .h filenames:
 # Example: for filtername "My" will be generated
 #   MyFilter.h
@@ -14,18 +22,12 @@
 #   MyWidget.ui
 # and result library name MyFilter or MyFilterd
 # -----------------------------------
+FILTERNAME = CaptureImage
 
-FILTERNAME = Capture
 
 # -----------------------------------
-
-
-
-TEMPLATE        = lib
-CONFIG         += plugin
-QT             += widgets
-
-
+# Output directories and names
+# -----------------------------------
 # For windows
 # Set library name using "d" for debug configuration.
 CONFIG (debug, debug|release) {
@@ -33,51 +35,58 @@ CONFIG (debug, debug|release) {
 } else {
     TARGET = $${FILTERNAME}Filter
 }
-# And specify where to put the target dll file
+# And specify where to put the target file
 DESTDIR = ../bin_debug
-
-
 
 # Some magic for unix
 # Copy output file to target directory,
 # but to actually make the file copy, you will have to execute make install
 unix {
     CONFIG (debug, debug|release) {
-        target.file = $${FILTERNAME}filterd
+        target.file = $${FILTERNAME}Filterd
     } else {
-        target.file = $${FILTERNAME}filter
+        target.file = $${FILTERNAME}Filter
     }
     target.path = /usr/lib
     INSTALLS += target
 }
 
 
+
+# -----------------------------------
+# Headers and sources
+# -----------------------------------
 # Add, .h .cpp and .ui files using FILTERNAME macro to generate filenames
-INCLUDEPATH    += ../../FilterChain
-HEADERS        += $${FILTERNAME}Filter.h   \
-                  $${FILTERNAME}Widget.h
-SOURCES        += $${FILTERNAME}Filter.cpp \
-                  $${FILTERNAME}Widget.cpp
+HEADERS += \
+    $${FILTERNAME}Filter.h \
+    $${FILTERNAME}Widget.h \
+    CaptureImageFilterPlugin.h
 
-FORMS          += $${FILTERNAME}Widget.ui
+SOURCES += \
+    $${FILTERNAME}Filter.cpp \
+    $${FILTERNAME}Widget.cpp \
+    CaptureImageFilterPlugin.cpp
+
+FORMS += \
+    $${FILTERNAME}Widget.ui
 
 
 
-
-
-# Path to OpenCV must be added to the OPENCV_DIR variable.
-# Path to Boost  must be added to the BOOST_DIR variable.
-INCLUDEPATH += $$(OPENCV_DIR)/build/include \
-               $$(BOOST_DIR)
+# -----------------------------------
+# Libraries
+# -----------------------------------
+INCLUDEPATH += $$(OPENCV_DIR)/build/include
+INCLUDEPATH += ../../FilterGraph
 
 LIBS += -L$$(OPENCV_DIR)/build/x64/vc12/lib
+#LIBS += -L$$(OPENCV_DIR)/build/x86/vc12/lib
 
 CONFIG(debug, debug|release) {
     LIBS += opencv_ts300d.lib \
         opencv_world300d.lib \
-        ../../bin_debug/FilterChaind.lib
+        ../../bin_debug/FilterGraphd.lib
 } else {
     LIBS += opencv_ts300.lib \
         opencv_world300.lib \
-        ../../bin_release/FilterChain.lib
+        ../../bin_release/FilterGraph.lib
 }

@@ -173,6 +173,7 @@ void GraphEditorWidget::addNode()
 {
     GraphNode *newNode = new GraphNode(0);
 
+
     scene.addItem(newNode);
     newNode->addPort("port", true, 0, 0);
     newNode->addPort("port1", false, 0, 0);

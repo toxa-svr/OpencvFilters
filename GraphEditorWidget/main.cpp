@@ -30,7 +30,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 int main(int argc, char *argv[])
 {
+    //QApplication::setStyle("Fusion");
     QApplication a(argc, argv);
+
+    a.setStyle(QStyleFactory::create("fusion"));
     MainWindow w;
     w.show();
 

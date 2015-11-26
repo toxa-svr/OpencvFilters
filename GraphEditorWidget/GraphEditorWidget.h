@@ -22,13 +22,15 @@ public:
     void addNode();
     void addConnection();
 
-    void install(QGraphicsScene *scene);
-    bool eventFilter(QObject *, QEvent *);
-
     //void save(QDataStream &ds);
     //void load(QDataStream &ds);
 
     QGraphicsItem *itemAt(const QPointF&);
+
+
+protected:
+    bool eventFilter(QObject *, QEvent *);
+
 
 private:
     QGraphicsScene scene;
