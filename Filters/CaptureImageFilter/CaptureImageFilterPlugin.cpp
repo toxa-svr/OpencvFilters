@@ -18,5 +18,3 @@ FilterDescription CaptureImageFilterPlugin::description() const {
     result.name = "Capture image filter";
     return result;
 }
-
-

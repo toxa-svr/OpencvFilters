@@ -11,9 +11,9 @@ public:
 
     void processData();
     QString className() const {return "CaptureImageFilter";}
-    FilterInstanceName objectInstance() const;
+    FilterInstanceName instanceName() const;
 
 private:
-    FilterInstanceName objectName_;
-    static size_t objectCounter;
+    FilterInstanceName instanceName_;
+    static size_t instanceCounter;
 };

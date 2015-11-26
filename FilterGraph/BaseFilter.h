@@ -36,7 +36,7 @@ public:
     FilterPort* inPort (PortIndex i) {return &inPorts_ [i];}
     FilterPort* outPort(PortIndex i) {return &outPorts_[i];}
     void clear();
-    bool canProcessData();
+    bool canProcessData() const;
 
 signals:
     void infoToWidget(); // TODO

@@ -8,3 +8,8 @@ SUBDIRS += \
     Tests \
     GraphEditorWidget
 
+    Tests
+
+FilterChainGui.depends = FilterGraph
+Filters.depends = FilterGraph
+Tests.depends = FilterGraph FilterChainGui Filters
