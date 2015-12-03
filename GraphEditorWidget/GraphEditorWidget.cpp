@@ -2,7 +2,6 @@
 #include <QEvent>
 #include <QGraphicsSceneMouseEvent>
 
-
 #include "GraphEditorWidget.h"
 #include "GraphPort.h"
 #include "GraphNode.h"
@@ -10,37 +9,16 @@
 
 
 
-
 GraphEditorWidget::GraphEditorWidget(QWidget* parent) :
     QGraphicsView(parent),
     conn(nullptr)
 {
-
     this->setScene(&scene); // set QGraphicsScene for this QGraphicsView
     this->setRenderHint(QPainter::Antialiasing, true);
-
     scene.installEventFilter(this); // add event filter for QGraphicsScene to handle events here
-
-/*
-    GraphNode *b = new GraphNode(0);
-    scene->addItem(b);
-    b->addPort("test", 0, GraphEditorPort::NamePort);
-    b->addPort("TestBlock", 0, GraphEditorPort::TypePort);
-    b->addInputPort("in1");
-    b->addInputPort("in2");
-    b->addInputPort("in3");
-    b->addOutputPort("out1");
-    b->addOutputPort("out2");
-    b->addOutputPort("out3");
-
-    b = b->clone();
-    b->setPos(150, 0);
-
-    b = b->clone();
-    b->setPos(150, 150);
-*/
-
 }
+
+
 
 QGraphicsItem* GraphEditorWidget::itemAt(const QPointF &pos)
 {
@@ -53,6 +31,7 @@ QGraphicsItem* GraphEditorWidget::itemAt(const QPointF &pos)
     }
     return 0;
 }
+
 
 bool GraphEditorWidget::eventFilter(QObject *o, QEvent *e)
 {
@@ -169,22 +148,94 @@ void GraphEditorWidget::load(QDataStream &ds)
 }
 */
 
-void GraphEditorWidget::addNode()
+
+QGraphicsItem * GraphEditorWidget::addNode()
+{
+    GraphNode *newNode = createGraphNode();
+    return newNode;
+}
+
+QGraphicsItem * GraphEditorWidget::addNode(const QWidget &widget)
+{
+    GraphNode *newNode = createGraphNode();
+    newNode->setWidget(&widget);
+    return newNode;
+}
+
+QGraphicsItem * GraphEditorWidget::addNode(const QString &title, const QString &smallTitle, const QPixmap &icon, const QWidget &widget, const bool isCollapsed)
+{
+    GraphNode *newNode = createGraphNode();
+    newNode->setTitle(title);
+    newNode->setSmallTitle(smallTitle);
+    newNode->setIcon(&icon);
+    newNode->setWidget(&widget);
+    newNode->setCollpsed(isCollapsed);
+    return newNode;
+}
+
+
+
+
+GraphNode * GraphEditorWidget::createGraphNode()
 {
     GraphNode *newNode = new GraphNode(0);
-
-
     scene.addItem(newNode);
-    newNode->addPort("port", true, 0, 0);
-    newNode->addPort("port1", false, 0, 0);
     newNode->setPos(this->sceneRect().center().toPoint());
+
+    QPushButton *btn = new QPushButton("test");
+    scene.addWidget(btn, Qt::Tool);
+
+
+
+    QGraphicsRectItem* rectItem = new QGraphicsRectItem(QRectF());
+    rectItem->setPen(QPen(Qt::black));
+    rectItem->setBrush(QBrush(Qt::green));
+    rectItem->setRect(QRectF(-30, -30, 120, 80));
+    rectItem->setFlags(QGraphicsItem::ItemIsMovable);
+
+
+    QGraphicsTextItem* textItem = scene.addText("Move us with your mouse");
+    textItem->setDefaultTextColor(Qt::red);
+    textItem->setFlags(QGraphicsItem::ItemIsMovable);
+
+    QPushButton* button = new QPushButton("Ok");
+    QGraphicsProxyWidget* widgetItem = scene.addWidget(button);
+    widgetItem->setPos(0, 0);
+    widgetItem->setFlags(QGraphicsItem::ItemIsMovable);
+    widgetItem->setParentItem(rectItem);
+
+    QLabel* lbl = new QLabel("Label");
+    QGraphicsProxyWidget* labelItem = scene.addWidget(lbl);
+    labelItem->setPos(30, 30);
+    labelItem->setFlag(QGraphicsItem::ItemIsMovable, true);
+    labelItem->setParentItem(rectItem);
+
+
+
+
+    return newNode;
 }
 
 
-void GraphEditorWidget::addConnection()
+
+
+
+
+
+
+
+QGraphicsItem * GraphEditorWidget::addPort()
 {
-
+    //addPort("port", true, 0, 0);
+    //addPort("port1", false, 0, 0);
+    return nullptr;
 }
+
+QGraphicsItem * GraphEditorWidget::addConnection()
+{
+    return nullptr;
+}
+
 
 
 

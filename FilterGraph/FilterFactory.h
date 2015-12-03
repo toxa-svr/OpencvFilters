@@ -4,20 +4,30 @@
 #include <QString>
 #include <QPixmap>
 
+//-------------------------------------------------
 // Unique identificator for filter classes
+//-------------------------------------------------
 typedef QString FilterId;
 
+
+//-------------------------------------------------
 // Filter description
+//-------------------------------------------------
 struct FilterDescription {
     FilterId id;
     QString name;
     QPixmap icon;
 };
 
+
+
+
 class BaseFilter;
 typedef QWidget AbstractFilterWidget;
 
+//-------------------------------------------------
 // Result obtained from FilterFactory
+//-------------------------------------------------
 class FilterAndWidget {
 public:
     FilterAndWidget(BaseFilter* filter, AbstractFilterWidget* filterWidget);
@@ -34,9 +44,15 @@ private:
     AbstractFilterWidget* filterWidget_;
 };
 
+
+
+
+
 class FilterPluginInterface;
 
+//-------------------------------------------------
 // Filter factory
+//-------------------------------------------------
 class FilterFactory {
 public:
     FilterFactory();
