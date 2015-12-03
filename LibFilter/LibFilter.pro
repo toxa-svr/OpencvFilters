@@ -51,7 +51,6 @@ SOURCES += \
     FilterAndWidget.cpp
 
 HEADERS += \
-    FilterInterface.h \
     FilterSettings.h \
     FilterFactory.h \
     FilterPort.h \
