@@ -141,17 +141,16 @@ struct FilterInfo {
     FilterSettings settings;
 };
 
-QDataStream &operator<<(QDataStream& stream, const FilterGraph& filterGraph) {
-    filterGraph.filters();// TODO
-    QVector<FilterInfo> filterInfo;
+//QDataStream &operator<<(QDataStream& stream, const FilterGraph& filterGraph) {
+//    filterGraph.filters();// TODO доделать
+//    QVector<FilterInfo> filterInfo;
 
-    stream << filterInfo;
-    stream << filterGraph.links();
-    stream << filterGraph.dataToShowInfo();
-    return stream;
-}
+//    stream << filterInfo;
+//    stream << filterGraph.links();
+//    stream << filterGraph.dataToShowInfo();
+//    return stream;
+//}
 
-QDataStream &operator>>(QDataStream& stream, FilterGraph& filterGraph) {
-    return stream;
-}
-
+//QDataStream &operator>>(QDataStream& stream, FilterGraph& filterGraph) {
+//    return stream;
+//}

@@ -11,14 +11,34 @@
 class LibFilter {
 public:
     LibFilter();
-    FilterDescription enumerateFilters() const;
+    LibFilter(const LibFilter&) = delete;
+    LibFilter& operator=(const LibFilter&) = delete;
+    ~LibFilter();
+
+    QVector<FilterDescription> enumerateFilters() const;
+
     AbstractFilterWidget* createFilter(FilterId id);
-    void save(/*TODO*/);
-    void load(/*TODO*/);
+    void removeFilter(FilterInstanceName instanceName);
+
+    // Functions to modify data links between filters
+    void addLink     (const FilterLink& filterLink);
+    void removeLink  (const FilterLink& filterLink);
+    QVector<FilterLink> links() const;
+
+    // Functions to get image data
+    void addDataToShow   (const FullPortAddress& from);
+    void removeDataToShow(const FullPortAddress& from);
+    FilterData dataToShow(const FullPortAddress& from) const;
+    QVector<FullPortAddress> dataToShowInfo() const;
+
+    void processFilters();
+
+    void save(/*TODO arg*/);
+    void load(/*TODO arg*/);
 
 private:
     FilterGraph filterGraph;
-    QVector<FilterAndWidget> faws;
+    QVector<FilterAndWidget> faws; // TODO хранение и удаление FilterAndWidget
 };
 
 #endif // LIBFILTER_H

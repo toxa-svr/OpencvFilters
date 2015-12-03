@@ -42,7 +42,7 @@ public:
     FilterId filterId() const {return filterId_;}
 
 signals:
-    void infoToWidget(); // TODO
+    void infoToWidget(); // TODO какой здесь аргумент?
 
 public slots:
     void setSettings(FilterSettings settings) {settings_ = settings;}
