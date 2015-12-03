@@ -3,9 +3,7 @@
 
 #include <QString>
 #include <QPixmap>
-
-// Unique identificator for filter classes
-typedef QString FilterId;
+#include "FilterId.h"
 
 // Filter description
 struct FilterDescription {

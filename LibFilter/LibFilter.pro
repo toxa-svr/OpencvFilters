@@ -56,7 +56,8 @@ HEADERS += \
     FilterData.h \
     FilterPluginInterface.h \
     BaseFilter.h \
-    FilterGraph.h
+    FilterGraph.h \
+    FilterId.h
 
 
 
