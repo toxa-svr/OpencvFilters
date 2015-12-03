@@ -1,44 +1,18 @@
 #ifndef FILTERFACTORY_H
 #define FILTERFACTORY_H
 
-#include <QString>
-#include <QPixmap>
 #include "FilterId.h"
-
-// Filter description
-struct FilterDescription {
-    FilterId id;
-    QString name;
-    QPixmap icon;
-};
+#include "FilterAndWidget.h"
+#include "FilterDescription.h"
 
 class BaseFilter;
-typedef QWidget AbstractFilterWidget;
-
-// Result obtained from FilterFactory
-class FilterAndWidget {
-public:
-    FilterAndWidget(BaseFilter* filter, AbstractFilterWidget* filterWidget);
-    //~FilterAndWidget();
-
-    FilterAndWidget() = delete;
-    FilterAndWidget(const FilterAndWidget&) = delete;
-    FilterAndWidget& operator=(const FilterAndWidget&) = delete;
-
-    BaseFilter* filter()                 {return filter_;}
-    AbstractFilterWidget* filterWidget() {return filterWidget_;}
-private:
-    BaseFilter* filter_;
-    AbstractFilterWidget* filterWidget_;
-};
 
 class FilterPluginInterface;
 
 // Filter factory
 class FilterFactory {
 public:
-    FilterFactory();
-
+    FilterFactory() = delete;
     FilterFactory(const FilterFactory&) = delete;
     FilterFactory& operator=(FilterFactory&) = delete;
 

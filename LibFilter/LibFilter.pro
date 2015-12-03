@@ -46,7 +46,9 @@ SOURCES += \
     FilterFactory.cpp \
     FilterPort.cpp \
     BaseFilter.cpp \
-    FilterGraph.cpp
+    FilterGraph.cpp \
+    LibFilter.cpp \
+    FilterAndWidget.cpp
 
 HEADERS += \
     FilterInterface.h \
@@ -57,7 +59,11 @@ HEADERS += \
     FilterPluginInterface.h \
     BaseFilter.h \
     FilterGraph.h \
-    FilterId.h
+    FilterId.h \
+    LibFilter.h \
+    FilterAndWidget.h \
+    FilterDescription.h \
+    AbstractFilterWidget.h
 
 
 
