@@ -2,3 +2,5 @@
 /debug/FilterChain
 /debug/FilterChainGui
 /debug
+/Debug_x86/FilterChainGui
+/Debug_x64/FilterChainGui

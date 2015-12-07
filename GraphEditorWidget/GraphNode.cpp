@@ -2,6 +2,7 @@
 #include <QGraphicsScene>
 #include <QFontMetrics>
 #include <QPainter>
+#include <QtWidgets>
 #include <QStyleOptionGraphicsItem>
 
 #include "GraphPort.h"
@@ -11,13 +12,48 @@
 
 GraphNode::GraphNode(QGraphicsItem *parent) : QGraphicsPathItem(parent)
 {
-	QPainterPath p;
-	p.addRoundedRect(-50, -15, 100, 30, 5, 5);
-	setPath(p);
-	setPen(QPen(Qt::darkGreen));
-	setBrush(Qt::green);
-	setFlag(QGraphicsItem::ItemIsMovable);
-	setFlag(QGraphicsItem::ItemIsSelectable);
+    initNodeWidget();
+}
+
+//GraphNode::GraphNode(QGraphicsItem *parent, const QWidget &widget) : QGraphicsPathItem(parent)
+//{
+//    setWidget(widget);
+//    initNodeWidget();
+//}
+
+//GraphNode::GraphNode(QGraphicsItem *parent, const QString &title, const QString &smallTitle, const QPixmap *icon, const QWidget *widget, const bool isCollapsed) : QGraphicsPathItem(parent)
+//{
+//    settings.title = title;
+//    settings.smallTitle = smallTitle;
+//    settings.icon = icon;
+//    settings.widget = widget;
+//    settings.isCollapsed = isCollapsed;
+//    initNodeWidget();
+//}
+
+//GraphNode::GraphNode(QGraphicsItem *parent, const GraphNodeSettings &settings_) : QGraphicsPathItem(parent)
+//{
+//    settings = settings_;
+//    initNodeWidget();
+//}
+
+
+
+
+
+//-------------------------------------------------
+// Create GraphicsItem for a new GraphNode
+//-------------------------------------------------
+void GraphNode::initNodeWidget ()
+{
+//    QPainterPath p;
+//    p.addRoundedRect(-50, -15, 100, 30, 5, 5);
+//    setPath(p);
+//    setPen(QPen(Qt::darkGreen));
+//    setBrush(Qt::green);
+//    setFlag(QGraphicsItem::ItemIsMovable);
+//    setFlag(QGraphicsItem::ItemIsSelectable);
+
     horzMargin_ = 20;
     vertMargin_ = 5;
     width_ = horzMargin_;
@@ -25,6 +61,7 @@ GraphNode::GraphNode(QGraphicsItem *parent) : QGraphicsPathItem(parent)
 }
 
 
+//-------------------------------------------------
 GraphPort* GraphNode::addPort(const QString &name, bool isOutput, int flags, int ptr)
 {
     GraphPort *port = new GraphPort(this);
@@ -62,7 +99,7 @@ GraphPort* GraphNode::addPort(const QString &name, bool isOutput, int flags, int
 	return port;
 }
 
-
+//-------------------------------------------------
 QVector<GraphPort*> GraphNode::ports()
 {
     QVector<GraphPort*> res;
@@ -74,7 +111,7 @@ QVector<GraphPort*> GraphNode::ports()
     return res;
 }
 
-
+//-------------------------------------------------
 void GraphNode::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
 	Q_UNUSED(option)
@@ -92,6 +129,7 @@ void GraphNode::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 }
 
 
+//-------------------------------------------------
 QVariant GraphNode::itemChange(GraphicsItemChange change, const QVariant &value)
 {
     Q_UNUSED(change);

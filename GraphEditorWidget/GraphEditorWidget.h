@@ -11,6 +11,25 @@
 #include "GraphConnection.h"
 
 
+//-------------------------------------------------
+// Settings for Widget
+//-------------------------------------------------
+class GraphEditorSettings
+{
+    // Node representation
+    bool showNodeTitle;
+    bool showNodeSmallTitle;
+    bool showNodeIcon;
+    bool showNodeWidget;
+    bool showNodePortNames;
+
+    // Port representation
+
+    // Connection representation
+};
+
+
+
 
 class GraphEditorWidget : public QGraphicsView
 {
@@ -19,8 +38,18 @@ class GraphEditorWidget : public QGraphicsView
 public:
     explicit GraphEditorWidget (QWidget* parent = nullptr);
 
-    void addNode();
-    void addConnection();
+    QGraphicsItem * addNode();
+    QGraphicsItem * addNode(const QWidget &widget);
+    QGraphicsItem * addNode(const QString &title, const QString &smallTitle, const QPixmap &icon, const QWidget &widget, const bool isCollapsed);
+
+
+
+    QGraphicsItem * addPort();
+    QGraphicsItem * addConnection();
+
+
+    //QGraphicsItem * addPort(QGraphicsItem * node, );
+    //QGraphicsItem * addConnection();
 
     //void save(QDataStream &ds);
     //void load(QDataStream &ds);
@@ -35,7 +64,11 @@ protected:
 private:
     QGraphicsScene scene;
     GraphConnection *conn;
+    GraphEditorSettings settings;
     //GraphNode *selBlock;
+
+
+    GraphNode * createGraphNode();
 };
 
 #endif // GRAPHEDITORWIDGET_H

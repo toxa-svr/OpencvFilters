@@ -11,14 +11,17 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->setupUi(this);
 
-    GraphEditorWidget* newWidget = new GraphEditorWidget(this);
-    newWidget->show();
-    ui->dockWidget_2->setWidget(newWidget);
+    GraphEditorWidget* graphWidget = new GraphEditorWidget(this);
+    graphWidget->show();
+    ui->dockWidget_2->setWidget(graphWidget);
 
 
+    QPushButton button("Button", this);
+    button.setVisible(true);
 
-    newWidget->addNode();
-    newWidget->addConnection();
+
+    graphWidget->addNode();
+    graphWidget->addConnection();
 
 }
 
