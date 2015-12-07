@@ -36,8 +36,6 @@ bool operator> (const FullPortAddress& lhs, const FullPortAddress& rhs) {
 //----------------------------------------------------------------------------------------------------------------------
 FilterGraph::FilterGraph(QObject* parent) : QObject(parent) {}
 
-FilterGraph::~FilterGraph() {}
-
 void FilterGraph::addFilter(BaseFilter* filter) {
     assert(filter);
     filters_.push_back(filter);

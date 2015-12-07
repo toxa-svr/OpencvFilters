@@ -76,7 +76,7 @@ FORMS += \
 # Libraries
 # -----------------------------------
 INCLUDEPATH += $$(OPENCV_DIR)/build/include
-INCLUDEPATH += ../../FilterGraph
+INCLUDEPATH += ../../LibFilter
 
 LIBS += -L$$(OPENCV_DIR)/build/x64/vc12/lib
 #LIBS += -L$$(OPENCV_DIR)/build/x86/vc12/lib

@@ -10,6 +10,8 @@ TEMPLATE = lib
 
 CONFIG += staticlib
 
+QT += widgets
+
 
 # -----------------------------------
 # Output directories and names

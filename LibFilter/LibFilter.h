@@ -1,6 +1,8 @@
 #ifndef LIBFILTER_H
 #define LIBFILTER_H
 
+#include <vector>
+#include <QJsonObject>
 #include "FilterGraph.h"
 #include "FilterAndWidget.h"
 #include "FilterDescription.h"
@@ -13,7 +15,7 @@ public:
     LibFilter();
     LibFilter(const LibFilter&) = delete;
     LibFilter& operator=(const LibFilter&) = delete;
-    ~LibFilter();
+    ~LibFilter() = default;
 
     QVector<FilterDescription> enumerateFilters() const;
 
@@ -33,12 +35,12 @@ public:
 
     void processFilters();
 
-    void save(/*TODO arg*/);
-    void load(/*TODO arg*/);
+    QJsonObject save() const;
+    void load(const QJsonObject& jsonObject);
 
 private:
-    FilterGraph filterGraph;
-    QVector<FilterAndWidget> faws; // TODO хранение и удаление FilterAndWidget
+    std::unique_ptr<FilterGraph> filterGraph;
+    std::vector<FilterAndWidget> faws;
 };
 
 #endif // LIBFILTER_H

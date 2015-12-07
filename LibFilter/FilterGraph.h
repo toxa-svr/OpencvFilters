@@ -33,7 +33,6 @@ public:
     explicit FilterGraph(QObject* parent = nullptr);
     FilterGraph(const FilterGraph&) = delete;
     FilterGraph& operator=(const FilterGraph&) = delete;
-    ~FilterGraph();
 
     // Functions for the filter graph modification
     void addFilter   (BaseFilter* filter);

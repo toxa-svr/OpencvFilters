@@ -9,7 +9,7 @@ TEMPLATE    = app
 QT          += testlib
 QT          -= gui
 
-CONFIG      += console
+CONFIG      += console testcase
 CONFIG      -= app_bundle
 
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
