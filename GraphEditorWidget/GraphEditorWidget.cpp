@@ -13,8 +13,9 @@ GraphEditorWidget::GraphEditorWidget(QWidget* parent) :
     QGraphicsView(parent),
     conn(nullptr)
 {
-    this->setScene(&scene); // set QGraphicsScene for this QGraphicsView
-    this->setRenderHint(QPainter::Antialiasing, true);
+    setScene(&scene); // set QGraphicsScene for this QGraphicsView
+    setRenderHint(QPainter::Antialiasing, true);
+    setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
     scene.installEventFilter(this); // add event filter for QGraphicsScene to handle events here
 }
 

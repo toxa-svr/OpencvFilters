@@ -30,3 +30,11 @@ HEADERS += \
 FORMS += \
     mainwindow.ui
 
+
+
+# -----------------------------------
+# Libraries
+# -----------------------------------
+
+INCLUDEPATH += ../GraphEditorWidget
+

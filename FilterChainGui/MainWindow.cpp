@@ -1,4 +1,5 @@
 #include <QDesktopServices>
+#include "graphEditorWidget.h"
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
 
@@ -7,40 +8,33 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    setWindowTitle(tr("OpencvFilters v0.1"));
 
     createActions();
     createMenus();
     createToolbars();
     //createToolBox();
 
-    //TODO ugly
-    scene = new ExampleDiagramScene(itemMenu);
-    scene->mItemMenu = itemMenu;
+
+    //connect(scene, SIGNAL(nodeItemInserted(NodeItem *)), this, SLOT(itemInserted(NodeItem *)));
+    //connect(scene, SIGNAL(itemSelected(QGraphicsItem *)), this, SLOT(itemSelected(QGraphicsItem *)));
 
 
-    scene->setSceneRect(QRectF(0, 0, 5000, 5000));
-    connect(scene, SIGNAL(nodeItemInserted(NodeItem *)), this, SLOT(itemInserted(NodeItem *)));
-    //connect(scene, SIGNAL(itemSelected(QGraphicsItem *)),
-    //    this, SLOT(itemSelected(QGraphicsItem *)));
-    createToolbars();
+    GraphEditorWidget *graphEditorWidget = new GraphEditorWidget(this);
 
+    // Create layout and central widget for the window
     QHBoxLayout *layout = new QHBoxLayout;
-    layout->addWidget(toolBox);
+    //layout->addWidget(toolBox);
+    layout->addWidget(graphEditorWidget);
+
+    QWidget *newCentralWidget = new QWidget;
+    newCentralWidget->setLayout(layout);
+    setCentralWidget(newCentralWidget);
 
 
-    view = new QGraphicsView(scene);
-    //view = new MyFasterGraphicView(scene);
-    view->setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
-
-    layout->addWidget(view);
-
-    QWidget *widget = new QWidget;
-    widget->setLayout(layout);
-
-    setCentralWidget(widget);
-    setWindowTitle(tr("NodeEditorScene"));
-
-
+    // TODO next - read settings for main window and graph editor
+    // TODO next - open the last used file
+    //graphEditorWidget.setSettings();
 }
 
 MainWindow::~MainWindow()
