@@ -3,6 +3,7 @@
 #include <QVector>
 #include "FilterSettings.h"
 #include "FilterPort.h"
+#include "FilterId.h"
 
 // Unique identifier for filter instances
 typedef QString FilterInstanceName;
@@ -27,7 +28,7 @@ public:
 
     virtual void processData();
     virtual QString className() const;
-    virtual FilterInstanceName instanceName();
+    virtual FilterInstanceName instanceName() const;
 
     FilterPortDescriptionVector inputs()  const;
     FilterPortDescriptionVector outputs() const;
@@ -38,8 +39,10 @@ public:
     void clear();
     bool canProcessData() const;
 
+    FilterId filterId() const {return filterId_;}
+
 signals:
-    void infoToWidget(); // TODO
+    void infoToWidget(); // TODO какой здесь аргумент?
 
 public slots:
     void setSettings(FilterSettings settings) {settings_ = settings;}
@@ -48,11 +51,13 @@ protected:
     void setInPorts(const FilterPortVector& ports) {inPorts_ = ports;}
     void setOutPorts(const FilterPortVector& ports) {outPorts_ = ports;}
     void setAlreadyProcessed() {alreadyProcessed = true;}
+    void setFilterId(FilterId filterId);
 
 private:
     FilterSettings settings_;
     FilterPortVector inPorts_;
     FilterPortVector outPorts_;
     bool alreadyProcessed;
+    FilterId filterId_;
 };
 

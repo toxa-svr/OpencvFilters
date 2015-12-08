@@ -13,8 +13,8 @@ FilterAndWidget CaptureImageFilterPlugin::createFilter() const {
 
 FilterDescription CaptureImageFilterPlugin::description() const {
     FilterDescription result;
-    result.icon = QPixmap();              // TODO
-    result.id = static_cast<FilterId>(1); // TODO
+    result.icon = QPixmap();              // TODO добавить иконку
+    result.id = static_cast<FilterId>(1); // TODO откуда брать значение?
     result.name = "Capture image filter";
     return result;
 }

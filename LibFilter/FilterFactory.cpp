@@ -4,17 +4,15 @@
 #include "FilterFactory.h"
 #include "FilterPluginInterface.h"
 
-FilterAndWidget::FilterAndWidget(BaseFilter* filter, AbstractFilterWidget* filterWidget) : filter_(filter),
-    filterWidget_(filterWidget) {}
-
 QVector<FilterPluginInterface*> FilterFactory::interfaces;
-
-FilterFactory::FilterFactory() {}
 
 FilterAndWidget FilterFactory::createFilter(FilterId id) {
     auto p = std::find_if(interfaces.cbegin(), interfaces.cend(), [&](const FilterPluginInterface* i) {
-       return i->description().id  == id;
+        return i->description().id  == id;
     });
+
+    if (p == interfaces.cend())
+        throw std::runtime_error("Cannot create filter (id not found)");
 
     return (*p)->createFilter();
 }
@@ -37,6 +35,7 @@ QVector<FilterDescription> FilterFactory::enumerateFilters() {
         #endif
 
         pluginsDir.cd("plugins");
+
         foreach (QString fileName, pluginsDir.entryList(QDir::Files)) {
             QPluginLoader pluginLoader(pluginsDir.absoluteFilePath(fileName));
             QObject* plugin = pluginLoader.instance();

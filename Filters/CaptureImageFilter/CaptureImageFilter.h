@@ -11,7 +11,7 @@ public:
 
     void processData();
     QString className() const {return "CaptureImageFilter";}
-    FilterInstanceName instanceName() const;
+    FilterInstanceName instanceName() const override;
 
 private:
     FilterInstanceName instanceName_;

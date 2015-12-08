@@ -1,4 +1,5 @@
 TEMPLATE = subdirs
 
 SUBDIRS += \
-    FilterGraphTests
+    FilterGraphTests \
+    LibFilter

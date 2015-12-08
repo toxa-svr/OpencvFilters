@@ -12,7 +12,7 @@ public:
     DummyFilter(int inPorts, int outPorts);
     virtual void processData();
     virtual QString className() const {return "DummyFilter";}
-    virtual FilterInstanceName instanceName() {return name;}
+    virtual FilterInstanceName instanceName() const override {return name;}
 private:
     int inPortsAmount;
     int outPortsAmount;

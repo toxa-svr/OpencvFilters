@@ -44,7 +44,11 @@ QString BaseFilter::className() const {
     return QString("Error: AbstractFilter");
 }
 
-FilterInstanceName BaseFilter::instanceName() {
+FilterInstanceName BaseFilter::instanceName() const {
     assert(false);
     return QString("Error: AbstractFilter_") + QUuid::createUuid().toString();
+}
+
+void BaseFilter::setFilterId(FilterId filterId) {
+    filterId_ = filterId;
 }

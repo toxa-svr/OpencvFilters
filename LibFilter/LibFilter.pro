@@ -10,6 +10,8 @@ TEMPLATE = lib
 
 CONFIG += staticlib
 
+QT += widgets
+
 
 # -----------------------------------
 # Output directories and names
@@ -46,17 +48,23 @@ SOURCES += \
     FilterFactory.cpp \
     FilterPort.cpp \
     BaseFilter.cpp \
-    FilterGraph.cpp
+    FilterGraph.cpp \
+    LibFilter.cpp \
+    FilterAndWidget.cpp
 
 HEADERS += \
-    FilterInterface.h \
     FilterSettings.h \
     FilterFactory.h \
     FilterPort.h \
     FilterData.h \
     FilterPluginInterface.h \
     BaseFilter.h \
-    FilterGraph.h
+    FilterGraph.h \
+    FilterId.h \
+    LibFilter.h \
+    FilterAndWidget.h \
+    FilterDescription.h \
+    AbstractFilterWidget.h
 
 
 

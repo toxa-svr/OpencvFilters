@@ -9,11 +9,11 @@ TEMPLATE    = app
 QT          += testlib
 QT          -= gui
 
-CONFIG      += console
+CONFIG      += console testcase
 CONFIG      -= app_bundle
 
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
-INCLUDEPATH += ../../FilterGraph
+INCLUDEPATH += ../../LibFilter
 
 
 
@@ -28,10 +28,10 @@ TARGET  = tst_FilterGraphTestsTest
 # -----------------------------------
 SOURCES += \
     tst_FilterGraphTestsTest.cpp \
-    ../../FilterGraph/FilterGraph.cpp \
-    ../../FilterGraph/BaseFilter.cpp
+    ../../LibFilter/FilterGraph.cpp \
+    ../../LibFilter/BaseFilter.cpp
 
 HEADERS += \
-    ../../FilterGraph/FilterGraph.h \
-    ../../FilterGraph/BaseFilter.h
+    ../../LibFilter/FilterGraph.h \
+    ../../LibFilter/BaseFilter.h
 
