@@ -4,11 +4,9 @@
 #
 #-------------------------------------------------
 
-
 TEMPLATE    = app
 
-QT          += core gui
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+QT          += core gui widgets
 
 
 # -----------------------------------
@@ -35,6 +33,15 @@ FORMS += \
 # -----------------------------------
 # Libraries
 # -----------------------------------
+#TODO to be removed
+NODEEDITORWIDGET_DIR = $$PWD/../NodeEditorWidget
+message($$NODEEDITORWIDGET_DIR)
 
-INCLUDEPATH += ../GraphEditorWidget
+
+INCLUDEPATH += $${NODEEDITORWIDGET_DIR}/inc
+LIBS += -L$${NODEEDITORWIDGET_DIR}/bin
+
+Debug:  LIBS += NodeEditorWidgetd.lib
+Release:LIBS += NodeEditorWidget.lib
+
 

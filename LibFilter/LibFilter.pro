@@ -16,25 +16,21 @@ QT += widgets
 # -----------------------------------
 # Output directories and names
 # -----------------------------------
-# For windows
 # Set library name using "d" for debug configuration.
-CONFIG (debug, debug|release) {
-    TARGET = FilterGraphd
-} else {
-    TARGET = FilterGraph
-}
+Debug:  TARGET = LibFilterd
+Release:TARGET = LibFilter
+
 # And specify where to put the target file
-DESTDIR = ../bin_debug
+DESTDIR = $$PWD/bin
+
 
 # Some magic for unix
 # Copy output file to target directory,
 # but to actually make the file copy, you will have to execute make install
 unix {
-    CONFIG (debug, debug|release) {
-        target.file = FilterGraphd
-    } else {
-        target.file = FilterGraph
-    }
+    Debug:  target.file = LibFilterd
+    Release:target.file = LibFilter
+
     target.path = /usr/lib
     INSTALLS += target
 }
@@ -71,17 +67,13 @@ HEADERS += \
 # -----------------------------------
 # Libraries
 # -----------------------------------
-
 INCLUDEPATH += $$(OPENCV_DIR)/build/include
 LIBS += -L$$(OPENCV_DIR)/build/x64/vc12/lib
 #LIBS += -L$$(OPENCV_DIR)/build/x86/vc12/lib
 
-CONFIG(debug, debug|release) {
-    LIBS += opencv_ts300d.lib \
-        opencv_world300d.lib
-} else {
-    LIBS += opencv_ts300.lib \
-        opencv_world300.lib
-}
+Debug:  LIBS += opencv_ts300d.lib \
+                opencv_world300d.lib
+Release:LIBS += opencv_ts300.lib \
+                opencv_world300.lib
 
 

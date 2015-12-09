@@ -12,7 +12,7 @@
 
 
 //-------------------------------------------------
-// Settings for Widget
+// Settings for whole Widget
 //-------------------------------------------------
 class GraphEditorSettings
 {

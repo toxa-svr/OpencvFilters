@@ -1,5 +1,5 @@
 #include <QDesktopServices>
-#include "graphEditorWidget.h"
+#include "NodeEditorWidget.h"
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
 
@@ -20,17 +20,29 @@ MainWindow::MainWindow(QWidget *parent) :
     //connect(scene, SIGNAL(itemSelected(QGraphicsItem *)), this, SLOT(itemSelected(QGraphicsItem *)));
 
 
-    GraphEditorWidget *graphEditorWidget = new GraphEditorWidget(this);
+// TODO remove if next code is working
+//    NodeEditorWidget *nodeEditorWidget = new NodeEditorWidget(this);
+//    // Create layout and central widget for the window
+//    QHBoxLayout *layout = new QHBoxLayout;
+//    layout->addWidget(nodeEditorWidget);
+//    //layout->addWidget(toolBox);
+//    QWidget *newCentralWidget = new QWidget;
+//    newCentralWidget->setLayout(layout);
+//    setCentralWidget(newCentralWidget);
 
-    // Create layout and central widget for the window
-    QHBoxLayout *layout = new QHBoxLayout;
-    //layout->addWidget(toolBox);
-    layout->addWidget(graphEditorWidget);
 
+    // Add centralWidget for the window
+    //   Add layout for the centralWidget
+    //     Add NodeEditorWidget into layout
+    //     Add toolbox into layout
     QWidget *newCentralWidget = new QWidget;
-    newCentralWidget->setLayout(layout);
-    setCentralWidget(newCentralWidget);
+    QHBoxLayout *newLayout = new QHBoxLayout;
+    NodeEditorWidget *newNodeEditorWidget = new NodeEditorWidget(this);
 
+    setCentralWidget(newCentralWidget);
+    centralWidget()->setLayout(newLayout);
+    centralWidget()->layout()->addWidget(newNodeEditorWidget);
+    //centralWidget()->layout()->addWidget(toolBox);
 
     // TODO next - read settings for main window and graph editor
     // TODO next - open the last used file
