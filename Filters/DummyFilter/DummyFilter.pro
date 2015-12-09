@@ -24,7 +24,7 @@ QT             += widgets
 #   MyWidget.ui
 # and result library name MyFilter or MyFilterd
 # -----------------------------------
-FILTERNAME = CaptureImage
+FILTERNAME = Dummy
 
 
 # -----------------------------------
