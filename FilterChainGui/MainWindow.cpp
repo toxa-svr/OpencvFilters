@@ -1,7 +1,9 @@
 #include <QDesktopServices>
-#include "NodeEditorWidget.h"
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
+
+#include "NodeEditorWidget.h"
+#include "NodeEditorScene.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -31,28 +33,35 @@ MainWindow::MainWindow(QWidget *parent) :
 //    setCentralWidget(newCentralWidget);
 
 
-    // Add centralWidget for the window
-    //   Add layout for the centralWidget
+    // Create NodeEditorScene and NodeEditorWidget for it
+    nodeEditorScene = new NodeEditorScene(this);
+    nodeEditorWidget = new NodeEditorWidget(this);
+    nodeEditorWidget->setScene(nodeEditorScene);
+    // or nodeEditorScene->setActiveWindow(nodeEditorWidget);
+
+    // Create centralWidget for the window
+    //   Create layout for the centralWidget
     //     Add NodeEditorWidget into layout
     //     Add toolbox into layout
-    QWidget *newCentralWidget = new QWidget;
-    QHBoxLayout *newLayout = new QHBoxLayout;
-    NodeEditorWidget *newNodeEditorWidget = new NodeEditorWidget(this);
-
+    QWidget *newCentralWidget = new QWidget(this);
+    QHBoxLayout *newLayout = new QHBoxLayout(this);
     setCentralWidget(newCentralWidget);
     centralWidget()->setLayout(newLayout);
-    centralWidget()->layout()->addWidget(newNodeEditorWidget);
+    centralWidget()->layout()->addWidget(nodeEditorWidget);
     //centralWidget()->layout()->addWidget(toolBox);
 
     // TODO next - read settings for main window and graph editor
     // TODO next - open the last used file
-    //graphEditorWidget.setSettings();
+    //nodeEditorWidget.setSettings();
+
+    setWindowTitle(tr("OpenCV FilterChain GUI"));
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
 }
+
 
 
 //------------------------------------------------------------------------
@@ -151,6 +160,7 @@ void MainWindow::createMenus()
     fileMenu->addAction(fileNewAction);
     fileMenu->addAction(fileOpenAction);
     fileMenu->addAction(fileSaveAction);
+    fileMenu->addAction(fileSaveAsAction);
     fileMenu->addSeparator();
     fileMenu->addAction(exitAction);
 
@@ -214,7 +224,7 @@ void MainWindow::fileNew()
 //------------------------------------------------------------------------
 void MainWindow::fileOpen()
 {
-    QMessageBox::about(this, tr("fileOpen"), tr("fileOpen"));
+    qDebug() << __FUNCTION__;
 
 //    QString fileName = QFileDialog::getOpenFileName(this,
 //     tr("Open Node Diagram"), "./", tr("Diagram Files (*.diagram)"));
@@ -312,6 +322,9 @@ void MainWindow::addItem()
 
     // Extract user data from action and create filter
     //action->data()
+
+    //nodeEditorScene->addNode();
+
 }
 
 //------------------------------------------------------------------------

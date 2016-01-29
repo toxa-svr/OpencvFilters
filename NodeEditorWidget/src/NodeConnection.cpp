@@ -2,6 +2,7 @@
 #include <QtWidgets>
 #include <math.h>
 
+#include "NodeItem.h"
 #include "NodeConnection.h"
 #include "NodePort.h"
 
@@ -606,15 +607,17 @@ void NodeConnection::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
 	QPointF controlPoint2;
 	recreatePath(controlPoint1, controlPoint2);
 	
-	// FIXME:causes difference beteen debug draw and normal draw!!!
+
+    // TODO debug draw
+    // FIXME:causes difference beteen debug draw and normal draw!!!
 	//updatePosition(controlPoint1, controlPoint2);
-    if (static_cast<NodeEditorScene*>(scene())->settings.debugDraw) {
+    //if (static_cast<NodeEditorScene*>(scene())->settings.debugDraw) {
 		QPen origPen = painter->pen();
 		QBrush origBrush = painter->brush();
 		debugPaint(painter, controlPoint1, controlPoint2);
 		painter->setPen(origPen);
 	    painter->setBrush(origBrush);
-	}
+    //}
 
     QPen mPen = pen();
     mPen.setColor(mColor);

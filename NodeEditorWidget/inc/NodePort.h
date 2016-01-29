@@ -1,10 +1,6 @@
-#ifndef NODE_H
-#define NODE_H
+#pragma once
 
 #include <QtWidgets>
-
-#include "NodeItem.h"
-#include "nodeconnection.h"
 
 class NodeItem;
 class NodeConnection;
@@ -16,9 +12,10 @@ class NodePort : public QGraphicsItem
 public:
 	enum { Type = UserType + 666 + 6 };
     int type() const { return Type;}
-	enum ConnectorType { In=1, Out=2, InOut=3 };
-    ConnectorType connectorType() const { return mConnectorType; }
-    void setConnectorType(ConnectorType c) {mConnectorType = c;	}
+
+    enum PortType { In=1, Out=2, InOut=3 };
+    PortType connectorType() const { return mConnectorType; }
+    void setConnectorType(PortType c) {mConnectorType = c;	}
     enum PortAlignment { None=0, Left=1, Right=2, Bottom=3, Top=4 };
     PortAlignment connectorAlignment() const {	return mConnectorAlignment;	}
     void setConnectorAlignment(PortAlignment alignment) {mConnectorAlignment = alignment;}
@@ -28,7 +25,7 @@ public:
     void setSelfConnections(bool selfConnections) {	mSelfConnections = selfConnections;	}
 
 
-    NodePort(NodeItem *parent, QGraphicsScene *scene, /*QLabel*/QWidget* widget, ConnectorType  con = In, const PortAlignment connectorAlignment = PortAlignment::Left, const bool singleConnection = false, const bool disableWidgetOnConnection = false, const int radius = 7, const bool selfConnections = false);
+    NodePort(NodeItem *parent, QGraphicsScene *scene, /*QLabel*/QWidget* widget, PortType  con = In, const PortAlignment connectorAlignment = PortAlignment::Left, const bool singleConnection = false, const bool disableWidgetOnConnection = false, const int radius = 7, const bool selfConnections = false);
     virtual ~NodePort();
 
 
@@ -48,11 +45,9 @@ public:
 
 //private:
 	int mRadius;
-	ConnectorType mConnectorType;
+    PortType mConnectorType;
 	NodeItem *parent;
 	QWidget* mWidget;
-	//QWidget* label;
-	//bool right;
     PortAlignment mConnectorAlignment;
     QList<NodeConnection*> connections;
 	QColor darkColor;
@@ -71,10 +66,7 @@ protected:
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 
 private:
-
 	void debugPaint(QPainter *painter);
-
 
 };
 
-#endif

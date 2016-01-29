@@ -1,9 +1,9 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#pragma once
 
 #include <QMainWindow>
 #include <QtWidgets>
-
+#include "NodeEditorWidget.h"
+#include "NodeEditorScene.h"
 
 namespace Ui {
 class MainWindow;
@@ -56,6 +56,11 @@ private:
     QAction *aboutAction;
 
 
+    NodeEditorWidget * nodeEditorWidget;
+    NodeEditorScene * nodeEditorScene;
+
+
+
 private slots:
     // Menu-File
     void fileNew();
@@ -86,4 +91,3 @@ private slots:
 
 };
 
-#endif // MAINWINDOW_H

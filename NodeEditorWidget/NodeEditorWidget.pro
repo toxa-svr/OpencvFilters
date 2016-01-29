@@ -43,19 +43,22 @@ unix {
 # Headers and sources
 # -----------------------------------
 HEADERS += inc/NodeEditorWidget.h \
-           src/NodeItem.h \
-           src/NodeConnection.h \
-           src/NodePort.h
-SOURCES += src/NodeEditorWidget.cpp \
+           inc/NodeEditorScene.h \
+           inc/NodeItem.h \
+           inc/NodeConnection.h \
+           inc/NodePort.h \
+           src/ExampleNode.h
+SOURCES += src/NodeEditorScene.cpp \
+           src/NodeEditorWidget.cpp \
            src/NodeItem.cpp \
            src/NodeConnection.cpp \
-           src/NodePort.cpp
+           src/NodePort.cpp \
+           src/ExampleNode.cpp
 #RESOURCES += NodeEditorWidget.qrc
 
-
+INCLUDEPATH += $$PWD/inc
 
 # -----------------------------------
 # Libraries
 # -----------------------------------
-INCLUDEPATH += inc
 

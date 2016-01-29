@@ -13,7 +13,7 @@ QT             += widgets
 
 
 # -----------------------------------
-# This macro will br used to generate .cpp and .h filenames:
+# This macro will be used to generate .cpp and .h filenames:
 # Example: for filtername "My" will be generated
 #   MyFilterPlugin.h
 #   MyFilterPlugin.cpp
@@ -73,18 +73,12 @@ FORMS += \
 # -----------------------------------
 # Libraries
 # -----------------------------------
-#TODO to be removed
-LIBFILTER_DIR = $$PWD/../../LibFilter
-message($$(OPENCV_DIR))
-message($${LIBFILTER_DIR})
-
-
 INCLUDEPATH += $$(OPENCV_DIR)/build/include
-INCLUDEPATH += $${LIBFILTER_DIR}/LibFilter
+INCLUDEPATH += $$PWD/../../LibFilter
 
 LIBS += -L$$(OPENCV_DIR)/build/x64/vc12/lib
 #LIBS += -L$$(OPENCV_DIR)/build/x86/vc12/lib
-LIBS += -L$${LIBFILTER_DIR}/bin
+LIBS += -L$$PWD/../../LibFilter/bin
 
 Debug:  LIBS += opencv_ts300d.lib \
                 opencv_world300d.lib \

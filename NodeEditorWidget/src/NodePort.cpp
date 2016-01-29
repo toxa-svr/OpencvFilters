@@ -1,9 +1,18 @@
 #include <QtWidgets>
 
+#include "NodeItem.h"
+#include "NodeConnection.h"
 #include "NodePort.h"
 
-
-NodePort::NodePort(NodeItem *parent1, QGraphicsScene *scene1, /*QLabel*/QWidget* widget, NodePort::ConnectorType conType1, const PortAlignment connectorAlignment, bool singleConnection, bool disableWidgetOnConnection, int radius, bool selfConnections)
+NodePort::NodePort(NodeItem *parent1,
+                   QGraphicsScene *scene1,
+                   /*QLabel*/QWidget* widget,
+                   NodePort::PortType conType1,
+                   const PortAlignment connectorAlignment,
+                   bool singleConnection,
+                   bool disableWidgetOnConnection,
+                   int radius,
+                   bool selfConnections)
         : QGraphicsItem(parent1/*, scene1*/),
           mConnectorType(conType1),
           parent(parent1),
@@ -27,10 +36,10 @@ NodePort::NodePort(NodeItem *parent1, QGraphicsScene *scene1, /*QLabel*/QWidget*
 
 	//setFlag(QGraphicsItem::ItemIsSelectable, true);
 
-	if (conType1 == ConnectorType::In) {
+	if (conType1 == PortType::In) {
 		darkColor =  QColor(Qt::darkYellow);
 	}
-	else if (conType1 == ConnectorType::Out) {
+	else if (conType1 == PortType::Out) {
 		darkColor =  QColor(Qt::darkRed).light(80);
 	}
 	else {
@@ -172,9 +181,10 @@ void NodePort::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
 	//dw 699:
 	painter->setRenderHint(QPainter::Antialiasing);
 
-    if (static_cast<NodeEditorScene*>(scene())->settings.debugDraw) {
+    // TODO debug draw
+    //if (static_cast<NodeEditorScene*>(scene())->settings.debugDraw) {
 		debugPaint(painter);
-	}
+    //}
 
     painter->setPen(Qt::NoPen);
     painter->setBrush(Qt::darkGray);

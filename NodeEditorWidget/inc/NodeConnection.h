@@ -1,32 +1,29 @@
 #pragma once
 
 #include <QtWidgets>
-#include "NodeItem.h"
-#include "NodePort.h"
 
+class NodeItem;
 class NodePort;
-
 
 
 class NodeConnection : public QGraphicsPathItem
 {
 public:
     enum { Type = UserType + 666 + 0 };
-	int type() const
-        { return Type;}
+    int type() const { return Type;}
 
 	virtual ~NodeConnection();
-    NodeConnection(NodePort *startConnector, NodePort *endConnector,
-      QGraphicsItem *parent = 0, QGraphicsScene *scene = 0, bool bidirectional = true);
+    NodeConnection(NodePort *startConnector,
+                   NodePort *endConnector,
+                   QGraphicsItem *parent = 0,
+                   QGraphicsScene *scene = 0,
+                   bool bidirectional = true);
 
     QRectF boundingRect() const;
     QPainterPath shape() const;
-    void setColor(const QColor &color)
-        { mColor = color; }
-    NodePort *startConnector() const
-        { return mStartConnector; }
-    NodePort *endConnector() const
-        { return mEndConnector; }
+    void setColor(const QColor &color)        { mColor = color; }
+    NodePort *startConnector() const        { return mStartConnector; }
+    NodePort *endConnector() const        { return mEndConnector; }
 
 	void updatePosition();
 
@@ -34,8 +31,7 @@ public:
 	bool setBidirectional(bool bidirectional);
 
 protected:
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
-               QWidget *widget = 0);
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0);
 
 	//returns used/created control points (eg for debug draw,...)
 	void recreatePath(QPointF& controlPoint1, QPointF& controlPoint2);

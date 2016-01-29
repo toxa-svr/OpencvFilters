@@ -33,13 +33,8 @@ FORMS += \
 # -----------------------------------
 # Libraries
 # -----------------------------------
-#TODO to be removed
-NODEEDITORWIDGET_DIR = $$PWD/../NodeEditorWidget
-message($$NODEEDITORWIDGET_DIR)
-
-
-INCLUDEPATH += $${NODEEDITORWIDGET_DIR}/inc
-LIBS += -L$${NODEEDITORWIDGET_DIR}/bin
+INCLUDEPATH += $$PWD/../NodeEditorWidget/inc
+LIBS += -L$$PWD/../NodeEditorWidget/bin
 
 Debug:  LIBS += NodeEditorWidgetd.lib
 Release:LIBS += NodeEditorWidget.lib

@@ -1,11 +1,9 @@
-//dw 
 #include <QtGui>
 #include <QtWidgets>
 
 #include "NodeItem.h"
-//#include "arrow.h"
-//dw
-//#include "nodeconnector.h"
+#include "NodeConnection.h"
+#include "NodePort.h"
 
 void NodeItem::hide() {
 	this->widget()->close();
@@ -22,7 +20,7 @@ void NodeItem::deleted(int result) {
 }
 
 NodeItem::~NodeItem() {
-	removeWigetFromConnectors();
+    removeWigetFromPorts();
 	//deleteConnections();
 	//dw new 
 	if (scene() != NULL) {
@@ -32,9 +30,11 @@ NodeItem::~NodeItem() {
 
 //! [0]
 NodeItem::NodeItem(QMenu *contextMenu,
-					 QGraphicsItem *parent, /*//dw can we really assume our scene type*/ QGraphicsScene /*DiagramScene*/ *scene, Qt::WindowFlags wFlags)
-			 : /*QGraphicsPolygonItem(parent, scene) //dw*/ /*QFrame(parent->parentWidget(), 0)*/
-QGraphicsProxyWidget(parent, /*//dw668: did this cause decorations now in 4.7 but no in 4.5.2?: Qt::Window*/ wFlags), mMaxRadius(1)
+                   QGraphicsItem *parent,
+                   QGraphicsScene /*DiagramScene*/ *scene,
+                   Qt::WindowFlags wFlags) :
+
+    QGraphicsProxyWidget(parent, wFlags), mMaxRadius(1)
 {
 	//dw new4: is this a problem? check it
     setCacheMode(DeviceCoordinateCache);
@@ -206,13 +206,13 @@ void NodeItem::setWidget(QWidget *widget) {
 	connect(widget, SIGNAL(destroyed()), this, SLOT(deleted()));
 }
 
-void NodeItem::addConnector(NodePort* nc) {
+void NodeItem::addPort(NodePort* nc) {
 	connectors.append(nc);
 	if (nc->mRadius > mMaxRadius) {
 		mMaxRadius = nc->mRadius;
 	}
 
-	updateConnectorsPos();
+    updatePortsPos();
 	prepareGeometryChange();
 }
 
@@ -230,7 +230,7 @@ void NodeItem::deleteConnections()
 }
 //! [2]
 
-void NodeItem::removeWigetFromConnectors() {
+void NodeItem::removeWigetFromPorts() {
 	foreach (NodePort *c, connectors) {
 		//dw problem: label already deleted but connector tries to enable it?
         c->removeWidget();
@@ -258,7 +258,7 @@ QVariant NodeItem::itemChange(GraphicsItemChange change, //dw FIXME: needs much 
 	//dw now in paint, check if this is a good idea (e.g. when is it called)
 	//dw667 backmerge: was commented, but is shotgun approach!!!
 	if (change == QGraphicsItem::ItemPositionChange) {
-		updateConnectorsPos();
+        updatePortsPos();
 	}
    //does this create loop on selection?
    
@@ -304,7 +304,7 @@ QVariant NodeItem::itemChange(GraphicsItemChange change, //dw FIXME: needs much 
 			con->updatePositionGeometry();
 		}
 		*/
-	   updateConnectorsPos();
+       updatePortsPos();
    }
    if (change == QGraphicsItem::ItemPositionHasChanged || change == QGraphicsItem::ItemSelectedChange) {
 	   /*
@@ -312,7 +312,7 @@ QVariant NodeItem::itemChange(GraphicsItemChange change, //dw FIXME: needs much 
 			con->updatePositionGeometry();
 		}
 		*/
-	   updateConnectorsPos();
+       updatePortsPos();
    }
 
    
@@ -334,7 +334,7 @@ QVariant NodeItem::itemChange(GraphicsItemChange change, //dw FIXME: needs much 
 //dw669: new, fixes connector position on resizing, why can it not be done in itemChange?
 	void NodeItem::resizeEvent ( QGraphicsSceneResizeEvent * event ) {
 		QGraphicsProxyWidget::resizeEvent(event);
-		updateConnectorsPos();
+        updatePortsPos();
 	}
 
 //dw new4: remove again
@@ -343,7 +343,7 @@ void NodeItem::hoverMoveEvent ( QGraphicsSceneHoverEvent * event )  {
 	return;
 }
 
-void NodeItem::updateConnectorsPos() {
+void NodeItem::updatePortsPos() {
 	foreach (NodePort *con, connectors) {
 		//dw667 backmerge: was active
         //con->updatePositionGeometry();
@@ -366,9 +366,10 @@ void NodeItem::debugPaint(QPainter *painter) {
 //dw
 void NodeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *w)
 {
-    if (static_cast<NodeEditorScene*>(scene())->settings.debugDraw) {
+    // TODO debug draw
+    //if (static_cast<NodeEditorScene*>(scene())->settings.debugDraw) {
 		debugPaint(painter);
-	}
+    //}
 	//dw new
 	//dw667: was active
 	//updateConnectorsPos();
@@ -404,10 +405,7 @@ void NodeItem::update(const QRectF & rect) {
 */
 
 
-//dw TODO: move to good visible location, check which types should be included
-//const char* NodeItem::shouldNotMoveTypes[] = {"QLineEdit", "foo", "bar"};
 const char* NodeItem::shouldMoveOnClickTypes[] = {"QDialog", "QFrame", "QGroupBox"};
-
 
 bool NodeItem::shouldMoveNode(QGraphicsSceneMouseEvent *mouseEvent) {
 	QPointF pos = mouseEvent->pos();

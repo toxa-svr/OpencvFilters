@@ -16,10 +16,13 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->dockWidget_2->setWidget(graphWidget);
 
 
+
     QPushButton button("Button", this);
     button.setVisible(true);
 
 
+    graphWidget->addNode();
+    graphWidget->addNode();
     graphWidget->addNode();
     graphWidget->addConnection();
 
