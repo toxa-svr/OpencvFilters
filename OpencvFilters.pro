@@ -1,5 +1,8 @@
 TEMPLATE = subdirs
 
+#TODO these variables should be used
+#LIBFILTER_DIR = $$PWD/LibFilter
+#NODEEDITORWIDGET_DIR = $$PWD/NodeEditorWidget
 
 SUBDIRS += \
     LibFilter \
