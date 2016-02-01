@@ -2,7 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "NodeEditorWidget.h"
+#include "NodeEditorScene.h"
 
 namespace Ui {
 class MainWindow;
@@ -23,6 +23,10 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+
+
+    QGraphicsView * nodeEditorView;
+    NodeEditorScene * nodeEditorScene;
 };
 
 #endif // MAINWINDOW_H

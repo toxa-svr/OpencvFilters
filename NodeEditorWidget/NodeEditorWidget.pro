@@ -42,12 +42,14 @@ unix {
 # -----------------------------------
 # Headers and sources
 # -----------------------------------
-HEADERS += inc/NodeEditorScene.h \
+HEADERS += inc/NodeEditorWidget.h \
+           inc/NodeEditorScene.h \
            inc/NodeItem.h \
            inc/NodeConnection.h \
            inc/NodePort.h \
            src/ExampleNode.h
-SOURCES += src/NodeEditorScene.cpp \
+SOURCES += src/NodeEditorWidget.cpp \
+           src/NodeEditorScene.cpp \
            src/NodeItem.cpp \
            src/NodeConnection.cpp \
            src/NodePort.cpp \
