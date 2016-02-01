@@ -16,9 +16,8 @@ NodeEditorScene::NodeEditorScene(QWidget *parent)
     tmpConnection = nullptr;
     tmpPort = nullptr;
     lastHighlighted = nullptr;
-
-
     conn = nullptr;
+
     //setScene(scene); // set QGraphicsScene for this QGraphicsView
     //setRenderHint(QPainter::Antialiasing, true);
     //setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
@@ -31,56 +30,57 @@ void NodeEditorScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     qDebug() << __FUNCTION__;
 
-    if (mouseEvent->button() == Qt::LeftButton) {
-        QList<QGraphicsItem *> startConnectors = items(mouseEvent->scenePos());
-		foreach(QGraphicsItem * g, startConnectors) {
-            if (g->type() == NodePort::Type) {
-                NodePort* start = dynamic_cast<NodePort*>(g);
-				//dw ugly
-				if (start->mSingleConnection) {
-					start->deleteConnections();
-				}
+    if (mouseEvent->button() != Qt::LeftButton)
+        return;
 
-                tmpPort = new NodePort(nullptr, this, nullptr, NodePort::InOut);
-                tmpPort->setPos(mouseEvent->scenePos());
-				//dw needed? addItem(tmpConnector);
-				
-                // TODO debug draw
-                //if (settings.debugDraw) {
-                    tmpPort->mRadius = 5;
-                //}
-                //else {
-                //    tmpPort->setVisible(false);
-                //    tmpPort->mRadius = 0;
-                //}
+    QList<QGraphicsItem *> startConnectors = items(mouseEvent->scenePos());
+    foreach(QGraphicsItem * g, startConnectors) {
+        if (g->type() == NodePort::Type) {
+            NodePort* start = dynamic_cast<NodePort*>(g);
+            //dw ugly
+            if (start->mSingleConnection) {
+                start->deleteConnections();
+            }
+
+            tmpPort = new NodePort(nullptr, this, nullptr, NodePort::InOut);
+            tmpPort->setPos(mouseEvent->scenePos());
+            //dw needed? addItem(tmpConnector);
+
+            // TODO debug draw
+            //if (settings.debugDraw) {
+                tmpPort->mRadius = 5;
+            //}
+            //else {
+            //    tmpPort->setVisible(false);
+            //    tmpPort->mRadius = 0;
+            //}
 
 
-                if (start->connectorType() != NodePort::In) {
-                    tmpConnection = new NodeConnection(start, tmpPort, NULL, this);
-				}
-				else {
-                    tmpConnection = new NodeConnection(tmpPort, start, NULL, this);
-				}
-				//dw needed? addItem(tmpArrow);
-				start->setHighlight(true);
-                existingPort = start;
+            if (start->connectorType() != NodePort::In) {
+                tmpConnection = new NodeConnection(start, tmpPort, NULL, this);
+            }
+            else {
+                tmpConnection = new NodeConnection(tmpPort, start, NULL, this);
+            }
+            //dw needed? addItem(tmpArrow);
+            start->setHighlight(true);
+            existingPort = start;
 
-				
-                existingPort->updatePosition();
-                existingPort->update();
-                tmpPort->updatePosition();
-                tmpPort->update();
-                tmpConnection->updatePosition();
-                tmpConnection->update();
 
-				//dw667 backmerge: was commented
-				//QGraphicsScene::mousePressEvent(mouseEvent);
-				return;
-				//addItem(tmpArrow);
-				//if (
-			}
-		}
-	}
+            existingPort->updatePosition();
+            existingPort->update();
+            tmpPort->updatePosition();
+            tmpPort->update();
+            tmpConnection->updatePosition();
+            tmpConnection->update();
+
+            //dw667 backmerge: was commented
+            //QGraphicsScene::mousePressEvent(mouseEvent);
+            return;
+            //addItem(tmpArrow);
+            //if (
+        }
+    }
 
     QGraphicsScene::mousePressEvent(mouseEvent);
 }

@@ -20,10 +20,12 @@ TARGET = FilterChainGui
 # -----------------------------------
 SOURCES += \
     main.cpp\
-    mainwindow.cpp
+    mainwindow.cpp \
+    NodeItemProxy.cpp
 
 HEADERS += \
-    mainwindow.h
+    mainwindow.h \
+    NodeItemProxy.h
 
 FORMS += \
     mainwindow.ui

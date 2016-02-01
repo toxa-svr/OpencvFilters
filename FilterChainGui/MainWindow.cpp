@@ -2,15 +2,15 @@
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
 
-#include "NodeEditorWidget.h"
 #include "NodeEditorScene.h"
+#include "NodeItemProxy.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    setWindowTitle(tr("OpencvFilters v0.1"));
+    setWindowTitle(tr("OpenCV FilterChain GUI v0.1"));
 
     createActions();
     createMenus();
@@ -18,43 +18,41 @@ MainWindow::MainWindow(QWidget *parent) :
     //createToolBox();
 
 
-    //connect(scene, SIGNAL(nodeItemInserted(NodeItem *)), this, SLOT(itemInserted(NodeItem *)));
-    //connect(scene, SIGNAL(itemSelected(QGraphicsItem *)), this, SLOT(itemSelected(QGraphicsItem *)));
-
-
-// TODO remove if next code is working
-//    NodeEditorWidget *nodeEditorWidget = new NodeEditorWidget(this);
-//    // Create layout and central widget for the window
-//    QHBoxLayout *layout = new QHBoxLayout;
-//    layout->addWidget(nodeEditorWidget);
-//    //layout->addWidget(toolBox);
-//    QWidget *newCentralWidget = new QWidget;
-//    newCentralWidget->setLayout(layout);
-//    setCentralWidget(newCentralWidget);
-
-
-    // Create NodeEditorScene and NodeEditorWidget for it
+    // Create NodeEditorScene and QGraphicsView for it
     nodeEditorScene = new NodeEditorScene(this);
-    nodeEditorWidget = new NodeEditorWidget(this);
-    nodeEditorWidget->setScene(nodeEditorScene);
-    // or nodeEditorScene->setActiveWindow(nodeEditorWidget);
+    nodeEditorView = new QGraphicsView(nodeEditorScene);
+
+
+    // Configure scene and connect singnals-slots for it
+    nodeEditorScene->setSceneRect(QRectF(0, 0, 5000, 5000));
+    nodeEditorScene->setStickyFocus(true); // clicking into the scene background will clear focus
+    //connect(nodeEditorScene, SIGNAL(itemInserted(NodeItem*)), this, SLOT(itemInserted(NodeItem*)));
+    //connect(nodeEditorScene, SIGNAL(itemSelected(QGraphicsItem*)), this, SLOT(itemSelected(QGraphicsItem*)));
+
+
+    // Configure view
+    nodeEditorView->setRenderHint(QPainter::Antialiasing, true);
+    nodeEditorView->setRenderHint(QPainter::SmoothPixmapTransform, true);
+    nodeEditorView->setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
+    //nodeEditorView->scale(0.5, 0.5);
+    //nodeEditorView->setBackgroundBrush(QPixmap(":/No-Ones-Laughing-3.jpg"));
+
 
     // Create centralWidget for the window
     //   Create layout for the centralWidget
-    //     Add NodeEditorWidget into layout
+    //     Add QGraphicsView into layout
     //     Add toolbox into layout
     QWidget *newCentralWidget = new QWidget(this);
     QHBoxLayout *newLayout = new QHBoxLayout(this);
+    newLayout->addWidget(nodeEditorView);
+    //newLayout->addWidget(toolBox);
+    newCentralWidget->setLayout(newLayout);
     setCentralWidget(newCentralWidget);
-    centralWidget()->setLayout(newLayout);
-    centralWidget()->layout()->addWidget(nodeEditorWidget);
-    //centralWidget()->layout()->addWidget(toolBox);
 
     // TODO next - read settings for main window and graph editor
     // TODO next - open the last used file
     //nodeEditorWidget.setSettings();
 
-    setWindowTitle(tr("OpenCV FilterChain GUI"));
 }
 
 MainWindow::~MainWindow()
@@ -266,7 +264,8 @@ void MainWindow::fileOpen()
 //------------------------------------------------------------------------
 void MainWindow::fileSave()
 {
-    QMessageBox::about(this, tr("fileSave"), tr("fileSave"));
+    qDebug() << __FUNCTION__;
+
 /*
 
     QString fileName = QFileDialog::getSaveFileName(this,
@@ -293,7 +292,8 @@ void MainWindow::fileSave()
 //------------------------------------------------------------------------
 void MainWindow::fileSaveAs()
 {
-    QMessageBox::about(this, tr("fileSaveAs"), tr("fileSaveAs"));
+    qDebug() << __FUNCTION__;
+
 /*
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save Node Diagram"), "./", tr("Diagram Files (*.diagram)"));
     QFile f(fileName);
@@ -316,6 +316,8 @@ void MainWindow::fileSaveAs()
 //------------------------------------------------------------------------
 void MainWindow::addItem()
 {
+    qDebug() << __FUNCTION__;
+
     // Get parent action
     QAction *action = qobject_cast< QAction* >(QObject::sender());
     QMessageBox::about(this, tr("Add"), action->text());
@@ -323,7 +325,12 @@ void MainWindow::addItem()
     // Extract user data from action and create filter
     //action->data()
 
-    //nodeEditorScene->addNode();
+    // Create Item and add into the Scene
+    NodeItemProxy *proxy = new NodeItemProxy(0, Qt::Window);
+    proxy->setWidget(new QPushButton("test button 0"));
+    proxy->setPos(100, 100);
+    proxy->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
+    nodeEditorScene->addItem(proxy);
 
 }
 
@@ -332,8 +339,10 @@ void MainWindow::addItem()
 //------------------------------------------------------------------------
 void MainWindow::deleteItem()
 {
-//	if (scene->selectedItems().count()) {
-//		foreach (QGraphicsItem *item, scene->selectedItems()) {
+    qDebug() << __FUNCTION__;
+
+    if (nodeEditorScene->selectedItems().count()) {
+        foreach (QGraphicsItem *item, nodeEditorScene->selectedItems()) {
 //			/*//now in dtor:
 //			if (item->type() == DiagramItem::Type) {
 //				qgraphicsitem_cast<DiagramItem *>(item)->removeArrows();
@@ -345,17 +354,18 @@ void MainWindow::deleteItem()
 //			}
 //			*/
 
-//			//dw we are doing that now in removeConnections from idem dtor, is that good idea?
-//			//scene->removeItem(item);
+            //dw we are doing that now in removeConnections from idem dtor, is that good idea?
+            nodeEditorScene->removeItem(item);
 
-//			//can we delete all item or better only ours, and why is it not deleted automatically on removal? what is the correct way?
-//			delete item;
-//		}
-//		scene->clearSelection();
-//		scene->clearFocus();
-//	}
-//	//maybe we are embedding a window so handle this too (TODO: is there a better way?)
-//	else if (this->scene->focusItem() && this->scene->focusItem()->type() == NodeItem::Type) {
+            //can we delete all item or better only ours, and why is it not deleted automatically on removal? what is the correct way?
+            delete item;
+        }
+        nodeEditorScene->clearSelection();
+        nodeEditorScene->clearFocus();
+    }
+
+    //maybe we are embedding a window so handle this too (TODO: is there a better way?)
+    else if (this->nodeEditorScene->focusItem() && this->nodeEditorScene->focusItem()->type() == NodeItem::Type) {
 //        NodeItem* item = qgraphicsitem_cast<NodeItem *>(this->scene->focusItem());
 //		//now in dtor: item->removeConnections();
 
@@ -364,7 +374,10 @@ void MainWindow::deleteItem()
 //		delete item;
 //		scene->clearSelection();
 //		scene->clearFocus();
-//    }
+    }
+    else {
+        qDebug() << "No items selected";
+    }
 }
 
 

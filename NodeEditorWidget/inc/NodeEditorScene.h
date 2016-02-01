@@ -16,12 +16,9 @@ public:
     NodeItem* createNode();
 
 
-
 signals:
-    //void itemInserted(DiagramItem *item);
-    //void textInserted(QGraphicsTextItem *item);
-    void nodeInserted(QGraphicsItem *item);
     void nodeItemInserted(NodeItem *item);
+    void nodeInserted(QGraphicsItem *item);
     void itemSelected(QGraphicsItem *item);
 
 protected:
@@ -37,7 +34,6 @@ private:
     NodePort* tmpPort;
     NodePort* existingPort;
     NodePort* lastHighlighted;
-
 
     NodeConnection *conn;
     NodeItem * createGraphNode();

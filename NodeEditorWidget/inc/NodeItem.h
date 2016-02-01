@@ -1,10 +1,10 @@
 #pragma once
 
 #include <QtWidgets>
+#include <QList>
 
 class NodePort;
 class NodeConnection;
-
 
 
 class NodeItem : public QGraphicsProxyWidget

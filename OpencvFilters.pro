@@ -9,8 +9,7 @@ SUBDIRS += \
     FilterChainGui \
     Filters \
     Tests \
-    NodeEditorWidget \
-    GraphEditorWidget
+    NodeEditorWidget
 
 
 FilterChainGui.depends = LibFilter
