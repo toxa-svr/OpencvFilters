@@ -24,18 +24,35 @@ TARGET = GraphEditor
 # -----------------------------------
 SOURCES += main.cpp\
     mainwindow.cpp \
-    GraphEditorWidget.cpp \
-    GraphPort.cpp \
-    GraphNode.cpp \
-    GraphConnection.cpp
+    #GraphEditorWidget.cpp \
+    #GraphPort.cpp \
+    #GraphNode.cpp \
+    #GraphConnection.cpp
+    testwidget_1.cpp \
+    testwidget_2.cpp
 
 HEADERS  += \
     mainwindow.h \
-    GraphEditorWidget.h \
-    GraphNode.h \
-    GraphPort.h \
-    GraphConnection.h
+    #GraphEditorWidget.h \
+    #GraphNode.h \
+    #GraphPort.h \
+    #GraphConnection.h
+    testwidget_1.h \
+    testwidget_2.h
 
 FORMS += \
-    mainwindow.ui
+    mainwindow.ui \
+    testwidget_1.ui \
+    testwidget_2.ui
+
+
+
+# -----------------------------------
+# Libraries
+# -----------------------------------
+INCLUDEPATH += $$PWD/../NodeEditorWidget/inc
+LIBS += -L$$PWD/../NodeEditorWidget/bin
+
+Debug:  LIBS += NodeEditorWidgetd.lib
+Release:LIBS += NodeEditorWidget.lib
 

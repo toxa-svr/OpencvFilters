@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include "GraphEditorWidget.h"
+#include "NodeEditorWidget.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -14,21 +14,28 @@ MainWindow::MainWindow(QWidget *parent) :
     GraphEditorWidget* graphWidget = new GraphEditorWidget(this);
     graphWidget->show();
     ui->dockWidget_2->setWidget(graphWidget);
-
-
-
-    QPushButton button("Button", this);
-    button.setVisible(true);
-
-
-    graphWidget->addNode();
-    graphWidget->addNode();
-    graphWidget->addNode();
-    graphWidget->addConnection();
-
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+
+
+
+
+void MainWindow::on_pushButton_clicked()
+{
+    graphWidget->addNode();
+}
+
+void MainWindow::on_pushButton_2_clicked()
+{
+    graphWidget->addNode();
+}
+
+void MainWindow::on_delButton_clicked()
+{
+
 }
