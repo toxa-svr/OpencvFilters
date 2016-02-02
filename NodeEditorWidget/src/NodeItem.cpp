@@ -1,58 +1,21 @@
-#include <QtGui>
 #include <QtWidgets>
 
 #include "NodeItem.h"
 #include "NodeConnection.h"
 #include "NodePort.h"
 
-void NodeItem::hide() {
-	this->widget()->close();
-}
 
-//dw slot
-void NodeItem::deleted() {
-	this->widget()->close();
-	//delete this;
-}
 
-void NodeItem::deleted(int result) {
-	this->widget()->close();
-}
 
-NodeItem::~NodeItem() {
-    removeWigetFromPorts();
-	//deleteConnections();
-	//dw new 
-	if (scene() != NULL) {
-		this->scene()->removeItem(this);
-	}
-}
-
-//! [0]
-NodeItem::NodeItem(QMenu *contextMenu,
-                   QGraphicsItem *parent,
-                   QGraphicsScene /*DiagramScene*/ *scene,
-                   Qt::WindowFlags wFlags) :
-
-    QGraphicsProxyWidget(parent, wFlags), mMaxRadius(1)
+NodeItem::NodeItem(Qt::WindowFlags wFlags,
+                   QGraphicsItem *parent) :
+    QGraphicsProxyWidget(parent, wFlags),
+    isMoving(false),
+    isMovable(true),
+    isResizable(false)
 {
-	//dw new4: is this a problem? check it
     setCacheMode(DeviceCoordinateCache);
-
-    mContextMenu = contextMenu;
-	isMoving = false;
-
-	//dw new:
 	setZValue(1);
-	//param
-	mNoResize = true;
-	if (mNoResize) {
-		mControlResizeHandles = true;
-	}
-	else {
-		//param
-		mControlResizeHandles = false;
-	}
 
 
 /*
@@ -95,351 +58,214 @@ NodeItem::NodeItem(QMenu *contextMenu,
 	 //dw will this fix deletion not called on close?
 	 dialog1->setAttribute(Qt::WA_DeleteOnClose);
 	 this->setWidget(dialog1);
-
-	 addConnector(new NodeConnector(this, scene, out0, NodeConnector::Out, true));
-	 addConnector(new NodeConnector(this, scene, in0, NodeConnector::In));
-	 addConnector(new NodeConnector(this, scene, in1, NodeConnector::In));
-	 addConnector(new NodeConnector(this, scene, in2, NodeConnector::In));
-	 addConnector(new NodeConnector(this, scene, inout0, NodeConnector::InOut, true));
-
-	 addConnector(new NodeConnector(this, scene, spinBox, NodeConnector::InOut));
-	 
-	 //QGraphicsScene scene;
-	 //QGraphicsProxyWidget *proxy = scene->addWidget(groupBox);
-	 //QGraphicsView view(&scene);
-	 //view.show();
 */
-
-/*    setPolygon(mPolygon);*/
 	 setFlag(QGraphicsItem::ItemIsMovable, true);
 	 setFlag(QGraphicsItem::ItemIsSelectable, true);
 	 setFlag(QGraphicsItem::ItemIsFocusable, true);
-
-
-	 //dw why is that needed
-	 //dialog1->setWindowFlags(Qt::WindowMov);
-	 //widget()->setWindowFlags(Qt::WindowFlags);
-
-	 //dw new
-	 if (scene != NULL){
-		scene->addItem(this);
-	 }
-	 
-
-/*
-QDialog signals:
-void 	accepted ()
-void 	finished ( int result )
-void 	rejected ()
-*/
-	 /*
-	 connect(dialog1, SIGNAL(accepted()), this, SLOT(deleted()));
-	 connect(dialog1, SIGNAL(finished(int)), this, SLOT(deleted(int)));
-	 connect(dialog1, SIGNAL(rejected()), this, SLOT(deleted()));
-	 */
-
-/*
-QWidget signals:
-void 	customContextMenuRequested ( const QPoint & pos )
-*/
-/*
-QObject signals:
-void 	destroyed ( QObject * obj = 0 )
-*/
-
-	//dw big problem: we do not have dialog1 here with new design, but when to do it? ==> override setWidget()
-	//connect(dialog1, SIGNAL(destroyed()), this, SLOT(deleted()));
 }
-//! [0]
+
+
+
+NodeItem::~NodeItem()
+{
+    removeWigetFromPorts();
+    //deleteConnections();
+    if (scene() != NULL) {
+        this->scene()->removeItem(this);
+    }
+}
+
 
 
 QRectF NodeItem::boundingRect() const
 {
-	/*
-    qreal adjust = 5;
-    return QRectF(-radius - adjust, -radius - adjust,
-                  2*(radius + adjust), 2*(radius + adjust));
-				  */
-
-	//dw new
-	QRectF rec(QGraphicsProxyWidget::boundingRect());
-	//order matters!!!
-	//rec.setX(rec.x() - 2 * (mMaxRadius));
-	//rec.setWidth(rec.width() + 2 * (mMaxRadius));
-	qreal extra = 3;//2 * (mMaxRadius) ;
-	rec = rec.normalized().adjusted(-extra, 0, extra, 0);
-
-	//rec.setWidth(rec.width() - 2 * (mMaxRadius + 1));
-	//rec.setX(rec.x() + (mMaxRadius + 1));
-	//rec.setWidth(rec.width() - 4);
-	//rec.setX(rec.x() + 2);
-	return rec;
+    QRectF rect(QGraphicsProxyWidget::boundingRect());
+    qreal extra = 3;
+    rect = rect.normalized().adjusted(-extra, 0, extra, 0);
+    //rect.setWidth(rect.width() - 2 * (mMaxRadius + 1));
+    //rect.setX(rect.x() + (mMaxRadius + 1));
+    //rect.setWidth(rect.width() - 4);
+    //rect.setX(rect.x() + 2);
+    return rect;
 }
 
-QPainterPath NodeItem::shape() const {
-
-	QPainterPath p;// = QGraphicsProxyWidget::shape();
-	QRectF rec(QGraphicsProxyWidget::boundingRect());
-	//rec.setWidth(rec.width() - 2 * (mMaxRadius + 1));
-	//rec.setX(rec.x() + (mMaxRadius + 1));
-	p.addRect(rec);
-	
-	/*//exclude children
-	foreach (NodeConnector *c, connectors) {
-		//dw problem: label already deleted but connector tries to enable it?
-        //c->deleteConnections();
-		p = p.subtracted(c->shape());
-    }*/
-
-	/*//add children
-	foreach (NodeConnector *c, connectors) {
-		p.addPath(this->mapFromItem(c, c->shape()));
-    }*/
-
-	return p;
+QPainterPath NodeItem::shape() const
+{
+    QPainterPath path;
+    path.addRect(boundingRect());
+    return path;
 }
 
-
-void NodeItem::setWidget(QWidget *widget) {
-	//does this work for all possible wiget types
-	QGraphicsProxyWidget::setWidget(widget);
+void NodeItem::setWidget(QWidget *widget)
+{
+    qDebug() << __FUNCTION__;
+    QGraphicsProxyWidget::setWidget(widget);
 	connect(widget, SIGNAL(destroyed()), this, SLOT(deleted()));
 }
 
-void NodeItem::addPort(NodePort* nc) {
-	connectors.append(nc);
-	if (nc->mRadius > mMaxRadius) {
-		mMaxRadius = nc->mRadius;
-	}
+void NodeItem::hide()
+{
+    qDebug() << __FUNCTION__;
+    this->widget()->close();
+}
 
+
+void NodeItem::deleted()
+{
+    qDebug() << __FUNCTION__;
+    this->widget()->close();
+    //delete this;
+}
+
+
+void NodeItem::addPort(NodePort* port)
+{
+    ports.append(port);
     updatePortsPos();
 	prepareGeometryChange();
 }
 
 
-//! [2]
 void NodeItem::deleteConnections()
 {
-    foreach (NodePort *c, connectors) {
+    foreach (NodePort *port, ports) {
 		//dw problem: label already deleted but connector tries to enable it?
-        c->deleteConnections();
+        port->deleteConnections();
     }
 
 	//dw good location?, needed?
 	//this->scene()->removeItem(this);
 }
-//! [2]
 
-void NodeItem::removeWigetFromPorts() {
-	foreach (NodePort *c, connectors) {
+
+void NodeItem::removeWigetFromPorts()
+{
+    foreach (NodePort *c, ports) {
 		//dw problem: label already deleted but connector tries to enable it?
         c->removeWidget();
     }
 }
 
-//! [5]
-void NodeItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
-{
-    scene()->clearSelection();
-    setSelected(true);
-	//dw new3
-    //mContextMenu->exec(event->screenPos());
-	if (mContextMenu != NULL) {
-		mContextMenu->exec(event->screenPos());
-	}
-}
-//! [5]
 
-//! [6]
+
+
+void NodeItem::updatePortsPos() {
+    foreach (NodePort *port, ports) {
+        port->updatePosition();
+    }
+}
+
+
+void NodeItem::debugPaint(QPainter *painter)
+{
+	static int i = 0, j=0, k=0;
+    painter->fillRect(boundingRect(), /*Qt::green*/ QColor(i=(i+19)%256 , j=(j+51)%256, k=(k+11)%256));
+}
+
+
+
+
+
+
+
+void NodeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *w)
+{
+    debugPaint(painter);
+	QGraphicsProxyWidget::paint(painter, option, w);
+}
+
 QVariant NodeItem::itemChange(GraphicsItemChange change, //dw FIXME: needs much cleanup
                      const QVariant &value)
 {
 
-	//dw now in paint, check if this is a good idea (e.g. when is it called)
-	//dw667 backmerge: was commented, but is shotgun approach!!!
-	if (change == QGraphicsItem::ItemPositionChange) {
+    //dw now in paint, check if this is a good idea (e.g. when is it called)
+    //dw667 backmerge: was commented, but is shotgun approach!!!
+    if (change == QGraphicsItem::ItemPositionChange) {
         updatePortsPos();
-	}
+    }
    //does this create loop on selection?
-   
+
 
    //dw if visibilty changes to false, kill wiget (TODO: make configurable, usfull for Dialogs and such)
    if (change == QGraphicsItem::ItemVisibleHasChanged && !value.value<bool>()) {
-	   deleted();
-	   return value;
+       deleted();
+       return value;
    }
 
 
 
-   /*
-   //dw 669: turn back on resize handle controlling
-   //dw new3: do not allow cursor changes, better only over connector!
-   */
-   if (mControlResizeHandles && change == QGraphicsItem::ItemCursorChange) {
-       QCursor cur = value.value<QCursor>();
-	   //FIXME: do we really have to do this by hand?
-	   //suppress all resizes
-	   if (cur.shape() == Qt::SizeVerCursor || cur.shape() == Qt::SizeHorCursor || cur.shape() == Qt::SizeBDiagCursor || cur.shape() == Qt::SizeFDiagCursor) {
-		   if (mNoResize) {
-               return 0;//Qt::ArrowCursor;
-		   }
-		   else {
-	   			foreach (NodePort *con, connectors) {
-					if (con->isUnderMouse()) {
-                        return 0; //Qt::ArrowCursor;
-					}
-				}
-		   }
-	   }
-   }/**/
 
-   
    //dw 669: turn back on resize handle controlling
    //dw ugly hack, find better way
-   //dw deselecting proxy item dialog will cause error sometimes, has size of bounding rect, will not redraw connections 
+   //dw deselecting proxy item dialog will cause error sometimes, has size of bounding rect, will not redraw connections
    if (change == QGraphicsItem::ItemSelectedChange || change == QGraphicsItem::ItemTransformChange || change == QGraphicsItem::ItemScaleChange
-	   || change == QGraphicsItem::ItemSendsGeometryChanges || change == QGraphicsItem::ItemMatrixChange) {
-	   /*
-		foreach (NodeConnector *con, connectors) {
-			con->updatePositionGeometry();
-		}
-		*/
+       || change == QGraphicsItem::ItemSendsGeometryChanges || change == QGraphicsItem::ItemMatrixChange) {
+       /*
+        foreach (NodeConnector *con, connectors) {
+            con->updatePositionGeometry();
+        }
+        */
        updatePortsPos();
    }
    if (change == QGraphicsItem::ItemPositionHasChanged || change == QGraphicsItem::ItemSelectedChange) {
-	   /*
-		foreach (NodeConnector *con, connectors) {
-			con->updatePositionGeometry();
-		}
-		*/
+       /*
+        foreach (NodeConnector *con, connectors) {
+            con->updatePositionGeometry();
+        }
+        */
        updatePortsPos();
    }
 
-   
+
    /*//dw debug help
    if (change == QGraphicsItem::ItemSelectedChange || change == QGraphicsItem::ItemEnabledChange || change == QGraphicsItem::ItemVisibleHasChanged || change == QGraphicsItem::ItemPositionChange
-	   || change == QGraphicsItem::ItemZValueChange || change == QGraphicsItem::ItemZValueHasChanged) {
-	    //scene()->clearSelection();
-		//setSelected(true);
-		//return true;
-		return QGraphicsProxyWidget::itemChange(change, value);
-	}*/
+       || change == QGraphicsItem::ItemZValueChange || change == QGraphicsItem::ItemZValueHasChanged) {
+        //scene()->clearSelection();
+        //setSelected(true);
+        //return true;
+        return QGraphicsProxyWidget::itemChange(change, value);
+    }*/
 
 
-	return QGraphicsProxyWidget::itemChange(change, value);
+    return QGraphicsProxyWidget::itemChange(change, value);
     //return value;
 }
 //! [6]
 
+
 //dw669: new, fixes connector position on resizing, why can it not be done in itemChange?
-	void NodeItem::resizeEvent ( QGraphicsSceneResizeEvent * event ) {
-		QGraphicsProxyWidget::resizeEvent(event);
-        updatePortsPos();
-	}
+void NodeItem::resizeEvent ( QGraphicsSceneResizeEvent * event ) {
+    QGraphicsProxyWidget::resizeEvent(event);
+    updatePortsPos();
+}
+
 
 //dw new4: remove again
 void NodeItem::hoverMoveEvent ( QGraphicsSceneHoverEvent * event )  {
-	event->ignore();
-	return;
-}
-
-void NodeItem::updatePortsPos() {
-	foreach (NodePort *con, connectors) {
-		//dw667 backmerge: was active
-        //con->updatePositionGeometry();
-		//dw new
-		con->updatePosition();
-    }
-	//dw667: was active
-	//update();
+    event->ignore();
+    return;
 }
 
 
-void NodeItem::debugPaint(QPainter *painter) {
-	//dw debug
-	static int i = 0, j=0, k=0;
-	painter->fillRect(boundingRect(), /*Qt::green*/ QColor(i=(i+19)%256 , j=(j+51)%256, k=(k+11)%256)); // to see item.
-	//painter->fillPath(shape(), QColor(i=(i+19)%256 , j=(j+51)%256, k=(k+11)%256));
-}
-
-
-//dw
-void NodeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *w)
+void NodeItem::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
-    // TODO debug draw
-    //if (static_cast<NodeEditorScene*>(scene())->settings.debugDraw) {
-		debugPaint(painter);
-    //}
-	//dw new
-	//dw667: was active
-	//updateConnectorsPos();
+    qDebug() << __FUNCTION__;
 
-	QGraphicsProxyWidget::paint(painter, option, w);
-	//dw new2
-	//QGraphicsItem::paint(painter, option, w);
+    QGraphicsItem::mousePressEvent(mouseEvent);
+    isMoving = true;
+    scene()->clearSelection();
+    scene()->clearFocus();
+    setSelected(true);
 
-	//dw new3: why do we have to call paint of children???
-	//dw667: was active
-	/*
-	foreach (NodeConnector *c, connectors) {
-		//dw problem: label already deleted but connector tries to enable it?
-        c->paint(painter, option, w);
-		c->update();
-    }
-	*/
+    //QGraphicsProxyWidget::mousePressEvent(mouseEvent);
 }
 
-/*
-//dw new3
-void NodeItem::update(const QRectF & rect) {
-	
-	//dw new3: why do ourself
-	foreach (NodeConnector *c, connectors) {
-		//dw problem: label already deleted but connector tries to enable it?
-        //c->paint(painter, option, w);
-		c->update(rect);
-    }
-	
-	QGraphicsProxyWidget::update(rect);
-}
-*/
+void NodeItem::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
+{
 
+    qDebug() << __FUNCTION__;
 
-const char* NodeItem::shouldMoveOnClickTypes[] = {"QDialog", "QFrame", "QGroupBox"};
-
-bool NodeItem::shouldMoveNode(QGraphicsSceneMouseEvent *mouseEvent) {
-	QPointF pos = mouseEvent->pos();
-	QPointer<QWidget> hitWidget = widget()->childAt(pos.toPoint());
-	if (hitWidget == NULL) {
-		return true;
-	}
-	//foreach(QString t, shouldNotMoveTypes) {
-	//	if (alienWidget->inherits(t.toStdString().c_str())) {
-	const size_t len = sizeof(shouldMoveOnClickTypes) / sizeof(shouldMoveOnClickTypes[0]);
-	for (size_t i = 0; i < len; ++i) {
-		if (hitWidget->inherits(shouldMoveOnClickTypes[i])) {
-			return true;
-		}
-	}
-	return false;
-}
-
-void NodeItem::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent) {
-	if (shouldMoveNode(mouseEvent)) {
-		QGraphicsItem::mousePressEvent(mouseEvent);
-		isMoving = true;
-		// what if we have to remove that?
-		scene()->clearSelection();
-		scene()->clearFocus();
-		setSelected(true);
-	}
-	else {
-		QGraphicsProxyWidget::mousePressEvent(mouseEvent);
-	}
-}
-
-void NodeItem::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent) {
-	if (isMoving) {
+    if (isMoving) {
 		QGraphicsItem::mouseMoveEvent(mouseEvent);
 
 		//dw667 backmerge: was active
@@ -459,22 +285,24 @@ void NodeItem::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent) {
 
 	//scene()->clearSelection();
 	//setSelected(true);
-
-	//dw667 backmerge: was active
-	//updateConnectorsPos();
+    //updateConnectorsPos();
 }
 
-void NodeItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent) {
+void NodeItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
+{
+    qDebug() << __FUNCTION__;
+
 	if (isMoving) {
 		isMoving = false;
 	}
+
 	//call both always to lose no events and to not have to do the same shit for clicks too
 	QGraphicsItem::mouseReleaseEvent(mouseEvent);
 	QGraphicsProxyWidget::mouseReleaseEvent(mouseEvent);
 	scene()->clearSelection();
 	setSelected(true);
 
-	//updateConnectorsPos();
+    //updateConnectorsPos();
 }
 
 

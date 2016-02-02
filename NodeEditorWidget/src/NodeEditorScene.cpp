@@ -25,7 +25,6 @@ NodeEditorScene::NodeEditorScene(QWidget *parent)
 }
 
 
-
 void NodeEditorScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     qDebug() << __FUNCTION__;
@@ -56,7 +55,7 @@ void NodeEditorScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
             //}
 
 
-            if (start->connectorType() != NodePort::In) {
+            if (start->portType() != NodePort::In) {
                 tmpConnection = new NodeConnection(start, tmpPort, NULL, this);
             }
             else {
@@ -88,23 +87,25 @@ void NodeEditorScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
 void NodeEditorScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
+    qDebug() << __FUNCTION__;
+
     if (tmpConnection != 0) {
 
 		//simple right/left handling
-        if (tmpConnection->startConnector()->mapToScene(0,0).x() < tmpConnection->endConnector()->mapToScene(0,0).x()) {
-            if (tmpPort == tmpConnection->endConnector())
-                tmpPort->setConnectorAlignment(NodePort::PortAlignment::Left);// right = false;
+        if (tmpConnection->startPort()->mapToScene(0,0).x() < tmpConnection->endPort()->mapToScene(0,0).x()) {
+            if (tmpPort == tmpConnection->endPort())
+                tmpPort->setPortAlignment(NodePort::PortAlignment::Left);// right = false;
 			else
 				//tmpConnector->right = true;
-                tmpPort->setConnectorAlignment(NodePort::PortAlignment::Right);
+                tmpPort->setPortAlignment(NodePort::PortAlignment::Right);
 		}
 		else {
-            if (tmpPort == tmpConnection->endConnector())
+            if (tmpPort == tmpConnection->endPort())
 				//tmpConnector->right = true;
-                tmpPort->setConnectorAlignment(NodePort::PortAlignment::Right);
+                tmpPort->setPortAlignment(NodePort::PortAlignment::Right);
 			else
 				//tmpConnector->right = false;
-                tmpPort->setConnectorAlignment(NodePort::PortAlignment::Left);
+                tmpPort->setPortAlignment(NodePort::PortAlignment::Left);
 		}
 
 		// if we hit a connecor, highlight it and take 'right' over, switch in and out if neccessary
@@ -116,13 +117,13 @@ void NodeEditorScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 			//dw thats how a cast should look like
             NodePort *node = qgraphicsitem_cast<NodePort *>(intersectedItems.first());
 			//ugly direction handling, only case where a switch is possible
-            if (existingPort->connectorType() == NodePort::InOut) {
+            if (existingPort->portType() == NodePort::InOut) {
 				//switch if non matching
-                if ((node->connectorType() == NodePort::Out && tmpConnection->startConnector() == existingPort)
-                    || (node->connectorType() == NodePort::In && tmpConnection->endConnector() == existingPort)) {
+                if ((node->portType() == NodePort::Out && tmpConnection->startPort() == existingPort)
+                    || (node->portType() == NodePort::In && tmpConnection->endPort() == existingPort)) {
 					//tmpConnector->setConnectorType(node->connectorType());
-                    NodePort* old1 = tmpConnection->startConnector();
-                    NodePort* old2 = tmpConnection->endConnector();
+                    NodePort* old1 = tmpConnection->startPort();
+                    NodePort* old2 = tmpConnection->endPort();
 					//dw needed? removeItem(tmpArrow);
 					//dw667 backmerge: to slow if connector is child of item
 					//removeItem(tmpArrow);
@@ -133,7 +134,7 @@ void NodeEditorScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 				}
 			}
 			//check if uncompatible
-            else if (node->connectorType() != NodePort::InOut && node->connectorType() == existingPort->connectorType()) {
+            else if (node->portType() != NodePort::InOut && node->portType() == existingPort->portType()) {
 				return;
 			}
 
@@ -144,8 +145,8 @@ void NodeEditorScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 			node->updatePosition();
 			node->update();
 			
-            tmpPort->setConnectorAlignment(node->connectorAlignment());
-            tmpPort->setConnectorType(node->connectorType());
+            tmpPort->setPortAlignment(node->portAlignment());
+            tmpPort->setPortType(node->portType());
 			//FIXME: make configurable
             tmpConnection->setBidirectional(true);
 
@@ -186,15 +187,17 @@ void NodeEditorScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
 void NodeEditorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
+    qDebug() << __FUNCTION__;
+
     if (tmpConnection != 0) {
-        NodePort* startC = tmpConnection->startConnector();
-        NodePort* endC = tmpConnection->endConnector();
+        NodePort* startC = tmpConnection->startPort();
+        NodePort* endC = tmpConnection->endPort();
 		QPointF startPos(startC->mapToScene(0, 0));
 		QPointF endPos(endC->mapToScene(0, 0));
 		//QPointF endPos(mouseEvent->scenePos());
 
-        tmpConnection->startConnector()->setHighlight(false);
-        tmpConnection->endConnector()->setHighlight(false);
+        tmpConnection->startPort()->setHighlight(false);
+        tmpConnection->endPort()->setHighlight(false);
 		/*tmpArrow->startConnector()->updatePosition();
 		tmpArrow->startConnector()->update();
 		tmpArrow->endConnector()->updatePosition();
@@ -231,7 +234,7 @@ void NodeEditorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
                 qgraphicsitem_cast<NodePort *>(endConnectors.first());
 
 			//dw new: verify again:
-            if (!((startConnector->connectorType() == NodePort::In && endConnector->connectorType() == NodePort::In) || (startConnector->connectorType() == NodePort::Out && endConnector->connectorType() == NodePort::Out)))
+            if (!((startConnector->portType() == NodePort::In && endConnector->portType() == NodePort::In) || (startConnector->portType() == NodePort::Out && endConnector->portType() == NodePort::Out)))
 			{
 				NodeConnection *arrow = new NodeConnection(startConnector, endConnector, NULL, this);
                 arrow->setColor(QColor(100,100,100)/*settings.connectionLineColor*/);
@@ -239,10 +242,10 @@ void NodeEditorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 				endConnector->addConnection(arrow);
 				arrow->setZValue(-1000.0);
 
-				arrow->startConnector()->setHighlight(false);
-				arrow->endConnector()->setHighlight(false);
-				arrow->startConnector()->update();
-				arrow->endConnector()->update();
+                arrow->startPort()->setHighlight(false);
+                arrow->endPort()->setHighlight(false);
+                arrow->startPort()->update();
+                arrow->endPort()->update();
 			}
 
 //            arrow->setZValue(2.0);
@@ -283,9 +286,7 @@ bool NodeEditorScene::isItemChange(int type)
 
 
 NodeItem * NodeEditorScene::createNode () {
-    NodeItem *node2 = new NodeItem(0);
-    //this->addItem(node2);
-    //node2->setPos(mouseEvent->scenePos());
+    NodeItem *node2 = new NodeItem();
     return node2;
 }
 

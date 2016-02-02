@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 #include "NodeEditorScene.h"
+#include "NodeEditorView.h"
+
 
 namespace Ui {
 class MainWindow;
@@ -25,7 +27,7 @@ private:
     Ui::MainWindow *ui;
 
 
-    QGraphicsView * nodeEditorView;
+    NodeEditorWidget * nodeEditorWidget;
     NodeEditorScene * nodeEditorScene;
 };
 

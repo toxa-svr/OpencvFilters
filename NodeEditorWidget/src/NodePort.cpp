@@ -4,36 +4,26 @@
 #include "NodeConnection.h"
 #include "NodePort.h"
 
-NodePort::NodePort(NodeItem *parent1,
+NodePort::NodePort(NodeItem *parentItem,
                    QGraphicsScene *scene1,
-                   /*QLabel*/QWidget* widget,
+                   QWidget* widget,
                    NodePort::PortType conType1,
                    const PortAlignment connectorAlignment,
                    bool singleConnection,
                    bool disableWidgetOnConnection,
-                   int radius,
-                   bool selfConnections)
-        : QGraphicsItem(parent1/*, scene1*/),
-          mConnectorType(conType1),
-          parent(parent1),
+                   int radius)
+        : QGraphicsItem(parentItem/*, scene1*/),
+          mPortType(conType1),
+          ownerItem(parentItem),
           mWidget(widget),
-          mConnectorAlignment(connectorAlignment),
+          mPortAlignment(connectorAlignment),
           mSingleConnection(singleConnection),
           mDisableWidgetOnConnection(disableWidgetOnConnection),
-          mSelfConnections(selfConnections),
           mRadius(radius)
 {
-	//orig
-    //setFlag(ItemIsMovable);
-	//dw new4: is this a problem? check it
     setCacheMode(DeviceCoordinateCache);
-
-    //dw new: setZValue(1);
 	setZValue(2);
-
-	//dw667: new try
 	updatePosition();
-
 	//setFlag(QGraphicsItem::ItemIsSelectable, true);
 
 	if (conType1 == PortType::In) {
@@ -64,18 +54,18 @@ void NodePort::updatePosition() {
 	this->prepareGeometryChange();
 
 	//if we dont have parent, stay where we are
-	if (parent == NULL || mWidget == NULL) {
+    if (ownerItem == NULL || mWidget == NULL) {
 		return;
 	}
 
-	QPointF pPos = parent->pos();
+    QPointF pPos = ownerItem->pos();
 	QSize widgetSize = mWidget->size();
 	//dw677:
 	//QSizeF widgetSize = parent->size();
 	//radius = labelSize.height()/2;
 
 	QPointF newPos;
-    if (connectorAlignment() == NodePort::Left) {
+    if (portAlignment() == NodePort::Left) {
 		newPos.setX(-mRadius);
 		//newPos.setY(mWidget->pos().y() + widgetSize.height()/2.0);
 		//dw677:
@@ -83,9 +73,9 @@ void NodePort::updatePosition() {
 		//newPos.setY(mWidget->pos().y() + mWidget->rect().height()/2.0);
 		//newPos.setY(mWidget->pos().y() + mWidget->rect().height()/2.0);
 		//newPos.setY(mWidget->pos().y() + mWidget->height()/2.0);
-		newPos.setY(parent->subWidgetRect(mWidget).y() + parent->subWidgetRect(mWidget).height()/2.0);
+        newPos.setY(ownerItem->subWidgetRect(mWidget).y() + ownerItem->subWidgetRect(mWidget).height()/2.0);
 	}
-    else if (connectorAlignment() == NodePort::Right) {
+    else if (portAlignment() == NodePort::Right) {
 		//seems to be to big
 		//newPos.setX(parent->boundingRect().width()+mRadius+1);
 		//seems to be size of content??? too small
@@ -101,21 +91,21 @@ void NodePort::updatePosition() {
 			*/
 
 		//dw FIXME: ugly
-		newPos.setX(parent->rect().width() + mRadius);
+        newPos.setX(ownerItem->rect().width() + mRadius);
 		//newPos.setY(mWidget->pos().y()+ widgetSize.height()/2.0);
-		newPos.setY(parent->subWidgetRect(mWidget).y()+ parent->subWidgetRect(mWidget).height()/2.0);
+        newPos.setY(ownerItem->subWidgetRect(mWidget).y()+ ownerItem->subWidgetRect(mWidget).height()/2.0);
 	}
-    else if (connectorAlignment() == NodePort::Bottom) {
+    else if (portAlignment() == NodePort::Bottom) {
 		//newPos.setX(mWidget->pos().x() + widgetSize.width()/2.0);
-		newPos.setX(parent->subWidgetRect(mWidget).x() + parent->subWidgetRect(mWidget).width()/2.0);
+        newPos.setX(ownerItem->subWidgetRect(mWidget).x() + ownerItem->subWidgetRect(mWidget).width()/2.0);
 
 		//newPos.setY(parent->widget()->rect().height() + mRadius);
 		//newPos.setY(parent->boundingRect().height() + mRadius);
-		newPos.setY(parent->rect().height() + mRadius);
+        newPos.setY(ownerItem->rect().height() + mRadius);
 	}
-    else if (connectorAlignment() == NodePort::Top) {
+    else if (portAlignment() == NodePort::Top) {
 		//newPos.setX(mWidget->pos().x() + widgetSize.width()/2.0);
-		newPos.setX(parent->subWidgetRect(mWidget).x() + parent->subWidgetRect(mWidget).width()/2.0);
+        newPos.setX(ownerItem->subWidgetRect(mWidget).x() + ownerItem->subWidgetRect(mWidget).width()/2.0);
 		newPos.setY(-mRadius);
 	}
 
@@ -149,27 +139,16 @@ QRectF NodePort::boundingRect() const
 
 QPainterPath NodePort::shape() const
 {
-	
     QPainterPath path;
     path.addEllipse(-mRadius, -mRadius, 2*mRadius, 2*mRadius);
     return path;
-	
-	//dw new
-	//return QGraphicsItem::shape();
-
-	//dw new2
-	/*
-	QPainterPath path;
-	path.addRect(boundingRect());
-    return path;
-	*/
 }
 
 
-void NodePort::debugPaint(QPainter *painter) {
-	//dw debug
+void NodePort::debugPaint(QPainter *painter)
+{
 	static int i = 0, j=0, k=0;
-	painter->fillRect(boundingRect(), /*Qt::green*/ QColor(i=(i+19)%256 , j=(j+51)%256, k=(k+11)%256)); // to see item.
+    painter->fillRect(boundingRect(), QColor(i=(i+19)%256 , j=(j+51)%256, k=(k+11)%256)); // to see item.
 }
 
 
@@ -242,16 +221,17 @@ void NodePort::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
 
 void NodePort::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-	//highlight = true;
+    qDebug() << __FUNCTION__;
+
     update();
     QGraphicsItem::mousePressEvent(event);
 }
 
 void NodePort::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
-	setHighlight(false);
-	//highlight = false;
-    //update();
+    qDebug() << __FUNCTION__;
+
+    setHighlight(false);
     QGraphicsItem::mouseReleaseEvent(event);
 }
 
@@ -297,9 +277,10 @@ void NodePort::deleteConnections()
 	}
 }
 
-void NodePort::removeWidget() {
+void NodePort::removeWidget()
+{
 	mWidget = NULL;
-	parent = NULL;
+    ownerItem = NULL;
 }
 
 

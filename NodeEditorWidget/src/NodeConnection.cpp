@@ -10,13 +10,13 @@
 const qreal Pi = 3.14;
 
 NodeConnection::~NodeConnection(){
-	if (this->mStartConnector != NULL) {
-		this->mStartConnector->removeConnection(this);
-		this->mStartConnector = NULL;
+    if (this->mStartPort != NULL) {
+        this->mStartPort->removeConnection(this);
+        this->mStartPort = NULL;
 	}
-	if (this->mEndConnector != NULL) {
-		this->mEndConnector->removeConnection(this);
-		this->mEndConnector = NULL;
+    if (this->mEndPort != NULL) {
+        this->mEndPort->removeConnection(this);
+        this->mEndPort = NULL;
 	}
 
 	if (scene() != NULL) {
@@ -25,8 +25,8 @@ NodeConnection::~NodeConnection(){
 }
 
 //! [0]
-NodeConnection::NodeConnection(NodePort *startConnector,
-                               NodePort *endConnector,
+NodeConnection::NodeConnection(NodePort *startPort,
+                               NodePort *endPort,
                                QGraphicsItem *parent,
                                QGraphicsScene *scene,
                                bool bidirectional)
@@ -34,8 +34,8 @@ NodeConnection::NodeConnection(NodePort *startConnector,
 {
 	//setCacheMode(DeviceCoordinateCache);
 
-    mStartConnector = startConnector;
-    mEndConnector = endConnector;
+    mStartPort = startPort;
+    mEndPort = endPort;
     setFlag(QGraphicsItem::ItemIsSelectable, true);
 
 	setBidirectional(bidirectional);
@@ -243,8 +243,8 @@ void NodeConnection::updatePosition() {
 //dw667: DO ONLY CALL FROM PAINT METHOD!!!
 void NodeConnection::recreatePath(QPointF& controlPoint1, QPointF& controlPoint2)
 {
-	QPointF a(mapFromItem(mStartConnector, 0, 0));
-	QPointF b(mapFromItem(mEndConnector, 0, 0));
+    QPointF a(mapFromItem(mStartPort, 0, 0));
+    QPointF b(mapFromItem(mEndPort, 0, 0));
 
 	qreal dist = QLineF(a, b).length();
 	qreal diffx = abs(a.x() - b.x());
@@ -256,15 +256,15 @@ void NodeConnection::recreatePath(QPointF& controlPoint1, QPointF& controlPoint2
 	NodePort* rightConn;
 	if (a.x() < b.x()) {
 		left = a;
-		leftConn = mStartConnector;
+        leftConn = mStartPort;
 		right = b;
-		rightConn = mEndConnector;
+        rightConn = mEndPort;
 	}
 	else {
 		left = b;
-		leftConn = mEndConnector;
+        leftConn = mEndPort;
 		right = a;
-		rightConn = mStartConnector;
+        rightConn = mStartPort;
 	}
 
 	QPointF bottom;
@@ -273,15 +273,15 @@ void NodeConnection::recreatePath(QPointF& controlPoint1, QPointF& controlPoint2
 	NodePort* topConn;
 	if (a.y() < b.y()) {
 		top = a;
-		topConn = mStartConnector;
+        topConn = mStartPort;
 		bottom = b;
-		bottomConn = mEndConnector;	
+        bottomConn = mEndPort;
 	}
 	else {
 		top = b;
-		topConn = mEndConnector;
+        topConn = mEndPort;
 		bottom = a;
-		bottomConn = mStartConnector;
+        bottomConn = mStartPort;
 	}
 
 	
@@ -311,26 +311,26 @@ void NodeConnection::recreatePath(QPointF& controlPoint1, QPointF& controlPoint2
 	
 	
 
-	if (leftConn->connectorAlignment() == rightConn->connectorAlignment() && leftConn->connectorAlignment() == NodePort::Left && right.x() - left.x() < combinedSize.width()/2.0) {
+    if (leftConn->portAlignment() == rightConn->portAlignment() && leftConn->portAlignment() == NodePort::Left && right.x() - left.x() < combinedSize.width()/2.0) {
 		controlPoint1.setX(controlPoint1.x() - moveY/2.0 /*- combinedSize.width()/2.0*/);
 		controlPoint2.setX(controlPoint2.x() - moveY/2.0 /*- combinedSize.width()/2.0*/);
 	}
-	else if (leftConn->connectorAlignment() == rightConn->connectorAlignment() && leftConn->connectorAlignment() == NodePort::Right && right.x() - left.x() < combinedSize.width()/2.0) {
+    else if (leftConn->portAlignment() == rightConn->portAlignment() && leftConn->portAlignment() == NodePort::Right && right.x() - left.x() < combinedSize.width()/2.0) {
 		controlPoint1.setX(controlPoint1.x() + moveY/2.0 /*+ combinedSize.width()/2.0*/);
 		controlPoint2.setX(controlPoint2.x() + moveY/2.0 /*+ combinedSize.width()/2.0*/);
 	}
-	else if (leftConn->connectorAlignment() == rightConn->connectorAlignment() && leftConn->connectorAlignment() == NodePort::Top && bottom.y() - top.y() < combinedSize.height()/2.0) {
+    else if (leftConn->portAlignment() == rightConn->portAlignment() && leftConn->portAlignment() == NodePort::Top && bottom.y() - top.y() < combinedSize.height()/2.0) {
 		controlPoint1.setY(controlPoint1.y() - moveX/2.0 /*- combinedSize.height()/2.0*/);
 		controlPoint2.setY(controlPoint2.y() - moveX/2.0 /*- combinedSize.height()/2.0*/);
 	}
-	else if (leftConn->connectorAlignment() == rightConn->connectorAlignment() && leftConn->connectorAlignment() == NodePort::Bottom && bottom.y() - top.y() < combinedSize.height()/2.0) {
+    else if (leftConn->portAlignment() == rightConn->portAlignment() && leftConn->portAlignment() == NodePort::Bottom && bottom.y() - top.y() < combinedSize.height()/2.0) {
 		controlPoint1.setY(controlPoint1.y() + moveX/2.0 /*+ combinedSize.height()/2.0*/);
 		controlPoint2.setY(controlPoint2.y() + moveX/2.0 /*+ combinedSize.height()/2.0*/);
 	}
 	else
 	//the simple case, they face each other the "good" way
-	if (leftConn->connectorAlignment() != NodePort::Left && rightConn->connectorAlignment() != NodePort::Right
-			&& topConn->connectorAlignment() != NodePort::Top && bottomConn->connectorAlignment() != NodePort::Bottom) {
+    if (leftConn->portAlignment() != NodePort::Left && rightConn->portAlignment() != NodePort::Right
+            && topConn->portAlignment() != NodePort::Top && bottomConn->portAlignment() != NodePort::Bottom) {
 
 		//very simple: straight line
 		//controlPoint1 = a + 0.3 * (b-a);
@@ -341,7 +341,7 @@ void NodeConnection::recreatePath(QPointF& controlPoint1, QPointF& controlPoint2
 		//how much to move control point from start or end point
 		qreal moveX = 0.45 * diffx;
 		qreal moveY = 0.45 * diffy;
-		if (dist > 5 * (mStartConnector->mRadius + arrowSize)) {
+        if (dist > 5 * (mStartPort->mRadius + arrowSize)) {
 			/* does mess up good case because moves there too
 			if (abs(diffx-diffy) > 0.3 * dist) {
 				moveX += abs(diffx-diffy);
@@ -349,37 +349,37 @@ void NodeConnection::recreatePath(QPointF& controlPoint1, QPointF& controlPoint2
 			}
 			*/
 				
-			if (moveX < 3 * (mStartConnector->mRadius + arrowSize)) {
-				moveX = 3 * (mStartConnector->mRadius + arrowSize);
+            if (moveX < 3 * (mStartPort->mRadius + arrowSize)) {
+                moveX = 3 * (mStartPort->mRadius + arrowSize);
 			}
-			if (moveY < 3 * (mStartConnector->mRadius + arrowSize)) {
-				moveY = 3 * (mStartConnector->mRadius + arrowSize);
+            if (moveY < 3 * (mStartPort->mRadius + arrowSize)) {
+                moveY = 3 * (mStartPort->mRadius + arrowSize);
 			}
 		}
 
-		if (mStartConnector->connectorAlignment() == NodePort::Left) {
+        if (mStartPort->portAlignment() == NodePort::Left) {
 			controlPoint1.setX(controlPoint1.x() - moveX);
 		}
-		else if (mStartConnector->connectorAlignment() == NodePort::Right) {
+        else if (mStartPort->portAlignment() == NodePort::Right) {
 			controlPoint1.setX(controlPoint1.x() + moveX);
 		}
-		else if (mStartConnector->connectorAlignment() == NodePort::Bottom) {
+        else if (mStartPort->portAlignment() == NodePort::Bottom) {
 			controlPoint1.setY(controlPoint1.y() + moveY);
 		}
-		else if (mStartConnector->connectorAlignment() == NodePort::Top) {
+        else if (mStartPort->portAlignment() == NodePort::Top) {
 			controlPoint1.setY(controlPoint1.y() - moveY);
 		}
 
-		if (mEndConnector->connectorAlignment() == NodePort::Left) {
+        if (mEndPort->portAlignment() == NodePort::Left) {
 			controlPoint2.setX(controlPoint2.x() - moveX);
 		}
-		else if (mEndConnector->connectorAlignment() == NodePort::Right) {
+        else if (mEndPort->portAlignment() == NodePort::Right) {
 			controlPoint2.setX(controlPoint2.x() + moveX);
 		}
-		else if (mEndConnector->connectorAlignment() == NodePort::Bottom) {
+        else if (mEndPort->portAlignment() == NodePort::Bottom) {
 			controlPoint2.setY(controlPoint2.y() + moveY);
 		}
-		else if (mEndConnector->connectorAlignment() == NodePort::Top) {
+        else if (mEndPort->portAlignment() == NodePort::Top) {
 			controlPoint2.setY(controlPoint2.y() - moveY);
 		}
 	}
@@ -390,11 +390,11 @@ void NodeConnection::recreatePath(QPointF& controlPoint1, QPointF& controlPoint2
 		qreal maxMove = 0.5 * dist;
 		moveX = 0.5 * dist;
 		moveY = 0.5 * dist;
-		if (mStartConnector->parent != NULL) {
-			maxMove = 1 * (mStartConnector->parent->rect().width() + mStartConnector->parent->rect().height());
+        if (mStartPort->ownerItem != NULL) {
+            maxMove = 1 * (mStartPort->ownerItem->rect().width() + mStartPort->ownerItem->rect().height());
 		}
-		else if (mEndConnector->parent != NULL) {
-			maxMove = 1 * (mEndConnector->parent->rect().width() + mEndConnector->parent->rect().height());
+        else if (mEndPort->ownerItem != NULL) {
+            maxMove = 1 * (mEndPort->ownerItem->rect().width() + mEndPort->ownerItem->rect().height());
 		}
 		if (moveX > maxMove) {
 			moveX = maxMove + 0.1 * (moveX-maxMove);
@@ -402,27 +402,27 @@ void NodeConnection::recreatePath(QPointF& controlPoint1, QPointF& controlPoint2
 		if (moveY > maxMove) {
 			moveY = maxMove + 0.1 * (moveY-maxMove);
 		}
-		if (mStartConnector->connectorAlignment() == NodePort::Left) {
+        if (mStartPort->portAlignment() == NodePort::Left) {
 			moveX *= -1;
-			if ((mStartConnector == topConn) == (mStartConnector == rightConn)) {
+            if ((mStartPort == topConn) == (mStartPort == rightConn)) {
 				moveY *= -1;//relevantHeight;
 			}
 		}
-		else if (mStartConnector->connectorAlignment() == NodePort::Right) {
+        else if (mStartPort->portAlignment() == NodePort::Right) {
 			//moveX *= 1;
-			if ((mStartConnector == topConn) == (mStartConnector == leftConn)) {
+            if ((mStartPort == topConn) == (mStartPort == leftConn)) {
 				moveY *= -1;//relevantHeight;
 			}
 		}
-		else if (mStartConnector->connectorAlignment() == NodePort::Bottom) {
+        else if (mStartPort->portAlignment() == NodePort::Bottom) {
 			//moveY *= 1;
-			if ((mStartConnector == leftConn) == (mStartConnector == topConn)) {
+            if ((mStartPort == leftConn) == (mStartPort == topConn)) {
 				moveX *= -1;
 			}
 		}
-		else if (mStartConnector->connectorAlignment() == NodePort::Top) {
+        else if (mStartPort->portAlignment() == NodePort::Top) {
 			moveY *= -1;
-			if ((mStartConnector == leftConn) == (mStartConnector == bottomConn)) {
+            if ((mStartPort == leftConn) == (mStartPort == bottomConn)) {
 				moveX *= -1;
 			}
 		}
@@ -435,19 +435,19 @@ void NodeConnection::recreatePath(QPointF& controlPoint1, QPointF& controlPoint2
 		*/
 
 		//ugly shit: handle some cases that don't look nice
-		if (mEndConnector == topConn && topConn->connectorAlignment() == NodePort::Top && (bottomConn->connectorAlignment() == NodePort::Left || bottomConn->connectorAlignment() == NodePort::Right)) {
+        if (mEndPort == topConn && topConn->portAlignment() == NodePort::Top && (bottomConn->portAlignment() == NodePort::Left || bottomConn->portAlignment() == NodePort::Right)) {
 			moveY *= -1;
 			//moveY = 0;
 		}
-		else if (mEndConnector == bottomConn && bottomConn->connectorAlignment() == NodePort::Bottom && (topConn->connectorAlignment() == NodePort::Left || topConn->connectorAlignment() == NodePort::Right)) {
+        else if (mEndPort == bottomConn && bottomConn->portAlignment() == NodePort::Bottom && (topConn->portAlignment() == NodePort::Left || topConn->portAlignment() == NodePort::Right)) {
 			moveY *= -1;
 			//moveY = 0;
 		}
-		else if (mEndConnector == leftConn && leftConn->connectorAlignment() == NodePort::Left && (rightConn->connectorAlignment() == NodePort::Top || rightConn->connectorAlignment() == NodePort::Bottom)) {
+        else if (mEndPort == leftConn && leftConn->portAlignment() == NodePort::Left && (rightConn->portAlignment() == NodePort::Top || rightConn->portAlignment() == NodePort::Bottom)) {
 			moveX *= -1;
 			//moveX = 0;
 		}
-		else if (mEndConnector == rightConn && rightConn->connectorAlignment() == NodePort::Right && (leftConn->connectorAlignment() == NodePort::Top || leftConn->connectorAlignment() == NodePort::Bottom)) {
+        else if (mEndPort == rightConn && rightConn->portAlignment() == NodePort::Right && (leftConn->portAlignment() == NodePort::Top || leftConn->portAlignment() == NodePort::Bottom)) {
 			moveX *= -1;
 			//moveX = 0;
 		}
@@ -459,8 +459,8 @@ void NodeConnection::recreatePath(QPointF& controlPoint1, QPointF& controlPoint2
 		moveX = 0.5 * dist;
 		moveY = 0.5 * dist;
 		// if start was null, then it was already set to end.
-		if (mStartConnector->parent != NULL && mEndConnector->parent != NULL) {
-			maxMove = 1 * (mEndConnector->parent->rect().width() + mEndConnector->parent->rect().height());
+        if (mStartPort->ownerItem != NULL && mEndPort->ownerItem != NULL) {
+            maxMove = 1 * (mEndPort->ownerItem->rect().width() + mEndPort->ownerItem->rect().height());
 		}
 		if (moveX > maxMove) {
 			moveX = maxMove + 0.1 * (moveX-maxMove);
@@ -468,27 +468,27 @@ void NodeConnection::recreatePath(QPointF& controlPoint1, QPointF& controlPoint2
 		if (moveY > maxMove) {
 			moveY = maxMove + 0.1 * (moveY-maxMove);
 		}
-		if (mEndConnector->connectorAlignment() == NodePort::Left) {
+        if (mEndPort->portAlignment() == NodePort::Left) {
 			moveX *= -1;
-			if ((mEndConnector == topConn) == (mEndConnector == rightConn)) {
+            if ((mEndPort == topConn) == (mEndPort == rightConn)) {
 				moveY *= -1;//relevantHeight;
 			}
 		}
-		else if (mEndConnector->connectorAlignment() == NodePort::Right) {
+        else if (mEndPort->portAlignment() == NodePort::Right) {
 			//moveX *= 1;
-			if ((mEndConnector == topConn) == (mEndConnector == leftConn)) {
+            if ((mEndPort == topConn) == (mEndPort == leftConn)) {
 				moveY *= -1;//relevantHeight;
 			}
 		}
-		else if (mEndConnector->connectorAlignment() == NodePort::Bottom) {
+        else if (mEndPort->portAlignment() == NodePort::Bottom) {
 			//moveY *= 1;
-			if ((mStartConnector == leftConn) == (mStartConnector == topConn)) {
+            if ((mStartPort == leftConn) == (mStartPort == topConn)) {
 				moveX *= -1;
 			}
 		}
-		else if (mEndConnector->connectorAlignment() == NodePort::Top) {
+        else if (mEndPort->portAlignment() == NodePort::Top) {
 			moveY *= -1;
-			if ((mStartConnector == leftConn) == (mStartConnector == bottomConn)) {
+            if ((mStartPort == leftConn) == (mStartPort == bottomConn)) {
 				moveX *= -1;
 			}
 		}
@@ -501,19 +501,19 @@ void NodeConnection::recreatePath(QPointF& controlPoint1, QPointF& controlPoint2
 
 
 		//ugly shit: handle some cases that don't look nice
-		if (mStartConnector == topConn && topConn->connectorAlignment() == NodePort::Top && (bottomConn->connectorAlignment() == NodePort::Left || bottomConn->connectorAlignment() == NodePort::Right)) {
+        if (mStartPort == topConn && topConn->portAlignment() == NodePort::Top && (bottomConn->portAlignment() == NodePort::Left || bottomConn->portAlignment() == NodePort::Right)) {
 			moveY *= -1;
 			//moveY = 0;
 		}
-		else if (mStartConnector == bottomConn && bottomConn->connectorAlignment() == NodePort::Bottom && (topConn->connectorAlignment() == NodePort::Left || topConn->connectorAlignment() == NodePort::Right)) {
+        else if (mStartPort == bottomConn && bottomConn->portAlignment() == NodePort::Bottom && (topConn->portAlignment() == NodePort::Left || topConn->portAlignment() == NodePort::Right)) {
 			moveY *= -1;
 			//moveY = 0;
 		}
-		else if (mStartConnector == leftConn && leftConn->connectorAlignment() == NodePort::Left && (rightConn->connectorAlignment() == NodePort::Top || rightConn->connectorAlignment() == NodePort::Bottom)) {
+        else if (mStartPort == leftConn && leftConn->portAlignment() == NodePort::Left && (rightConn->portAlignment() == NodePort::Top || rightConn->portAlignment() == NodePort::Bottom)) {
 			moveX *= -1;
 			//moveX = 0;
 		}
-		else if (mStartConnector == rightConn && rightConn->connectorAlignment() == NodePort::Right && (leftConn->connectorAlignment() == NodePort::Top || leftConn->connectorAlignment() == NodePort::Bottom)) {
+        else if (mStartPort == rightConn && rightConn->portAlignment() == NodePort::Right && (leftConn->portAlignment() == NodePort::Top || leftConn->portAlignment() == NodePort::Bottom)) {
 			moveX *= -1;
 			//moveX = 0;
 		}
@@ -534,7 +534,7 @@ QPolygonF NodeConnection::createArrowPoly(QPainterPath& p, NodePort* conn) {
 	float arrowStartPercentage;
 	float arrowEndPercentage;
 	
-	if (conn == mEndConnector) {
+    if (conn == mEndPort) {
 		arrowStartPercentage = p.percentAtLength(p.length() - conn->mRadius - arrowSize);
 		arrowEndPercentage = p.percentAtLength(p.length() - conn->mRadius);
 	}
@@ -559,7 +559,7 @@ QPolygonF NodeConnection::createArrowPoly(QPainterPath& p, NodePort* conn) {
 
 
 bool NodeConnection::setBidirectional(bool bidirectional) {
-	mBidirectional =  bidirectional && mStartConnector->connectorType() == NodePort::InOut && mEndConnector->connectorType() == NodePort::InOut;
+    mBidirectional =  bidirectional && mStartPort->portType() == NodePort::InOut && mEndPort->portType() == NodePort::InOut;
 	return mBidirectional;
 }
 bool NodeConnection::bidirectional() {
@@ -599,7 +599,7 @@ void NodeConnection::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
 	//dw 699:
 	painter->setRenderHint(QPainter::Antialiasing);
 
-	if (mStartConnector == NULL || mEndConnector == NULL || mStartConnector->collidesWithItem(mEndConnector))
+    if (mStartPort == NULL || mEndPort == NULL || mStartPort->collidesWithItem(mEndPort))
         return;
 
 	//ugly, only used for debug draw
@@ -642,9 +642,9 @@ void NodeConnection::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
 	painter->setBrush(mColor);
 
 	//test:
-	QPolygonF arrowHeadEnd = createArrowPoly(p, mEndConnector);
+    QPolygonF arrowHeadEnd = createArrowPoly(p, mEndPort);
 	if (bidirectional()) {
-		QPolygonF arrowHeadStart = createArrowPoly(p, mStartConnector);
+        QPolygonF arrowHeadStart = createArrowPoly(p, mStartPort);
 		p.addPolygon(arrowHeadStart);
 		painter->drawPolygon(arrowHeadStart);
 	}
