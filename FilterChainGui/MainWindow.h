@@ -2,7 +2,9 @@
 
 #include <QMainWindow>
 #include <QtWidgets>
+#include "NodeEditorWidget.h"
 #include "NodeEditorScene.h"
+
 
 namespace Ui {
 class MainWindow;
@@ -55,9 +57,7 @@ private:
     QAction *aboutAction;
 
 
-
-
-    QGraphicsView * nodeEditorView;
+    NodeEditorWidget * nodeEditorWidget;
     NodeEditorScene * nodeEditorScene;
 
 

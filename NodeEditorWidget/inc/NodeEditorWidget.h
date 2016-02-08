@@ -75,7 +75,7 @@ public slots:
 
 private slots:
     void zoomReset();
-    void setupMatrix();
+    void setupZoom();
 
 private:
     NodeEditorView * nodeEditorView;

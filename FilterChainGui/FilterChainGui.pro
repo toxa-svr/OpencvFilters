@@ -21,14 +21,20 @@ TARGET = FilterChainGui
 SOURCES += \
     main.cpp\
     mainwindow.cpp \
-    NodeItemProxy.cpp
+    NodeItemProxy.cpp \
+    testwidget_1.cpp \
+    testwidget_2.cpp
 
 HEADERS += \
     mainwindow.h \
-    NodeItemProxy.h
+    NodeItemProxy.h \
+    testwidget_1.h \
+    testwidget_2.h
 
 FORMS += \
-    mainwindow.ui
+    mainwindow.ui \
+    testwidget_1.ui \
+    testwidget_2.ui
 
 
 

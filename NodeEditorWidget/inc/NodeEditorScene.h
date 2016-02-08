@@ -13,8 +13,8 @@ class NodeEditorScene : public QGraphicsScene
 
 public:
     explicit NodeEditorScene(QWidget *parent = nullptr);
-    NodeItem* createNode();
 
+    void deleteSelectedItems();
 
 signals:
     void nodeItemInserted(NodeItem *item);
@@ -22,21 +22,18 @@ signals:
     void itemSelected(QGraphicsItem *item);
 
 protected:
-    void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);
-    void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent);
-    void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent);
+    //void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);
+    //void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent);
+    //void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent);
 
 private:
-    bool isItemChange(int type);
     bool leftButtonDown;
     QPointF startPoint;
     NodeConnection* tmpConnection;
     NodePort* tmpPort;
     NodePort* existingPort;
     NodePort* lastHighlighted;
-
     NodeConnection *conn;
-    NodeItem * createGraphNode();
 };
 
 

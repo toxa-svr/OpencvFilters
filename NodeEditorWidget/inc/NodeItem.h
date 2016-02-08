@@ -20,23 +20,16 @@ public:
 	virtual ~NodeItem();
     void deleteConnections();
     void addPort(NodePort* port);
-	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
-	void setWidget(QWidget *widget);
+    //void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 	QRectF boundingRect() const;
 	QPainterPath shape() const;
     QList<NodePort *> ports;
 
-public slots:
-    void deleted();
-    void hide();
-
 protected:
     QVariant itemChange(GraphicsItemChange change, const QVariant &value);
-	void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);
-	void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent);
-	void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent);
-	void hoverMoveEvent ( QGraphicsSceneHoverEvent * event );
-    void resizeEvent ( QGraphicsSceneResizeEvent * event );
+    void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);
+    void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent);
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent);
 
 private:
     bool isMoving;  // item is moving with mouse now (left button is pressed now)

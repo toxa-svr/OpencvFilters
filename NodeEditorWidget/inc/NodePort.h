@@ -18,8 +18,8 @@ public:
     void setPortType(PortType c)                        { mPortType = c;	}
 
     enum PortAlignment                                  { None = 0, Left = 1, Right = 2, Bottom = 3, Top = 4 };
-    PortAlignment portAlignment() const            { return mPortAlignment;	}
-    void setPortAlignment(PortAlignment alignment) { mPortAlignment = alignment;}
+    PortAlignment portAlignment() const                 { return mPortAlignment;	}
+    void setPortAlignment(PortAlignment alignment)      { mPortAlignment = alignment;}
 
     bool singleConnection() const                       { return mSingleConnection; }
     void setSingleConnection(bool singleConnection)     { mSingleConnection = singleConnection;	}
