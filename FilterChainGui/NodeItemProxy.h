@@ -20,15 +20,15 @@ protected:
     QVariant itemChange(GraphicsItemChange change, const QVariant &value) Q_DECL_OVERRIDE;
 
 private slots:
-    void updateStep(qreal step);
-    void stateChanged(QTimeLine::State);
-    void zoomIn();
-    void zoomOut();
+    //void updateStep(qreal step);
+    //void stateChanged(QTimeLine::State);
+    //void zoomIn();
+    //void zoomOut();
 
 private:
-    QTimeLine *timeLine;
-    bool popupShown;
-    QGraphicsItem *currentPopup;
+    //QTimeLine *timeLine;
+    //bool popupShown;
+    //QGraphicsItem *currentPopup;
 
 };
 

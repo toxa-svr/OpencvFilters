@@ -1,7 +1,7 @@
 #include <QDesktopServices>
 #include "MainWindow.h"
-#include "ui_MainWindow.h"
 
+#include "LibFilter.h"
 #include "NodeEditorScene.h"
 #include "NodeEditorWidget.h"
 #include "NodeItemProxy.h"
@@ -9,12 +9,19 @@
 #include "testwidget_2.h"
 
 MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    QMainWindow(parent)
 {
-    ui->setupUi(this);
     setWindowTitle(tr("OpenCV FilterChain GUI v0.1"));
+    setMinimumSize(640, 480);
+    resize(640, 480);
 
+    // Create status bar
+    statusBar()->setEnabled(true);
+    statusBar()->setVisible(true);
+
+
+
+    // Create actions and put them into MenuBar, ToolBars, ToolBoxes
     createActions();
     createMenus();
     createToolbars();
@@ -24,7 +31,6 @@ MainWindow::MainWindow(QWidget *parent) :
     // Create NodeEditorScene and QGraphicsView for it
     nodeEditorScene = new NodeEditorScene(this);
     nodeEditorWidget = new NodeEditorWidget(nodeEditorScene, this);
-
 
     // Configure scene and connect singnals-slots for it
     nodeEditorScene->setSceneRect(QRectF(0, 0, 5000, 5000));
@@ -36,12 +42,16 @@ MainWindow::MainWindow(QWidget *parent) :
     //   Create layout for the centralWidget
     //     Add QGraphicsView into layout
     //     Add toolbox into layout
-    QWidget *newCentralWidget = new QWidget(this);
-    QHBoxLayout *newLayout = new QHBoxLayout(this);
+    QHBoxLayout *newLayout = new QHBoxLayout();
     newLayout->addWidget(nodeEditorWidget);
     //newLayout->addWidget(toolBox);
+
+    QWidget *newCentralWidget = new QWidget();
     newCentralWidget->setLayout(newLayout);
+
     setCentralWidget(newCentralWidget);
+
+
 
     // TODO next - read settings for main window and graph editor
     // TODO next - open the last used file
@@ -51,7 +61,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-    delete ui;
+
 }
 
 
@@ -87,16 +97,25 @@ void MainWindow::createActions()
     connect(exitAction, SIGNAL(triggered()), this, SLOT(close()));
 
     // Menu-Edit
-    // Create actions for all available filters
-    addItemActionVector.clear();
-    for (int i = 0; i < 3; i++) {
-        QAction * newAddAction = new QAction(tr("Filter ") + QString::number(i), this);
-        newAddAction->setStatusTip(tr("Add new filter ") + QString::number(i));
+    // Get available filters
+    QVector<FilterDescription> filterList = filters.enumerateFilters();
+    foreach(FilterDescription nextFilter, filterList) {
+        qDebug() << nextFilter.id << nextFilter.name;
+        QAction * newAddAction = new QAction(nextFilter.name, this);
+        newAddAction->setData(nextFilter.id);
+        newAddAction->setStatusTip(tr("Add new filter ") + newAddAction->text() + tr(" ID:") + newAddAction->data().toString());
         connect(newAddAction, SIGNAL(triggered()), this, SLOT(addItem()));
-        // Add user data to action
-        newAddAction->setData(i); // TODO - Filter ID
         addItemActionVector.append(newAddAction);
     }
+
+    // TODO
+    // Add one test item
+    QAction * testAddAction = new QAction("Test item", this);
+    testAddAction->setData("000");
+    testAddAction->setStatusTip(tr("Test item ID:") + testAddAction->data().toString());
+    connect(testAddAction, SIGNAL(triggered()), this, SLOT(addItem()));
+    addItemActionVector.append(testAddAction);
+
 
     deleteItemAction = new QAction(tr("Delete"), this);
     deleteItemAction->setShortcut(tr("Delete"));
@@ -156,13 +175,15 @@ void MainWindow::createMenus()
     fileMenu->addAction(exitAction);
 
     // Menu-Edit
-    editMenu = menuBar()->addMenu(tr("Edit"));
-    // Fill submenu with all addItemAction actions
+    editMenu = menuBar()->addMenu(tr("Edit")); 
+    // Create Add submenu and fill it with all addItemAction actions
+    // or disable it if there is no filters
     addItemSubmenu = editMenu->addMenu(tr("Add"));
+    addItemSubmenu->setDisabled(addItemActionVector.isEmpty());
     foreach(QAction * nextAction, addItemActionVector) {
         addItemSubmenu->addAction(nextAction);
     }
-    editMenu->addAction(deleteItemAction);
+   editMenu->addAction(deleteItemAction);
 
     // Menu-Debug
     debugMenu = menuBar()->addMenu(tr("Debug"));
@@ -313,24 +334,44 @@ void MainWindow::addItem()
 
     // Get parent action
     QAction *action = qobject_cast< QAction* >(QObject::sender());
-    QMessageBox::about(this, tr("Add"), action->text());
+
+    // TODO
+    // Add test item
+    if (action->data().toString() == "000") {
+        QGraphicsRectItem * newItem = new QGraphicsRectItem(100, 100, 100, 100);
+        newItem->setFlag(QGraphicsItem::ItemIsMovable, true);
+        newItem->setFlag(QGraphicsItem::ItemIsSelectable, true);
+        newItem->setFlag(QGraphicsItem::ItemIsFocusable, true);
+        nodeEditorScene->addItem(newItem);
+        return;
+    }
+
+
 
     // Extract user data from action and create filter
-    switch (action->data().toInt()) {  // TODO - Filter ID
+    switch (action->data().toS()) {  // TODO - Filter ID
 
         case 0: {
-            // Create Node and add into the Scene
-            NodeItem * newItem = new NodeItem(nullptr);
-            TestWidget_1 * newWidget = new TestWidget_1();
-            newItem->setWidget(newWidget);
-            nodeEditorScene->addItem(newItem);
-            // Add ports
-            QPushButton * newBtn = new QPushButton("port in");
-            NodePort * newPortIn = new NodePort(newItem, nodeEditorScene, newBtn, NodePort::In, NodePort::Left);
-            QLabel * newLbl = new QLabel("port out");
-            NodePort * newPortOut = new NodePort(newItem, nodeEditorScene, newLbl, NodePort::In, NodePort::Right);
-            newItem->addPort(newPortIn);
-            newItem->addPort(newPortOut);
+
+              NodeItemProxy * newItem = new NodeItemProxy();
+              newItem->setWidget(new TestWidget_1());
+              newItem->setFlag(QGraphicsItem::ItemIsMovable, true);
+              newItem->setFlag(QGraphicsItem::ItemIsSelectable, true);
+              newItem->setFlag(QGraphicsItem::ItemIsFocusable, true);
+              nodeEditorScene->addItem(newItem);
+
+//            // Create Node and add into the Scene
+//            NodeItem * newItem = new NodeItem(nullptr);
+//            TestWidget_1 * newWidget = new TestWidget_1();
+//            newItem->setWidget(newWidget);
+//            nodeEditorScene->addItem(newItem);
+//            // Add ports
+//            QPushButton * newBtn = new QPushButton("port in");
+//            NodePort * newPortIn = new NodePort(newItem, nodeEditorScene, newBtn, NodePort::In, NodePort::Left);
+//            QLabel * newLbl = new QLabel("port out");
+//            NodePort * newPortOut = new NodePort(newItem, nodeEditorScene, newLbl, NodePort::In, NodePort::Right);
+//            newItem->addPort(newPortIn);
+//            newItem->addPort(newPortOut);
         }
         break;
 
@@ -342,9 +383,9 @@ void MainWindow::addItem()
             nodeEditorScene->addItem(newItem);
 
 
-            QSlider * theSlider = new QSlider();
-            theSlider->setStyleSheet("background-color:transparent");
-            nodeEditorScene->addWidget(theSlider);
+//            QSlider * theSlider = new QSlider();
+//            theSlider->setStyleSheet("background-color:transparent");
+//            nodeEditorScene->addWidget(theSlider);
         }
         break;
     }

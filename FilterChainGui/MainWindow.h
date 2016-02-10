@@ -4,11 +4,8 @@
 #include <QtWidgets>
 #include "NodeEditorWidget.h"
 #include "NodeEditorScene.h"
+#include "LibFilter.h"
 
-
-namespace Ui {
-class MainWindow;
-}
 
 class MainWindow : public QMainWindow
 {
@@ -18,9 +15,35 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-private:
-    Ui::MainWindow *ui;
+private slots:
+    // Menu-File
+    void fileNew();
+    void fileOpen();
+    void fileSave();
+    void fileSaveAs();
+    // Menu-Edit
+    void addItem();
+    void deleteItem();
+    // Menu-View
+    void scaleCahnged();
+    // Menu-Debug
+    void debugDrawCahnged(bool checked);
+    // Menu-Help
+    void help();
+    void docs();
+    void about();
 
+//    void backgroundButtonGroupClicked(QAbstractButton *button);
+//    void buttonGroupClicked(int id);
+//    void pointerGroupClicked(int id);
+//    void sceneScaleChanged(const QString &scale);
+//    void lineColorChanged();
+//    void lineButtonTriggered();
+//    //void itemSelected(QGraphicsItem *item);
+//    void itemInserted(NodeItem* item);
+
+
+private:
     // Menus/ToolBars/ToolBoxes
     void createMenus();
     void createActions();
@@ -56,38 +79,12 @@ private:
     QAction *docsAction;
     QAction *aboutAction;
 
-
+    // Node Editor
     NodeEditorWidget * nodeEditorWidget;
     NodeEditorScene * nodeEditorScene;
 
-
-private slots:
-    // Menu-File
-    void fileNew();
-    void fileOpen();
-    void fileSave();
-    void fileSaveAs();
-    // Menu-Edit
-    void addItem();
-    void deleteItem();
-    // Menu-View
-    void scaleCahnged();
-    // Menu-Debug
-    void debugDrawCahnged(bool checked);
-    // Menu-Help
-    void help();
-    void docs();
-    void about();
-
-//    void backgroundButtonGroupClicked(QAbstractButton *button);
-//    void buttonGroupClicked(int id);
-//    void pointerGroupClicked(int id);
-//    void sceneScaleChanged(const QString &scale);
-//    void lineColorChanged();
-//    void lineButtonTriggered();
-//    //void itemSelected(QGraphicsItem *item);
-//    void itemInserted(NodeItem* item);
-
+    // Filters
+    LibFilter filters;
 
 };
 

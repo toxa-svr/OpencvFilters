@@ -47,11 +47,9 @@ NodeEditorWidget::NodeEditorWidget(QGraphicsScene *scene, QWidget *parent)
     nodeEditorView = new NodeEditorView(this);
     nodeEditorView->setScene(scene);
     nodeEditorView->setRenderHint(QPainter::Antialiasing, true);
-    //nodeEditorView->setRenderHint(QPainter::SmoothPixmapTransform, true);
     nodeEditorView->setDragMode(QGraphicsView::RubberBandDrag);
-    nodeEditorView->setOptimizationFlags(QGraphicsView::DontSavePainterState);
     nodeEditorView->setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
-    nodeEditorView->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
+    nodeEditorView->setTransformationAnchor(QGraphicsView::AnchorViewCenter);
     //nodeEditorView->setBackgroundBrush(QPixmap(":/No-Ones-Laughing-3.jpg"));
 
     int size = style()->pixelMetric(QStyle::PM_ToolBarIconSize);

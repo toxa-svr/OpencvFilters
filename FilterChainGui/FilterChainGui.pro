@@ -32,7 +32,6 @@ HEADERS += \
     testwidget_2.h
 
 FORMS += \
-    mainwindow.ui \
     testwidget_1.ui \
     testwidget_2.ui
 
@@ -44,7 +43,12 @@ FORMS += \
 INCLUDEPATH += $$PWD/../NodeEditorWidget/inc
 LIBS += -L$$PWD/../NodeEditorWidget/bin
 
-Debug:  LIBS += NodeEditorWidgetd.lib
-Release:LIBS += NodeEditorWidget.lib
+INCLUDEPATH += $$PWD/../LibFilter/
+LIBS += -L$$PWD/../LibFilter/bin
+
+Debug:  LIBS += NodeEditorWidgetd.lib \
+                LibFilterd.lib
+Release:LIBS += NodeEditorWidget.lib \
+                LibFilter.lib
 
 
