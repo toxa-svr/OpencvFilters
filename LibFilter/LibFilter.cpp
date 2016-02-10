@@ -10,10 +10,11 @@ QVector<FilterDescription> LibFilter::enumerateFilters() const {
     return FilterFactory::enumerateFilters();
 }
 
-AbstractFilterWidget* LibFilter::createFilter(FilterId id) {
+LibFilter::CreateFilterResult LibFilter::createFilter(FilterId id) {
     faws.push_back(FilterFactory::createFilter(id));
     filterGraph->addFilter(faws.back().filter());
-    return faws.back().filterWidget();
+    CreateFilterResult result = {faws.back().filterWidget(), faws.back().filter()->instanceName()};
+    return result;
 }
 
 void LibFilter::removeFilter(FilterInstanceName instanceName) {

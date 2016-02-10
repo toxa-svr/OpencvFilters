@@ -60,7 +60,8 @@ HEADERS += \
     LibFilter.h \
     FilterAndWidget.h \
     FilterDescription.h \
-    AbstractFilterWidget.h
+    AbstractFilterWidget.h \
+    FilterPortDescription.h
 
 
 

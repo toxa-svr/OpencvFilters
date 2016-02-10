@@ -84,7 +84,7 @@ private:
     NodeEditorScene * nodeEditorScene;
 
     // Filters
-    LibFilter filters;
+    LibFilter libFilter;
 
 };
 
