@@ -14,7 +14,7 @@ FilterAndWidget DummyFilterPlugin::createFilter() const {
 FilterDescription DummyFilterPlugin::description() const {
     FilterDescription result;
     result.icon = QPixmap();              // TODO добавить иконку
-    result.id = static_cast<FilterId>(1); // TODO откуда брать значение?
+    result.id = "Dummy";
     result.name = "Dummy filter";
     FilterPortDescription description = {"Dummy port", "any"};
     result.outputs = {description};
