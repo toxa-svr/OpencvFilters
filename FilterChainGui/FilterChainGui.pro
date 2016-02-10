@@ -40,12 +40,11 @@ FORMS += \
 # -----------------------------------
 # Libraries
 # -----------------------------------
-INCLUDEPATH += $$PWD/../NodeEditorWidget/inc \
+INCLUDEPATH += $$PWD/../NodeEditorWidget/inc
 LIBS += -L$$PWD/../NodeEditorWidget/bin
 
 INCLUDEPATH += $$PWD/../LibFilter/
 LIBS += -L$$PWD/../LibFilter/bin
-
 
 Debug:  LIBS += NodeEditorWidgetd.lib \
                 LibFilterd.lib
