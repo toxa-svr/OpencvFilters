@@ -8,9 +8,9 @@
 
 TEMPLATE = lib
 
-CONFIG += staticlib
+CONFIG  += staticlib
 
-QT += widgets
+QT      += core gui widgets
 
 
 # -----------------------------------
