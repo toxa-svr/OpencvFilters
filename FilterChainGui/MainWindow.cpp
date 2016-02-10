@@ -351,18 +351,28 @@ void MainWindow::addItem()
     }
 
 
+    // Create Node and add into the Scene
+    NodeItem * newItem = new NodeItem(nullptr);
+    QWidget* newWidget = new TestWidget_1();
+    newItem->setWidget(newWidget);
+    nodeEditorScene->addItem(newItem);
+    // Add ports
+    QPushButton * newBtn = new QPushButton("port in");
+    NodePort * newPortIn = new NodePort(newItem, nodeEditorScene, newBtn, NodePort::In, NodePort::Left);
+    QLabel * newLbl = new QLabel("port out");
+    NodePort * newPortOut = new NodePort(newItem, nodeEditorScene, newLbl, NodePort::Out, NodePort::Right);
+    newItem->addPort(newPortIn);
+    newItem->addPort(newPortOut);
+
+    return;
 
     // Extract user data from action and create filter
-    auto filters = libFilter.enumerateFilters();
-    std::for_each(filters.cbegin(), filters.cend(), [&](const FilterDescription& fd) {
-        qDebug() << fd.name << fd.id;
-    });
     try {
         LibFilter::CreateFilterResult result = libFilter.createFilter(action->data().toString());
 
         // Create Node and add into the Scene
         NodeItem * newItem = new NodeItem(nullptr);
-        auto* newWidget = result.widget;
+        AbstractFilterWidget* newWidget = result.widget;
         newItem->setWidget(newWidget);
         nodeEditorScene->addItem(newItem);
         // Add ports

@@ -15,7 +15,6 @@ public:
     enum { Type = UserType + 666 + 1 };
     int type() const { return Type;}
 
-
     NodeItem(Qt::WindowFlags wFlags = 0, QGraphicsItem *parent = 0);
 	virtual ~NodeItem();
     void deleteConnections();
@@ -31,6 +30,7 @@ protected:
     void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent);
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent);
 
+
 private:
     bool isMoving;  // item is moving with mouse now (left button is pressed now)
     bool isMovable;
@@ -39,5 +39,6 @@ private:
     void updatePortsPos();
     void removeWigetFromPorts();
 	void debugPaint(QPainter *painter);
+    bool shouldMoveNode(QGraphicsSceneMouseEvent *mouseEvent);
 };
 

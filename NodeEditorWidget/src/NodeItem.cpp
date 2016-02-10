@@ -1,4 +1,6 @@
 #include <QtWidgets>
+#include <QStyleFactory>
+
 
 #include "NodeItem.h"
 #include "NodeConnection.h"
@@ -59,6 +61,7 @@ NodeItem::NodeItem(Qt::WindowFlags wFlags,
 	 dialog1->setAttribute(Qt::WA_DeleteOnClose);
 	 this->setWidget(dialog1);
 */
+
      setFlag(QGraphicsItem::ItemIsMovable, true);
      setFlag(QGraphicsItem::ItemIsSelectable, true);
      setFlag(QGraphicsItem::ItemIsFocusable, true);
@@ -149,6 +152,18 @@ void NodeItem::debugPaint(QPainter *painter)
 //}
 
 
+bool NodeItem::shouldMoveNode(QGraphicsSceneMouseEvent *mouseEvent)
+{
+    QPointer<QWidget> hitWidget = widget()->childAt(mouseEvent->pos().toPoint());
+    if ( (hitWidget == NULL) ||
+         (hitWidget->inherits("QDialog"))  ||
+         (hitWidget->inherits("QFrame"))   ||
+         (hitWidget->inherits("QGroupBox")))  {
+            return true;
+    }
+    return false;
+}
+
 
 QVariant NodeItem::itemChange(GraphicsItemChange change, //dw FIXME: needs much cleanup
                      const QVariant &value)
@@ -175,18 +190,23 @@ void NodeItem::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     qDebug() << __FUNCTION__;
 
-    QGraphicsItem::mousePressEvent(mouseEvent);
-    QGraphicsProxyWidget::mousePressEvent(mouseEvent);
-    isMoving = true;
-    scene()->clearSelection();
-    scene()->clearFocus();
-    setSelected(true);
+    if (shouldMoveNode(mouseEvent)) {
+        QGraphicsItem::mousePressEvent(mouseEvent);
+        isMoving = true;
+        scene()->clearSelection();
+        scene()->clearFocus();
+        setSelected(true);
+    }
+    else {
+        QGraphicsProxyWidget::mousePressEvent(mouseEvent);
+    }
 }
 
 void NodeItem::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
 
     qDebug() << __FUNCTION__;
+    QGraphicsProxyWidget::mouseMoveEvent(mouseEvent);
 
     if (isMoving) {
 		QGraphicsItem::mouseMoveEvent(mouseEvent);
@@ -200,8 +220,6 @@ void NodeItem::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
         //	con->updatePosition();
         //}
 	}
-
-    QGraphicsProxyWidget::mouseMoveEvent(mouseEvent);
 
 	//scene()->clearSelection();
 	//setSelected(true);
@@ -218,8 +236,8 @@ void NodeItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 	}
 
 	//call both always to lose no events and to not have to do the same shit for clicks too
-	QGraphicsItem::mouseReleaseEvent(mouseEvent);
-	QGraphicsProxyWidget::mouseReleaseEvent(mouseEvent);
+    QGraphicsItem::mouseReleaseEvent(mouseEvent);
+    QGraphicsProxyWidget::mouseReleaseEvent(mouseEvent);
 	scene()->clearSelection();
 	setSelected(true);
     //updateConnectorsPos();
