@@ -2,7 +2,10 @@
 
 #include <QMainWindow>
 #include <QtWidgets>
+#include "NodeEditorWidget.h"
 #include "NodeEditorScene.h"
+#include "LibFilter.h"
+
 
 namespace Ui {
 class MainWindow;
@@ -55,10 +58,10 @@ private:
     QAction *aboutAction;
 
 
-
-
-    QGraphicsView * nodeEditorView;
+    NodeEditorWidget * nodeEditorWidget;
     NodeEditorScene * nodeEditorScene;
+
+    LibFilter libFilter;
 
 
 private slots:

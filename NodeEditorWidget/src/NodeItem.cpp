@@ -59,20 +59,21 @@ NodeItem::NodeItem(Qt::WindowFlags wFlags,
 	 dialog1->setAttribute(Qt::WA_DeleteOnClose);
 	 this->setWidget(dialog1);
 */
-	 setFlag(QGraphicsItem::ItemIsMovable, true);
-	 setFlag(QGraphicsItem::ItemIsSelectable, true);
-	 setFlag(QGraphicsItem::ItemIsFocusable, true);
+     setFlag(QGraphicsItem::ItemIsMovable, true);
+     setFlag(QGraphicsItem::ItemIsSelectable, true);
+     setFlag(QGraphicsItem::ItemIsFocusable, true);
 }
 
 
 
 NodeItem::~NodeItem()
 {
-    removeWigetFromPorts();
+    //removeWigetFromPorts();
     //deleteConnections();
-    if (scene() != NULL) {
-        this->scene()->removeItem(this);
-    }
+
+    QWidget * embeddedWidget = widget();
+    setWidget(0);
+    delete embeddedWidget;
 }
 
 
@@ -94,27 +95,6 @@ QPainterPath NodeItem::shape() const
     QPainterPath path;
     path.addRect(boundingRect());
     return path;
-}
-
-void NodeItem::setWidget(QWidget *widget)
-{
-    qDebug() << __FUNCTION__;
-    QGraphicsProxyWidget::setWidget(widget);
-	connect(widget, SIGNAL(destroyed()), this, SLOT(deleted()));
-}
-
-void NodeItem::hide()
-{
-    qDebug() << __FUNCTION__;
-    this->widget()->close();
-}
-
-
-void NodeItem::deleted()
-{
-    qDebug() << __FUNCTION__;
-    this->widget()->close();
-    //delete this;
 }
 
 
@@ -147,8 +127,6 @@ void NodeItem::removeWigetFromPorts()
 }
 
 
-
-
 void NodeItem::updatePortsPos() {
     foreach (NodePort *port, ports) {
         port->updatePosition();
@@ -164,87 +142,33 @@ void NodeItem::debugPaint(QPainter *painter)
 
 
 
+//void NodeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *w)
+//{
+//    debugPaint(painter);
+//	QGraphicsProxyWidget::paint(painter, option, w);
+//}
 
 
-
-
-void NodeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *w)
-{
-    debugPaint(painter);
-	QGraphicsProxyWidget::paint(painter, option, w);
-}
 
 QVariant NodeItem::itemChange(GraphicsItemChange change, //dw FIXME: needs much cleanup
                      const QVariant &value)
 {
-
-    //dw now in paint, check if this is a good idea (e.g. when is it called)
-    //dw667 backmerge: was commented, but is shotgun approach!!!
-    if (change == QGraphicsItem::ItemPositionChange) {
-        updatePortsPos();
-    }
-   //does this create loop on selection?
-
-
-   //dw if visibilty changes to false, kill wiget (TODO: make configurable, usfull for Dialogs and such)
-   if (change == QGraphicsItem::ItemVisibleHasChanged && !value.value<bool>()) {
-       deleted();
-       return value;
+   if (change == QGraphicsItem::ItemSelectedChange ||
+       change == QGraphicsItem::ItemTransformChange ||
+       change == QGraphicsItem::ItemScaleChange ||
+       change == QGraphicsItem::ItemSendsGeometryChanges ||
+       change == QGraphicsItem::ItemMatrixChange ||
+       change == QGraphicsItem::ItemPositionHasChanged ||
+       change == QGraphicsItem::ItemPositionChange ) {
+           updatePortsPos();
    }
-
-
-
-
-   //dw 669: turn back on resize handle controlling
-   //dw ugly hack, find better way
-   //dw deselecting proxy item dialog will cause error sometimes, has size of bounding rect, will not redraw connections
-   if (change == QGraphicsItem::ItemSelectedChange || change == QGraphicsItem::ItemTransformChange || change == QGraphicsItem::ItemScaleChange
-       || change == QGraphicsItem::ItemSendsGeometryChanges || change == QGraphicsItem::ItemMatrixChange) {
-       /*
-        foreach (NodeConnector *con, connectors) {
-            con->updatePositionGeometry();
-        }
-        */
-       updatePortsPos();
-   }
-   if (change == QGraphicsItem::ItemPositionHasChanged || change == QGraphicsItem::ItemSelectedChange) {
-       /*
-        foreach (NodeConnector *con, connectors) {
-            con->updatePositionGeometry();
-        }
-        */
-       updatePortsPos();
-   }
-
-
-   /*//dw debug help
-   if (change == QGraphicsItem::ItemSelectedChange || change == QGraphicsItem::ItemEnabledChange || change == QGraphicsItem::ItemVisibleHasChanged || change == QGraphicsItem::ItemPositionChange
-       || change == QGraphicsItem::ItemZValueChange || change == QGraphicsItem::ItemZValueHasChanged) {
-        //scene()->clearSelection();
-        //setSelected(true);
-        //return true;
-        return QGraphicsProxyWidget::itemChange(change, value);
-    }*/
-
 
     return QGraphicsProxyWidget::itemChange(change, value);
-    //return value;
-}
-//! [6]
-
-
-//dw669: new, fixes connector position on resizing, why can it not be done in itemChange?
-void NodeItem::resizeEvent ( QGraphicsSceneResizeEvent * event ) {
-    QGraphicsProxyWidget::resizeEvent(event);
-    updatePortsPos();
 }
 
 
-//dw new4: remove again
-void NodeItem::hoverMoveEvent ( QGraphicsSceneHoverEvent * event )  {
-    event->ignore();
-    return;
-}
+
+
 
 
 void NodeItem::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
@@ -252,12 +176,11 @@ void NodeItem::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
     qDebug() << __FUNCTION__;
 
     QGraphicsItem::mousePressEvent(mouseEvent);
+    QGraphicsProxyWidget::mousePressEvent(mouseEvent);
     isMoving = true;
     scene()->clearSelection();
     scene()->clearFocus();
     setSelected(true);
-
-    //QGraphicsProxyWidget::mousePressEvent(mouseEvent);
 }
 
 void NodeItem::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
@@ -269,23 +192,21 @@ void NodeItem::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 		QGraphicsItem::mouseMoveEvent(mouseEvent);
 
 		//dw667 backmerge: was active
-		/*
 		//dw new5
-		foreach (NodeConnector *con, connectors) {
-			//dw667 backmerge: was active
-			//con->updatePositionGeometry();
-			//dw667 backmerge: new
-			con->updatePosition();
-		}
-		*/
+        //foreach (NodeConnector *con, connectors) {
+        //	//dw667 backmerge: was active
+        //	//con->updatePositionGeometry();
+        //	//dw667 backmerge: new
+        //	con->updatePosition();
+        //}
 	}
-	else {
-		QGraphicsProxyWidget::mouseMoveEvent(mouseEvent);
-	}
+
+    QGraphicsProxyWidget::mouseMoveEvent(mouseEvent);
 
 	//scene()->clearSelection();
 	//setSelected(true);
     //updateConnectorsPos();
+
 }
 
 void NodeItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
@@ -301,8 +222,9 @@ void NodeItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 	QGraphicsProxyWidget::mouseReleaseEvent(mouseEvent);
 	scene()->clearSelection();
 	setSelected(true);
-
     //updateConnectorsPos();
 }
+
+
 
 

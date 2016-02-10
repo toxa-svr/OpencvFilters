@@ -21,24 +21,34 @@ TARGET = FilterChainGui
 SOURCES += \
     main.cpp\
     mainwindow.cpp \
-    NodeItemProxy.cpp
+    NodeItemProxy.cpp \
+    testwidget_1.cpp \
+    testwidget_2.cpp
 
 HEADERS += \
     mainwindow.h \
-    NodeItemProxy.h
+    NodeItemProxy.h \
+    testwidget_1.h \
+    testwidget_2.h
 
 FORMS += \
-    mainwindow.ui
+    mainwindow.ui \
+    testwidget_1.ui \
+    testwidget_2.ui
 
 
 
 # -----------------------------------
 # Libraries
 # -----------------------------------
-INCLUDEPATH += $$PWD/../NodeEditorWidget/inc
-LIBS += -L$$PWD/../NodeEditorWidget/bin
+INCLUDEPATH += $$PWD/../NodeEditorWidget/inc \
+    $$PWD/../LibFilter
 
-Debug:  LIBS += NodeEditorWidgetd.lib
-Release:LIBS += NodeEditorWidget.lib
+LIBS += -L$$PWD/../NodeEditorWidget/bin -L$$PWD/../LibFilter/bin
+
+Debug:  LIBS += NodeEditorWidgetd.lib \
+                LibFilterd.lib
+Release:LIBS += NodeEditorWidget.lib \
+                LibFilter.lib
 
 

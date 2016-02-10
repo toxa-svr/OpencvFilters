@@ -18,13 +18,28 @@ NodeEditorScene::NodeEditorScene(QWidget *parent)
     lastHighlighted = nullptr;
     conn = nullptr;
 
-    //setScene(scene); // set QGraphicsScene for this QGraphicsView
-    //setRenderHint(QPainter::Antialiasing, true);
-    //setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
-    //scene.installEventFilter(this); // add event filter for QGraphicsScene to handle events here
+    setStickyFocus(true); // clicking into the scene background will clear focus
 }
 
 
+void NodeEditorScene::deleteSelectedItems()
+{
+    QList<QGraphicsItem*> itemsToDelete = selectedItems();
+
+    if (itemsToDelete.isEmpty()) {
+        qDebug() << "No items selected";
+        return;
+    }
+
+    foreach(QGraphicsItem* item, itemsToDelete)
+    {
+        removeItem(item);
+        delete item;
+    }
+}
+
+
+/*
 void NodeEditorScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     qDebug() << __FUNCTION__;
@@ -139,8 +154,8 @@ void NodeEditorScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 			}
 
 			node->setHighlight(true);
-			/*node->updatePosition();
-			node->update();*/
+            //node->updatePosition();
+            //node->update();
 			//dw667 backmerge:
 			node->updatePosition();
 			node->update();
@@ -156,8 +171,8 @@ void NodeEditorScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 		}
 		else if (lastHighlighted != NULL) {
 			lastHighlighted->setHighlight(false);
-			/*lastHighlighted->updatePosition();
-			lastHighlighted->update();*/
+            //lastHighlighted->updatePosition();
+            //lastHighlighted->update();
 			//dw667 backmerge:
 			lastHighlighted->updatePosition();
 			lastHighlighted->update();
@@ -198,10 +213,10 @@ void NodeEditorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
         tmpConnection->startPort()->setHighlight(false);
         tmpConnection->endPort()->setHighlight(false);
-		/*tmpArrow->startConnector()->updatePosition();
-		tmpArrow->startConnector()->update();
-		tmpArrow->endConnector()->updatePosition();
-		tmpArrow->endConnector()->update();*/
+        //tmpArrow->startConnector()->updatePosition();
+        //tmpArrow->startConnector()->update();
+        //tmpArrow->endConnector()->updatePosition();
+        //tmpArrow->endConnector()->update();
 
 		QList<QGraphicsItem *> startConnectors = items(startPos);
         while(startConnectors.count() && (startConnectors.first() == tmpConnection || startConnectors.first() == tmpPort || startConnectors.first()->type() != NodePort::Type)) {
@@ -237,7 +252,7 @@ void NodeEditorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
             if (!((startConnector->portType() == NodePort::In && endConnector->portType() == NodePort::In) || (startConnector->portType() == NodePort::Out && endConnector->portType() == NodePort::Out)))
 			{
 				NodeConnection *arrow = new NodeConnection(startConnector, endConnector, NULL, this);
-                arrow->setColor(QColor(100,100,100)/*settings.connectionLineColor*/);
+                arrow->setColor(QColor(100,100,100)); // settings.connectionLineColor
 				startConnector->addConnection(arrow);
 				endConnector->addConnection(arrow);
 				arrow->setZValue(-1000.0);
@@ -255,16 +270,16 @@ void NodeEditorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
             //arrow->updatePosition();
 			//dw new
 
-			/*startConnector->updatePosition();
-			startConnector->update();
-			endConnector->updatePosition();
-			endConnector->update();*/
+            //startConnector->updatePosition();
+            //startConnector->update();
+            //endConnector->updatePosition();
+            //endConnector->update();
         }
 			//NOTE: assumtion that lastHighlighted is never deleted while drawing lines, otherwise pointer can go to nirvana (TODO: can we use this assumtion?)
 		if (lastHighlighted != NULL) {
 			lastHighlighted->setHighlight(false);
-			/*lastHighlighted->updatePosition();
-			lastHighlighted->update();*/
+            //lastHighlighted->updatePosition();
+            //lastHighlighted->update();
 			lastHighlighted = NULL;
 		}
 		return;
@@ -275,35 +290,6 @@ void NodeEditorScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 }
 
 
-bool NodeEditorScene::isItemChange(int type)
-{
-    foreach (QGraphicsItem *item, selectedItems()) {
-        if (item->type() == type)
-            return true;
-    }
-    return false;
-}
-
-
-NodeItem * NodeEditorScene::createNode () {
-    NodeItem *node2 = new NodeItem();
-    return node2;
-}
-
-
-//void NodeEditorWidget::editorLostFocus(DiagramTextItem *item)
-//{
-//    QTextCursor cursor = item->textCursor();
-//    cursor.clearSelection();
-//    item->setTextCursor(cursor);
-//    if (item->toPlainText().isEmpty()) {
-//        removeItem(item);
-//        item->deleteLater();
-//    }
-//}
-//void setItemType(DiagramItem::DiagramType type)
-//{
-//    mItemType = type;
-//}
+*/
 
 

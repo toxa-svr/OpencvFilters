@@ -3,7 +3,10 @@
 #include "ui_MainWindow.h"
 
 #include "NodeEditorScene.h"
+#include "NodeEditorWidget.h"
 #include "NodeItemProxy.h"
+#include "testwidget_1.h"
+#include "testwidget_2.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -20,22 +23,13 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Create NodeEditorScene and QGraphicsView for it
     nodeEditorScene = new NodeEditorScene(this);
-    nodeEditorView = new QGraphicsView(nodeEditorScene);
+    nodeEditorWidget = new NodeEditorWidget(nodeEditorScene, this);
 
 
     // Configure scene and connect singnals-slots for it
     nodeEditorScene->setSceneRect(QRectF(0, 0, 5000, 5000));
-    nodeEditorScene->setStickyFocus(true); // clicking into the scene background will clear focus
     //connect(nodeEditorScene, SIGNAL(itemInserted(NodeItem*)), this, SLOT(itemInserted(NodeItem*)));
     //connect(nodeEditorScene, SIGNAL(itemSelected(QGraphicsItem*)), this, SLOT(itemSelected(QGraphicsItem*)));
-
-
-    // Configure view
-    nodeEditorView->setRenderHint(QPainter::Antialiasing, true);
-    nodeEditorView->setRenderHint(QPainter::SmoothPixmapTransform, true);
-    nodeEditorView->setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
-    //nodeEditorView->scale(0.5, 0.5);
-    //nodeEditorView->setBackgroundBrush(QPixmap(":/No-Ones-Laughing-3.jpg"));
 
 
     // Create centralWidget for the window
@@ -44,7 +38,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //     Add toolbox into layout
     QWidget *newCentralWidget = new QWidget(this);
     QHBoxLayout *newLayout = new QHBoxLayout(this);
-    newLayout->addWidget(nodeEditorView);
+    newLayout->addWidget(nodeEditorWidget);
     //newLayout->addWidget(toolBox);
     newCentralWidget->setLayout(newLayout);
     setCentralWidget(newCentralWidget);
@@ -94,14 +88,13 @@ void MainWindow::createActions()
 
     // Menu-Edit
     // Create actions for all available filters
-    // TODO
     addItemActionVector.clear();
     for (int i = 0; i < 3; i++) {
         QAction * newAddAction = new QAction(tr("Filter ") + QString::number(i), this);
         newAddAction->setStatusTip(tr("Add new filter ") + QString::number(i));
         connect(newAddAction, SIGNAL(triggered()), this, SLOT(addItem()));
         // Add user data to action
-        //newAddAction->setData();
+        newAddAction->setData(i); // TODO - Filter ID
         addItemActionVector.append(newAddAction);
     }
 
@@ -320,18 +313,57 @@ void MainWindow::addItem()
 
     // Get parent action
     QAction *action = qobject_cast< QAction* >(QObject::sender());
-    QMessageBox::about(this, tr("Add"), action->text());
+    //QMessageBox::about(this, tr("Add"), action->text());
 
     // Extract user data from action and create filter
-    //action->data()
+    auto result = libFilter.createFilter(action->data().toString());
+    // Create Node and add into the Scene
+    NodeItem * newItem = new NodeItem(nullptr);
+    auto* newWidget = result.widget;
+    newItem->setWidget(newWidget);
+    nodeEditorScene->addItem(newItem);
+    // Add ports
+    QPushButton * newBtn = new QPushButton("port in");
+    NodePort * newPortIn = new NodePort(newItem, nodeEditorScene, newBtn, NodePort::In, NodePort::Left);
+    QLabel * newLbl = new QLabel("port out");
+    NodePort * newPortOut = new NodePort(newItem, nodeEditorScene, newLbl, NodePort::Out, NodePort::Right);
+    newItem->addPort(newPortIn);
+    newItem->addPort(newPortOut);
 
-    // Create Item and add into the Scene
-    NodeItemProxy *proxy = new NodeItemProxy(0, Qt::Window);
-    proxy->setWidget(new QPushButton("test button 0"));
-    proxy->setPos(100, 100);
-    proxy->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
-    nodeEditorScene->addItem(proxy);
 
+
+    switch (action->data().toInt()) {  // TODO - Filter ID
+
+        case 0: {
+            // Create Node and add into the Scene
+            NodeItem * newItem = new NodeItem(nullptr);
+            TestWidget_1 * newWidget = new TestWidget_1();
+            newItem->setWidget(newWidget);
+            nodeEditorScene->addItem(newItem);
+            // Add ports
+            QPushButton * newBtn = new QPushButton("port in");
+            NodePort * newPortIn = new NodePort(newItem, nodeEditorScene, newBtn, NodePort::In, NodePort::Left);
+            QLabel * newLbl = new QLabel("port out");
+            NodePort * newPortOut = new NodePort(newItem, nodeEditorScene, newLbl, NodePort::Out, NodePort::Right);
+            newItem->addPort(newPortIn);
+            newItem->addPort(newPortOut);
+        }
+        break;
+
+        case 1: {
+            QGraphicsRectItem * newItem = new QGraphicsRectItem(100, 100, 100, 100);
+            newItem->setFlag(QGraphicsItem::ItemIsMovable, true);
+            newItem->setFlag(QGraphicsItem::ItemIsSelectable, true);
+            newItem->setFlag(QGraphicsItem::ItemIsFocusable, true);
+            nodeEditorScene->addItem(newItem);
+
+
+            QSlider * theSlider = new QSlider();
+            theSlider->setStyleSheet("background-color:transparent");
+            nodeEditorScene->addWidget(theSlider);
+        }
+        break;
+    }
 }
 
 //------------------------------------------------------------------------
@@ -341,43 +373,7 @@ void MainWindow::deleteItem()
 {
     qDebug() << __FUNCTION__;
 
-    if (nodeEditorScene->selectedItems().count()) {
-        foreach (QGraphicsItem *item, nodeEditorScene->selectedItems()) {
-//			/*//now in dtor:
-//			if (item->type() == DiagramItem::Type) {
-//				qgraphicsitem_cast<DiagramItem *>(item)->removeArrows();
-//			}
-
-//			//dw isn't it better to delete stuff in destructors??
-//			if (item->type() == NodeItem::Type) {
-//				qgraphicsitem_cast<NodeItem *>(item)->removeConnections();
-//			}
-//			*/
-
-            //dw we are doing that now in removeConnections from idem dtor, is that good idea?
-            nodeEditorScene->removeItem(item);
-
-            //can we delete all item or better only ours, and why is it not deleted automatically on removal? what is the correct way?
-            delete item;
-        }
-        nodeEditorScene->clearSelection();
-        nodeEditorScene->clearFocus();
-    }
-
-    //maybe we are embedding a window so handle this too (TODO: is there a better way?)
-    else if (this->nodeEditorScene->focusItem() && this->nodeEditorScene->focusItem()->type() == NodeItem::Type) {
-//        NodeItem* item = qgraphicsitem_cast<NodeItem *>(this->scene->focusItem());
-//		//now in dtor: item->removeConnections();
-
-//		//dw we are doing that now in removeConnections from idem dtor, is that good idea?
-//		//scene->removeItem(item);
-//		delete item;
-//		scene->clearSelection();
-//		scene->clearFocus();
-    }
-    else {
-        qDebug() << "No items selected";
-    }
+    nodeEditorScene->deleteSelectedItems();
 }
 
 

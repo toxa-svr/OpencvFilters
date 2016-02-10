@@ -12,6 +12,11 @@
 
 class LibFilter {
 public:
+    struct CreateFilterResult {
+        AbstractFilterWidget* widget;
+        FilterInstanceName instanceName;
+    };
+
     LibFilter();
     LibFilter(const LibFilter&) = delete;
     LibFilter& operator=(const LibFilter&) = delete;
@@ -19,7 +24,7 @@ public:
 
     QVector<FilterDescription> enumerateFilters() const;
 
-    AbstractFilterWidget* createFilter(FilterId id);
+    CreateFilterResult createFilter(FilterId id);
     void removeFilter(FilterInstanceName instanceName);
 
     // Functions to modify data links between filters

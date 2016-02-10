@@ -3,7 +3,7 @@
 
 #include <QMainWindow>
 #include "NodeEditorScene.h"
-#include "NodeEditorView.h"
+#include "NodeEditorWidget.h"
 
 
 namespace Ui {

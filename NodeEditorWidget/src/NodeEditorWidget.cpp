@@ -3,7 +3,7 @@
 #include <QGraphicsSceneEvent>
 #include <QDebug>
 
-#include "../inc/NodeEditorView.h"
+#include "../inc/NodeEditorWidget.h"
 #include "NodeItem.h"
 #include "NodeConnection.h"
 #include "NodePort.h"
@@ -15,6 +15,7 @@
 #ifndef QT_NO_WHEELEVENT
 void NodeEditorView::wheelEvent(QWheelEvent *e)
 {
+    // Press Ctrl and scroll
     if (e->modifiers() & Qt::ControlModifier) {
         if (e->delta() > 0) {
             ownerNodeEditorWidget->zoomIn(6);
@@ -46,8 +47,8 @@ NodeEditorWidget::NodeEditorWidget(QGraphicsScene *scene, QWidget *parent)
     nodeEditorView = new NodeEditorView(this);
     nodeEditorView->setScene(scene);
     nodeEditorView->setRenderHint(QPainter::Antialiasing, true);
-    nodeEditorView->setRenderHint(QPainter::SmoothPixmapTransform, true);
-    nodeEditorView->setDragMode(QGraphicsView::ScrollHandDrag);
+    //nodeEditorView->setRenderHint(QPainter::SmoothPixmapTransform, true);
+    nodeEditorView->setDragMode(QGraphicsView::RubberBandDrag);
     nodeEditorView->setOptimizationFlags(QGraphicsView::DontSavePainterState);
     nodeEditorView->setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
     nodeEditorView->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
@@ -101,12 +102,12 @@ NodeEditorWidget::NodeEditorWidget(QGraphicsScene *scene, QWidget *parent)
     topLayout->addWidget(zoomResetButton, 2, 1);
     setLayout(topLayout);
 
-    connect(zoomSlider, SIGNAL(valueChanged(int)), this, SLOT(setupMatrix()));
+    connect(zoomSlider, SIGNAL(valueChanged(int)), this, SLOT(setupZoom()));
     connect(zoomInButton, SIGNAL(clicked()), this, SLOT(zoomIn()));
     connect(zoomOutButton, SIGNAL(clicked()), this, SLOT(zoomOut()));
     connect(zoomResetButton, SIGNAL(clicked()), this, SLOT(zoomReset()));
 
-    setupMatrix();
+    setupZoom();
 }
 
 
@@ -114,15 +115,14 @@ NodeEditorWidget::NodeEditorWidget(QGraphicsScene *scene, QWidget *parent)
 void NodeEditorWidget::zoomReset()
 {
     zoomSlider->setValue(100);
-    setupMatrix();
+    setupZoom();
     nodeEditorView->ensureVisible(QRectF(0, 0, 0, 0));
 }
 
 //--------------------------------------------------------------------------------
-void NodeEditorWidget::setupMatrix()
+void NodeEditorWidget::setupZoom()
 {
     qreal scale = qPow(qreal(2), (zoomSlider->value() - 100) / qreal(50));
-
     QMatrix matrix;
     matrix.scale(scale, scale);
     nodeEditorView->setMatrix(matrix);
