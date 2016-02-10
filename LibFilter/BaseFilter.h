@@ -8,9 +8,6 @@
 // Unique identifier for filter instances
 typedef QString FilterInstanceName;
 
-// Vector of filter port descriptions
-typedef QVector<FilterPortDescription> FilterPortDescriptionVector;
-
 // Vector of filter ports
 typedef QVector<FilterPort> FilterPortVector;
 

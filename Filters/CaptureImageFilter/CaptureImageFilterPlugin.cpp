@@ -16,5 +16,8 @@ FilterDescription CaptureImageFilterPlugin::description() const {
     result.icon = QPixmap();              // TODO добавить иконку
     result.id = static_cast<FilterId>(1); // TODO откуда брать значение?
     result.name = "Capture image filter";
+
+    FilterPortDescription description = {"Image", "cv::Mat"};
+    result.outputs.push_back(description);
     return result;
 }

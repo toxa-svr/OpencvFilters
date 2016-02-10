@@ -2,12 +2,7 @@
 #define FILTERPORT_H
 
 #include "FilterData.h"
-
-// Description of a filter port
-struct FilterPortDescription {
-    QString name;
-    QString type;
-};
+#include "FilterPortDescription.h"
 
 // Filter port class
 class FilterPort {

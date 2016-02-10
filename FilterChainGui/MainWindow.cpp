@@ -313,57 +313,68 @@ void MainWindow::addItem()
 
     // Get parent action
     QAction *action = qobject_cast< QAction* >(QObject::sender());
+
     //QMessageBox::about(this, tr("Add"), action->text());
 
     // Extract user data from action and create filter
-    auto result = libFilter.createFilter(action->data().toString());
-    // Create Node and add into the Scene
-    NodeItem * newItem = new NodeItem(nullptr);
-    auto* newWidget = result.widget;
-    newItem->setWidget(newWidget);
-    nodeEditorScene->addItem(newItem);
-    // Add ports
-    QPushButton * newBtn = new QPushButton("port in");
-    NodePort * newPortIn = new NodePort(newItem, nodeEditorScene, newBtn, NodePort::In, NodePort::Left);
-    QLabel * newLbl = new QLabel("port out");
-    NodePort * newPortOut = new NodePort(newItem, nodeEditorScene, newLbl, NodePort::Out, NodePort::Right);
-    newItem->addPort(newPortIn);
-    newItem->addPort(newPortOut);
-
-
-
-    switch (action->data().toInt()) {  // TODO - Filter ID
-
-        case 0: {
-            // Create Node and add into the Scene
-            NodeItem * newItem = new NodeItem(nullptr);
-            TestWidget_1 * newWidget = new TestWidget_1();
-            newItem->setWidget(newWidget);
-            nodeEditorScene->addItem(newItem);
-            // Add ports
-            QPushButton * newBtn = new QPushButton("port in");
-            NodePort * newPortIn = new NodePort(newItem, nodeEditorScene, newBtn, NodePort::In, NodePort::Left);
-            QLabel * newLbl = new QLabel("port out");
-            NodePort * newPortOut = new NodePort(newItem, nodeEditorScene, newLbl, NodePort::Out, NodePort::Right);
-            newItem->addPort(newPortIn);
-            newItem->addPort(newPortOut);
-        }
-        break;
-
-        case 1: {
-            QGraphicsRectItem * newItem = new QGraphicsRectItem(100, 100, 100, 100);
-            newItem->setFlag(QGraphicsItem::ItemIsMovable, true);
-            newItem->setFlag(QGraphicsItem::ItemIsSelectable, true);
-            newItem->setFlag(QGraphicsItem::ItemIsFocusable, true);
-            nodeEditorScene->addItem(newItem);
-
-
-            QSlider * theSlider = new QSlider();
-            theSlider->setStyleSheet("background-color:transparent");
-            nodeEditorScene->addWidget(theSlider);
-        }
-        break;
+    auto filters = libFilter.enumerateFilters();
+    std::for_each(filters.cbegin(), filters.cend(), [&](const FilterDescription& fd) {
+        qDebug() << "filter id: " << fd.id;
+        qDebug() << "filter name" << fd.name;
+        qDebug() << "\n";
+    });
+    try {
+        auto result = libFilter.createFilter(action->data().toString());
+        // Create Node and add into the Scene
+        NodeItem * newItem = new NodeItem(nullptr);
+        auto* newWidget = result.widget;
+        newItem->setWidget(newWidget);
+        nodeEditorScene->addItem(newItem);
+        // Add ports
+        QPushButton * newBtn = new QPushButton("port in");
+        NodePort * newPortIn = new NodePort(newItem, nodeEditorScene, newBtn, NodePort::In, NodePort::Left);
+        QLabel * newLbl = new QLabel("port out");
+        NodePort * newPortOut = new NodePort(newItem, nodeEditorScene, newLbl, NodePort::Out, NodePort::Right);
+        newItem->addPort(newPortIn);
+        newItem->addPort(newPortOut);
+    } catch (std::runtime_error& e) {
+        qDebug() << "error: " << e.what();
     }
+
+
+
+//    switch (action->data().toInt()) {  // TODO - Filter ID
+
+//        case 0: {
+//            // Create Node and add into the Scene
+//            NodeItem * newItem = new NodeItem(nullptr);
+//            TestWidget_1 * newWidget = new TestWidget_1();
+//            newItem->setWidget(newWidget);
+//            nodeEditorScene->addItem(newItem);
+//            // Add ports
+//            QPushButton * newBtn = new QPushButton("port in");
+//            NodePort * newPortIn = new NodePort(newItem, nodeEditorScene, newBtn, NodePort::In, NodePort::Left);
+//            QLabel * newLbl = new QLabel("port out");
+//            NodePort * newPortOut = new NodePort(newItem, nodeEditorScene, newLbl, NodePort::Out, NodePort::Right);
+//            newItem->addPort(newPortIn);
+//            newItem->addPort(newPortOut);
+//        }
+//        break;
+
+//        case 1: {
+//            QGraphicsRectItem * newItem = new QGraphicsRectItem(100, 100, 100, 100);
+//            newItem->setFlag(QGraphicsItem::ItemIsMovable, true);
+//            newItem->setFlag(QGraphicsItem::ItemIsSelectable, true);
+//            newItem->setFlag(QGraphicsItem::ItemIsFocusable, true);
+//            nodeEditorScene->addItem(newItem);
+
+
+//            QSlider * theSlider = new QSlider();
+//            theSlider->setStyleSheet("background-color:transparent");
+//            nodeEditorScene->addWidget(theSlider);
+//        }
+//        break;
+//    }
 }
 
 //------------------------------------------------------------------------

@@ -1,6 +1,7 @@
 #include <QDir>
 #include <QCoreApplication>
 #include <QPluginLoader>
+#include <QDebug>
 #include "FilterFactory.h"
 #include "FilterPluginInterface.h"
 
@@ -22,19 +23,21 @@ QVector<FilterDescription> FilterFactory::enumerateFilters() {
     if (result.isEmpty()) {
         QDir pluginsDir(QCoreApplication::applicationDirPath());
 
-        #if defined(Q_OS_WIN)
-        if (pluginsDir.dirName().toLower() == "debug" || pluginsDir.dirName().toLower() == "release")
-            pluginsDir.cdUp();
+//        #if defined(Q_OS_WIN)
+//        if (pluginsDir.dirName().toLower() == "debug" || pluginsDir.dirName().toLower() == "release")
+//            pluginsDir.cdUp();
 
-        #elif defined(Q_OS_MAC)
-        if (pluginsDir.dirName() == "MacOS") {
-            pluginsDir.cdUp();
-            pluginsDir.cdUp();
-            pluginsDir.cdUp();
-        }
-        #endif
+//        #elif defined(Q_OS_MAC)
+//        if (pluginsDir.dirName() == "MacOS") {
+//            pluginsDir.cdUp();
+//            pluginsDir.cdUp();
+//            pluginsDir.cdUp();
+//        }
+//        #endif
 
         pluginsDir.cd("plugins");
+
+        qDebug() << "plugins path: " << pluginsDir.absolutePath();
 
         foreach (QString fileName, pluginsDir.entryList(QDir::Files)) {
             QPluginLoader pluginLoader(pluginsDir.absoluteFilePath(fileName));
