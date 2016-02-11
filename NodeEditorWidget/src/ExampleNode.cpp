@@ -18,7 +18,7 @@ public:
                 QMenu *contextMenu = 0,
                 QGraphicsItem *parent = 0,
                 Qt::WindowFlags wFlags = 0) :
-        NodeItem(wFlags, parent)
+        NodeItem(NULL, wFlags, parent)
     {
 
         //dw new

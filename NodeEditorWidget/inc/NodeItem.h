@@ -15,7 +15,7 @@ public:
     enum { Type = UserType + 666 + 1 };
     int type() const { return Type;}
 
-    NodeItem(Qt::WindowFlags wFlags = 0, QGraphicsItem *parent = 0);
+    NodeItem(QWidget * widget = NULL, Qt::WindowFlags wFlags = 0, QGraphicsItem *parent = 0);
 	virtual ~NodeItem();
     void deleteConnections();
     void addPort(NodePort* port);

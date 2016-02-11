@@ -352,9 +352,8 @@ void MainWindow::addItem()
 
 
     // Create Node and add into the Scene
-    NodeItem * newItem = new NodeItem(nullptr);
     QWidget* newWidget = new TestWidget_1();
-    newItem->setWidget(newWidget);
+    NodeItem * newItem = new NodeItem(newWidget);
     nodeEditorScene->addItem(newItem);
     // Add ports
     QPushButton * newBtn = new QPushButton("port in");

@@ -9,8 +9,7 @@
 
 
 
-NodeItem::NodeItem(Qt::WindowFlags wFlags,
-                   QGraphicsItem *parent) :
+NodeItem::NodeItem(QWidget * widget, Qt::WindowFlags wFlags, QGraphicsItem *parent) :
     QGraphicsProxyWidget(parent, wFlags),
     isMoving(false),
     isMovable(true),
@@ -61,10 +60,28 @@ NodeItem::NodeItem(Qt::WindowFlags wFlags,
 	 dialog1->setAttribute(Qt::WA_DeleteOnClose);
 	 this->setWidget(dialog1);
 */
+    QDialog * itemDialog = new QDialog();
+    QToolBox * toolBox  = new QToolBox();
+    QHBoxLayout * newLayout = new QHBoxLayout();
+    if (widget) {
+        toolBox->addItem(widget, "Filter settings");
+        toolBox->addItem(nullptr, "Ports");
+        toolBox->setItemEnabled(0, true);
+        toolBox->setItemEnabled(1, true);
+        toolBox->adjustSize();
+    }
 
-     setFlag(QGraphicsItem::ItemIsMovable, true);
-     setFlag(QGraphicsItem::ItemIsSelectable, true);
-     setFlag(QGraphicsItem::ItemIsFocusable, true);
+    newLayout->addWidget(toolBox);
+    newLayout->setSizeConstraint(QLayout::SetFixedSize);
+    itemDialog->setLayout(newLayout);
+    itemDialog->adjustSize();
+    //itemDialog->resize(300,300);
+
+    setWidget(itemDialog);
+
+    setFlag(QGraphicsItem::ItemIsMovable, true);
+    setFlag(QGraphicsItem::ItemIsSelectable, true);
+    setFlag(QGraphicsItem::ItemIsFocusable, true);
 }
 
 
