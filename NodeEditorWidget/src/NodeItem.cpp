@@ -18,64 +18,25 @@ NodeItem::NodeItem(QWidget * widget, Qt::WindowFlags wFlags, QGraphicsItem *pare
     setCacheMode(DeviceCoordinateCache);
 	setZValue(1);
 
-
-/*
-    QPainterPath path;
-
-	 //dw
-	 //QGroupBox *groupBox = new QGroupBox("GrBox");
-	 //QLabel *numberLabel = new QLabel("Telephone number");
-	 //QLineEdit *numberEdit = new QLineEdit;
-	 //QFormLayout *layout = new QFormLayout;
-	 //layout->addRow(numberLabel, numberEdit);
-	 //groupBox->setLayout(layout);
-	 QFormLayout *layout2 = new QFormLayout;
-	 //layout2->addRow(groupBox);
-
-	 QLabel* out0 = new QLabel("out0");
-	 out0->setAlignment(Qt::AlignRight);
-	 QLabel* in0 = new QLabel("in0");
-	 layout2->addRow(in0, out0);
-	 QLabel* in1 = new QLabel("in1");
-	 layout2->addRow(in1);
-	 QLabel* in2 = new QLabel("in2");
-	 layout2->addRow(in2);
-	 QLabel* inout0 = new QLabel("inOut0");
-	 inout0->setAlignment(Qt::AlignRight);
-	 layout2->addRow(inout0);
-
-	 //QSpinBox ( int minValue, int maxValue, int step = 1, QWidget * parent = 0, const char * name = 0 )
-	 QSpinBox* spinBox = new QSpinBox();
-	 spinBox->setMinimum(0);
-	 spinBox->setMaximum(9);
-	 layout2->addRow(spinBox);
-
-	 QDialog *dialog1 = new QDialog();
-	 //QFrame *dialog1 = new QFrame();
-	 //QGroupBox* dialog1 = new QGroupBox("A QGroupBox");
-	 dialog1->setLayout(layout2);
-	 //dialog1->setLayout(groupBox);
-	 //this->setWidget(groupBox);
-	 //dw will this fix deletion not called on close?
-	 dialog1->setAttribute(Qt::WA_DeleteOnClose);
-	 this->setWidget(dialog1);
-*/
-    QDialog * itemDialog = new QDialog();
-    QToolBox * toolBox  = new QToolBox();
-    QHBoxLayout * newLayout = new QHBoxLayout();
+    QDialog * itemDialog = new QDialog;
+    //QToolBox * toolBox  = new QToolBox;
+    QHBoxLayout * layout = new QHBoxLayout;
+    itemDialog->setLayout(layout);
+    widget->setFixedSize(widget->geometry().size());
     if (widget) {
-        toolBox->addItem(widget, "Filter settings");
-        toolBox->addItem(nullptr, "Ports");
-        toolBox->setItemEnabled(0, true);
-        toolBox->setItemEnabled(1, true);
-        toolBox->adjustSize();
+        layout->addWidget(widget);
+        //toolBox->addItem(widget, "Filter settings");
+        //toolBox->addItem(new QLabel(), "Ports");
+        //toolBox->setItemEnabled(0, true);
+        //toolBox->setItemEnabled(1, true);
+        widget->show();
+        //toolBox->adjustSize();
     }
 
-    newLayout->addWidget(toolBox);
-    newLayout->setSizeConstraint(QLayout::SetFixedSize);
-    itemDialog->setLayout(newLayout);
+    //layout->addWidget(toolBox);
+    layout->setSizeConstraint(QLayout::SetFixedSize);
     itemDialog->adjustSize();
-    //itemDialog->resize(300,300);
+    //itemDialog->resize(500,500);
 
     setWidget(itemDialog);
 
@@ -137,7 +98,7 @@ void NodeItem::deleteConnections()
 }
 
 
-void NodeItem::removeWigetFromPorts()
+void NodeItem::removeWidgetFromPorts()
 {
     foreach (NodePort *c, ports) {
 		//dw problem: label already deleted but connector tries to enable it?
