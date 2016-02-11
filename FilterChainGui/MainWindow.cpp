@@ -353,10 +353,6 @@ void MainWindow::addItem()
 
 
     // Extract user data from action and create filter
-    auto filters = libFilter.enumerateFilters();
-    std::for_each(filters.cbegin(), filters.cend(), [&](const FilterDescription& fd) {
-        qDebug() << fd.name << fd.id;
-    });
     try {
         LibFilter::CreateFilterResult result = libFilter.createFilter(action->data().toString());
 

@@ -14,6 +14,8 @@ QT          += core gui widgets
 # -----------------------------------
 TARGET = FilterChainGui
 
+DESTDIR = $$PWD/../bin
+
 
 # -----------------------------------
 # Headers and sources
@@ -34,8 +36,6 @@ HEADERS += \
 FORMS += \
     testwidget_1.ui \
     testwidget_2.ui
-
-
 
 # -----------------------------------
 # Libraries
