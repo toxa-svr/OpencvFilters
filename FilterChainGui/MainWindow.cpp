@@ -335,7 +335,6 @@ void MainWindow::addItem()
     // Get parent action
     QAction *action = qobject_cast< QAction* >(QObject::sender());
 
-    // TODO
     // Add test item
     if (action->data().toString() == "000") {
         QGraphicsRectItem * newItem = new QGraphicsRectItem(100, 100, 100, 100);
@@ -343,42 +342,40 @@ void MainWindow::addItem()
         newItem->setFlag(QGraphicsItem::ItemIsSelectable, true);
         newItem->setFlag(QGraphicsItem::ItemIsFocusable, true);
         nodeEditorScene->addItem(newItem);
-        //            QSlider * theSlider = new QSlider();
-        //            theSlider->setStyleSheet("background-color:transparent");
-        //            nodeEditorScene->addWidget(theSlider);
+
+        // Transparent Slider
+        QSlider * theSlider = new QSlider();
+        theSlider->setStyleSheet("background-color:transparent");
+        nodeEditorScene->addWidget(theSlider);
+
+        // Another test item
+        //    // Create Node and add into the Scene
+        //    QWidget* newWidget = new TestWidget_1();
+        //    NodeItem * newItem = new NodeItem(newWidget);
+        //    nodeEditorScene->addItem(newItem);
+        //    // Add ports
+        //    QPushButton * newBtn = new QPushButton("port in");
+        //    NodePort * newPortIn = new NodePort(newItem, nodeEditorScene, newBtn, NodePort::In, NodePort::Left);
+        //    QLabel * newLbl = new QLabel("port out");
+        //    NodePort * newPortOut = new NodePort(newItem, nodeEditorScene, newLbl, NodePort::Out, NodePort::Right);
+        //    newItem->addPort(newPortIn);
+        //    newItem->addPort(newPortOut);
 
         return;
     }
 
 
-    // Create Node and add into the Scene
-    QWidget* newWidget = new TestWidget_1();
-    NodeItem * newItem = new NodeItem(newWidget);
-    nodeEditorScene->addItem(newItem);
-    // Add ports
-    QPushButton * newBtn = new QPushButton("port in");
-    NodePort * newPortIn = new NodePort(newItem, nodeEditorScene, newBtn, NodePort::In, NodePort::Left);
-    QLabel * newLbl = new QLabel("port out");
-    NodePort * newPortOut = new NodePort(newItem, nodeEditorScene, newLbl, NodePort::Out, NodePort::Right);
-    newItem->addPort(newPortIn);
-    newItem->addPort(newPortOut);
-
-    return;
 
     // Extract user data from action and create filter
     try {
         LibFilter::CreateFilterResult result = libFilter.createFilter(action->data().toString());
 
         // Create Node and add into the Scene
-        NodeItem * newItem = new NodeItem(nullptr);
-        AbstractFilterWidget* newWidget = result.widget;
-        newItem->setWidget(newWidget);
+        NodeItem * newItem = new NodeItem(result.widget);
         nodeEditorScene->addItem(newItem);
         // Add ports
-        QPushButton * newBtn = new QPushButton("port in");
-        NodePort * newPortIn = new NodePort(newItem, nodeEditorScene, newBtn, NodePort::In, NodePort::Left);
-        QLabel * newLbl = new QLabel("port out");
-        NodePort * newPortOut = new NodePort(newItem, nodeEditorScene, newLbl, NodePort::Out, NodePort::Right);
+        NodePort * newPortIn = new NodePort(newItem, NodePort::In, NodePort::Left);
+        NodePort * newPortOut = new NodePort(newItem, NodePort::Out, NodePort::Right);
         newItem->addPort(newPortIn);
         newItem->addPort(newPortOut);
 

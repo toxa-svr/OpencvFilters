@@ -26,13 +26,9 @@ public:
 
 
     NodePort(NodeItem *parentItem,
-             QGraphicsScene *scene,
-             QWidget* widget,
-             PortType con,
+             PortType portType = PortType::In,
              const PortAlignment portAlignment = PortAlignment::Left,
-             const bool singleConnection = false,
-             const bool disableWidgetOnConnection = false,
-             const int radius = 7);
+             const bool singleConnection = false);
 
     virtual ~NodePort();
 

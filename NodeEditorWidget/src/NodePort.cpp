@@ -5,31 +5,26 @@
 #include "NodePort.h"
 
 NodePort::NodePort(NodeItem *parentItem,
-                   QGraphicsScene *scene1,
-                   QWidget* widget,
-                   NodePort::PortType conType1,
+                   NodePort::PortType portType,
                    const PortAlignment connectorAlignment,
-                   bool singleConnection,
-                   bool disableWidgetOnConnection,
-                   int radius)
-        : QGraphicsItem(parentItem/*, scene1*/),
-          mPortType(conType1),
+                   bool singleConnection)
+        : QGraphicsItem(parentItem),
           ownerItem(parentItem),
-          mWidget(widget),
+          mWidget(parentItem->widget()),
+          mPortType(portType),
           mPortAlignment(connectorAlignment),
           mSingleConnection(singleConnection),
-          mDisableWidgetOnConnection(disableWidgetOnConnection),
-          mRadius(radius)
+          mRadius(7)
 {
     setCacheMode(DeviceCoordinateCache);
 	setZValue(2);
 	updatePosition();
 	//setFlag(QGraphicsItem::ItemIsSelectable, true);
 
-	if (conType1 == PortType::In) {
+    if (portType == PortType::In) {
 		darkColor =  QColor(Qt::darkYellow);
 	}
-	else if (conType1 == PortType::Out) {
+    else if (portType == PortType::Out) {
 		darkColor =  QColor(Qt::darkRed).light(80);
 	}
 	else {
@@ -40,7 +35,8 @@ NodePort::NodePort(NodeItem *parentItem,
 
 
 
-NodePort::~NodePort() {
+NodePort::~NodePort()
+{
     this->deleteConnections();
     //dw super class destructor should do this, right?
     if (scene() != NULL) {
@@ -243,9 +239,6 @@ void NodePort::addConnection(NodeConnection *connection)
 		//arrows.clear();
 		deleteConnections();
 	}
-	if (mDisableWidgetOnConnection) {
-		mWidget->setEnabled(false);
-	}
     connections.append(connection);
 }
 
@@ -263,11 +256,9 @@ void NodePort::deleteConnection(NodeConnection *connection)
 }
 
 /* removes a connection, but does not delete it*/
-void NodePort::removeConnection(NodeConnection *connection) {
+void NodePort::removeConnection(NodeConnection *connection)
+{
     connections.removeOne(connection);
-    if (mDisableWidgetOnConnection && mWidget != NULL && connections.count() == 0) {
-		mWidget->setEnabled(true);
-	}
 }
 
 void NodePort::deleteConnections()

@@ -96,8 +96,6 @@ NodeItem::~NodeItem()
     delete embeddedWidget;
 }
 
-
-
 QRectF NodeItem::boundingRect() const
 {
     QRectF rect(QGraphicsProxyWidget::boundingRect());
@@ -116,6 +114,7 @@ QPainterPath NodeItem::shape() const
     path.addRect(boundingRect());
     return path;
 }
+
 
 
 void NodeItem::addPort(NodePort* port)
