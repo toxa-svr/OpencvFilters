@@ -35,7 +35,7 @@ Debug:  TARGET = $${FILTERNAME}Filterd
 Release:TARGET = $${FILTERNAME}Filter
 
 # And specify where to put the target file
-DESTDIR = $$PWD/bin
+DESTDIR = $$PWD/../../bin
 
 
 # Some magic for unix

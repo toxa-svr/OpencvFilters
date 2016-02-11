@@ -12,7 +12,7 @@ public:
     FilterAndWidget(BaseFilter* filter, AbstractFilterWidget* filterWidget);
     ~FilterAndWidget();
 
-    //FilterAndWidget() = delete;
+    FilterAndWidget() = delete;
     FilterAndWidget(const FilterAndWidget&) = delete;
     FilterAndWidget& operator=(const FilterAndWidget&) = delete;
     FilterAndWidget(FilterAndWidget&&);
@@ -24,8 +24,6 @@ public:
 private:
     std::unique_ptr<BaseFilter> filter_;
     std::unique_ptr<AbstractFilterWidget> filterWidget_;
-    //BaseFilter* filter_;
-    //AbstractFilterWidget* filterWidget_;
 };
 
 #endif // FILTERANDWIDGET

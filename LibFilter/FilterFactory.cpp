@@ -49,8 +49,11 @@ QVector<FilterDescription> FilterFactory::enumerateFilters() {
             }
         }
 
+        qDebug() << "plugin interfaces amount: " << interfaces.size();
         std::for_each(interfaces.cbegin(), interfaces.cend(), [&](const FilterPluginInterface* interface) {
             result.push_back(interface->description());
+            qDebug() << "name: " << interface->description().name;
+            qDebug() << "id: " << interface->description().id;
         });
     }
     return result;

@@ -1,16 +1,14 @@
+#include <QDebug>
 #include "FilterAndWidget.h"
 #include "BaseFilter.h"
 
 FilterAndWidget::FilterAndWidget(BaseFilter* filter, AbstractFilterWidget* filterWidget) : filter_(filter),
     filterWidget_(filterWidget) {}
 
-FilterAndWidget::~FilterAndWidget()  {}
-
-//FilterAndWidget::FilterAndWidget(const FilterAndWidget&);
-//FilterAndWidget& FilterAndWidget::operator=(const FilterAndWidget&);
+FilterAndWidget::~FilterAndWidget() = default;
 
 FilterAndWidget::FilterAndWidget(FilterAndWidget&& other) :
-    filter_(std::move(other.filter())),  filterWidget_(std::move(other.filterWidget_))
+    filter_(std::move(other.filter_)),  filterWidget_(std::move(other.filterWidget_))
 {}
 
 FilterAndWidget& FilterAndWidget::operator=(FilterAndWidget&& rhs) {
