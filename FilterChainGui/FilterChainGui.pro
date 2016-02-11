@@ -40,6 +40,7 @@ FORMS += \
 # -----------------------------------
 # Libraries
 # -----------------------------------
+
 INCLUDEPATH += $$PWD/../NodeEditorWidget/inc
 LIBS += -L$$PWD/../NodeEditorWidget/bin
 
@@ -51,4 +52,7 @@ Debug:  LIBS += NodeEditorWidgetd.lib \
 Release:LIBS += NodeEditorWidget.lib \
                 LibFilter.lib
 
-
+Debug: PRE_TARGETDEPS += $$PWD/../NodeEditorWidget/bin/NodeEditorWidgetd.lib \
+                $$PWD/../LibFilter/bin/LibFilterd.lib
+Release: PRE_TARGETDEPS += $$PWD/../NodeEditorWidget/bin/NodeEditorWidget.lib \
+                $$PWD/../LibFilter/bin/LibFilter.lib

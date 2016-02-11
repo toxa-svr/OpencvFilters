@@ -351,28 +351,27 @@ void MainWindow::addItem()
     }
 
 
-    // Create Node and add into the Scene
-    QWidget* newWidget = new TestWidget_1();
-    NodeItem * newItem = new NodeItem(newWidget);
-    nodeEditorScene->addItem(newItem);
-    // Add ports
-    QPushButton * newBtn = new QPushButton("port in");
-    NodePort * newPortIn = new NodePort(newItem, nodeEditorScene, newBtn, NodePort::In, NodePort::Left);
-    QLabel * newLbl = new QLabel("port out");
-    NodePort * newPortOut = new NodePort(newItem, nodeEditorScene, newLbl, NodePort::Out, NodePort::Right);
-    newItem->addPort(newPortIn);
-    newItem->addPort(newPortOut);
+//    // Create Node and add into the Scene
+//    QWidget* newWidget = new TestWidget_1();
+//    NodeItem * newItem = new NodeItem(newWidget);
+//    nodeEditorScene->addItem(newItem);
+//    // Add ports
+//    QPushButton * newBtn = new QPushButton("port in");
+//    NodePort * newPortIn = new NodePort(newItem, nodeEditorScene, newBtn, NodePort::In, NodePort::Left);
+//    QLabel * newLbl = new QLabel("port out");
+//    NodePort * newPortOut = new NodePort(newItem, nodeEditorScene, newLbl, NodePort::Out, NodePort::Right);
+//    newItem->addPort(newPortIn);
+//    newItem->addPort(newPortOut);
 
-    return;
+//    return;
 
     // Extract user data from action and create filter
     try {
         LibFilter::CreateFilterResult result = libFilter.createFilter(action->data().toString());
 
-        // Create Node and add into the Scene
-        NodeItem * newItem = new NodeItem(nullptr);
+        // Create Node and add into the Scene      
         AbstractFilterWidget* newWidget = result.widget;
-        newItem->setWidget(newWidget);
+        NodeItem * newItem = new NodeItem(newWidget);
         nodeEditorScene->addItem(newItem);
         // Add ports
         QPushButton * newBtn = new QPushButton("port in");

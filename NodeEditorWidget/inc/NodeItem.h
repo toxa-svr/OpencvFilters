@@ -15,7 +15,7 @@ public:
     enum { Type = UserType + 666 + 1 };
     int type() const { return Type;}
 
-    NodeItem(QWidget * widget = NULL, Qt::WindowFlags wFlags = 0, QGraphicsItem *parent = 0);
+    NodeItem(QWidget * widget = nullptr, Qt::WindowFlags wFlags = 0, QGraphicsItem *parent = 0);
 	virtual ~NodeItem();
     void deleteConnections();
     void addPort(NodePort* port);
@@ -37,7 +37,7 @@ private:
     bool isResizable;
 
     void updatePortsPos();
-    void removeWigetFromPorts();
+    void removeWidgetFromPorts();
 	void debugPaint(QPainter *painter);
     bool shouldMoveNode(QGraphicsSceneMouseEvent *mouseEvent);
 };
