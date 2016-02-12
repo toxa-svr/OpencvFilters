@@ -93,3 +93,6 @@ Release:LIBS += opencv_ts300.lib \
                 opencv_world300.lib \
                 LibFilter.lib
 
+#Binary denepdencies
+Debug: PRE_TARGETDEPS += $$PWD/../../LibFilter/bin/LibFilterd.lib
+Release: PRE_TARGETDEPS += $$PWD/../../LibFilter/bin/LibFilter.lib

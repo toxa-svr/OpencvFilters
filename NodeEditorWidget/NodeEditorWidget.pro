@@ -55,9 +55,13 @@ SOURCES += src/NodeEditorWidget.cpp \
            src/ExampleNode.cpp
 #RESOURCES += NodeEditorWidget.qrc
 
-INCLUDEPATH += $$PWD/inc
+INCLUDEPATH += $$PWD/inc \
+               $$PWD/../ExpanderWidget
 
 # -----------------------------------
 # Libraries
 # -----------------------------------
 
+# Binary dependencies
+Debug: PRE_TARGETDEPS += $$PWD/../ExpanderWidget/bin/ExpanderWidgetd.lib
+Release: PRE_TARGETDEPS += $$PWD/../ExpanderWidget/bin/ExpanderWidget.lib

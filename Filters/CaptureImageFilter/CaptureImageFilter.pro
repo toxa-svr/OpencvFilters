@@ -74,7 +74,8 @@ FORMS += \
 # Libraries
 # -----------------------------------
 INCLUDEPATH += $$(OPENCV_DIR)/build/include
-INCLUDEPATH += $$PWD/../../LibFilter
+INCLUDEPATH += $$PWD/../../LibFilter \
+               $$PWD/../../ExpanderWidget
 
 LIBS += -L$$(OPENCV_DIR)/build/x64/vc12/lib
 #LIBS += -L$$(OPENCV_DIR)/build/x86/vc12/lib
@@ -87,3 +88,7 @@ Release:LIBS += opencv_ts300.lib \
                 opencv_world300.lib \
                 LibFilter.lib
 
+#Binary denepdencies
+Debug: PRE_TARGETDEPS += $$PWD/../../LibFilter/bin/LibFilterd.lib
+
+Release: PRE_TARGETDEPS += $$PWD/../../LibFilter/bin/LibFilter.lib
