@@ -62,6 +62,9 @@ private:
     QToolBar *fileToolbar;
     QToolBar *debugToolbar;
 
+    // ToolBox
+    QToolBox * toolBox;
+    QButtonGroup *addButtonGroup;
 
     // Menu-File Actions
     QAction *fileNewAction;

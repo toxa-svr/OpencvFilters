@@ -16,33 +16,46 @@ NodeItem::NodeItem(QWidget * widget, Qt::WindowFlags wFlags, QGraphicsItem *pare
     isResizable(false)
 {
     setCacheMode(DeviceCoordinateCache);
-	setZValue(1);
-
-    QDialog * itemDialog = new QDialog;
-    //QToolBox * toolBox  = new QToolBox;
-    QHBoxLayout * layout = new QHBoxLayout;
-    itemDialog->setLayout(layout);
-    widget->setFixedSize(widget->geometry().size());
-    if (widget) {
-        layout->addWidget(widget);
-        //toolBox->addItem(widget, "Filter settings");
-        //toolBox->addItem(new QLabel(), "Ports");
-        //toolBox->setItemEnabled(0, true);
-        //toolBox->setItemEnabled(1, true);
-        widget->show();
-        //toolBox->adjustSize();
-    }
-
-    //layout->addWidget(toolBox);
-    layout->setSizeConstraint(QLayout::SetFixedSize);
-    itemDialog->adjustSize();
-    //itemDialog->resize(500,500);
-
-    setWidget(itemDialog);
-
+    setZValue(1);
     setFlag(QGraphicsItem::ItemIsMovable, true);
     setFlag(QGraphicsItem::ItemIsSelectable, true);
     setFlag(QGraphicsItem::ItemIsFocusable, true);
+
+
+//    QDialog * itemDialog = new QDialog;
+//    //QToolBox * toolBox  = new QToolBox;
+//    //layout->addWidget(toolBox);
+
+//    QHBoxLayout * layout = new QHBoxLayout;
+//    layout->setSizeConstraint(QLayout::SetFixedSize);
+//    if (widget) {
+//        widget->setFixedSize(widget->geometry().size());
+//        layout->addWidget(widget);
+//        widget->setWindowFlags(Qt::Dialog);
+//        widget->show();
+//    }
+
+
+
+//    itemDialog->setLayout(layout);
+//    itemDialog->setWindowFlags(Qt::Dialog);
+//    itemDialog->setVisible(true);
+//    itemDialog->update();
+//    itemDialog->adjustSize();
+
+//    setWidget(itemDialog);
+
+
+    //widget->setFixedSize(widget->geometry().size());
+
+    setWidget(widget);
+
+    setWindowFlags(Qt::Dialog);
+    setVisible(true);
+    update();
+    widget->adjustSize();
+
+
 }
 
 
