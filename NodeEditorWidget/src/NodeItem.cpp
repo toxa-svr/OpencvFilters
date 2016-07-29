@@ -1,11 +1,9 @@
 #include <QtWidgets>
 #include <QStyleFactory>
-
-
 #include "NodeItem.h"
 #include "NodeConnection.h"
 #include "NodePort.h"
-
+#include "expanderwidget.h"
 
 
 
@@ -21,10 +19,26 @@ NodeItem::NodeItem(QWidget * widget, Qt::WindowFlags wFlags, QGraphicsItem *pare
     setFlag(QGraphicsItem::ItemIsSelectable, true);
     setFlag(QGraphicsItem::ItemIsFocusable, true);
 
+    QDialog * itemDialog = new QDialog;
+    QVBoxLayout * layout = new QVBoxLayout(itemDialog);
+    itemDialog->setLayout(layout);
+    widget->setFixedSize(widget->geometry().size());
+    ExpanderWidget* ew = new ExpanderWidget(itemDialog);
+    ew->setExpanderTitle("Filter settings");
+    ExpanderWidget* ew2 = new ExpanderWidget(itemDialog);
+    ew2->setExpanderTitle("Ports");
+    if (widget) {
+        layout->addWidget(ew);
+        layout->addWidget(ew2);
+        layout->addSpacerItem(new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding));
+        ew->addPage(widget);
+        ew2->addPage(new QLabel("ports here", ew2));
+        ew->show();
+        ew2->show();
+        widget->show();
+    }
 
-//    QDialog * itemDialog = new QDialog;
-//    //QToolBox * toolBox  = new QToolBox;
-//    //layout->addWidget(toolBox);
+    itemDialog->adjustSize();
 
 //    QHBoxLayout * layout = new QHBoxLayout;
 //    layout->setSizeConstraint(QLayout::SetFixedSize);

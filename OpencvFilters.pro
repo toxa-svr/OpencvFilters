@@ -9,9 +9,11 @@ SUBDIRS += \
     FilterChainGui \
     Filters \
     Tests \
-    NodeEditorWidget
+    NodeEditorWidget \
+    ExpanderWidget
 
 FilterChainGui.depends      = LibFilter NodeEditorWidget
-Filters.depends             = LibFilter
+Filters.depends             = LibFilter ExpanderWidget
 Tests.depends               = LibFilter FilterChainGui Filters
+NodeEditorWidget            = ExpanderWidget
 

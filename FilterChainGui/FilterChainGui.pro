@@ -47,12 +47,22 @@ LIBS += -L$$PWD/../NodeEditorWidget/bin
 INCLUDEPATH += $$PWD/../LibFilter/
 LIBS += -L$$PWD/../LibFilter/bin
 
+INCLUDEPATH += $$PWD/../ExpanderWidget/
+LIBS += -L$$PWD/../ExpanderWidget/bin
+
 Debug:  LIBS += NodeEditorWidgetd.lib \
                 LibFilterd.lib
+
 Release:LIBS += NodeEditorWidget.lib \
                 LibFilter.lib
 
+#Binary denepdencies
 Debug: PRE_TARGETDEPS += $$PWD/../NodeEditorWidget/bin/NodeEditorWidgetd.lib \
-                $$PWD/../LibFilter/bin/LibFilterd.lib
+                $$PWD/../LibFilter/bin/LibFilterd.lib \
+                $$PWD/../ExpanderWidget/bin/ExpanderWidgetd.lib
 Release: PRE_TARGETDEPS += $$PWD/../NodeEditorWidget/bin/NodeEditorWidget.lib \
-                $$PWD/../LibFilter/bin/LibFilter.lib
+                $$PWD/../LibFilter/bin/LibFilter.lib \
+                $$PWD/../ExpanderWidget/bin/ExpanderWidget.lib
+
+Debug:  LIBS += ExpanderWidgetd.lib
+Release:LIBS += ExpanderWidget.lib
